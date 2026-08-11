@@ -1,0 +1,3696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Logistics Quote Tool v14</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Helvetica Neue',Arial,sans-serif;background:#f0ede8;color:#1a1a1a;min-height:100vh}
+header{background:#1a1a1a;color:#fff;padding:15px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+header h1{font-size:14px;font-weight:600;letter-spacing:.06em}
+.wrap{max-width:980px;margin:0 auto;padding:24px 18px}
+.card{background:#fff;border:1px solid #e0ddd7;border-radius:10px;padding:20px;margin-bottom:14px}
+.ctitle{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#aaa;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.badge{background:#1a1a1a;color:#fff;border-radius:50%;width:17px;height:17px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0}
+textarea{width:100%;font-family:inherit;font-size:13px;padding:11px;border:1px solid #ddd;border-radius:6px;background:#fafaf8;color:#1a1a1a;resize:vertical;line-height:1.65}
+textarea:focus{outline:none;border-color:#1a1a1a;background:#fff}
+#ri{height:200px}
+.brow{display:flex;gap:9px;margin-top:11px;flex-wrap:wrap;align-items:center}
+button{font-family:inherit;font-size:13px;font-weight:500;padding:8px 17px;border-radius:6px;cursor:pointer;transition:all .12s;border:1px solid}
+.bp{background:#1a1a1a;color:#fff;border-color:#1a1a1a}.bp:hover{background:#333}
+.bg{background:transparent;color:#666;border-color:#d0cdc7}.bg:hover{background:#f0ede8}
+.bs{font-size:12px;padding:5px 11px;background:transparent;color:#555;border-color:#ccc}.bs:hover{background:#f0ede8}
+.bs.ok{color:#2a7a3a;border-color:#2a7a3a}
+.bmap{font-size:12px;padding:5px 11px;background:transparent;color:#1a73e8;border:1px solid #1a73e8;border-radius:4px;text-decoration:none;display:inline-flex;align-items:center;gap:4px}.bmap:hover{background:#e8f0fe}
+.bmail{font-size:12px;padding:6px 13px;background:#1a1a1a;color:#fff;border-color:#1a1a1a}.bmail:hover{background:#333}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.tab{font-size:12px;font-weight:500;padding:5px 13px;border-radius:20px;cursor:pointer;border:1px solid #d0cdc7;background:#fff;color:#555;transition:all .1s}
+.tab.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a}.tab:hover:not(.on){background:#f0ede8}
+.bp2{display:none}.bp2.on{display:block}
+.fbox{background:#f5f3ef;border:1px solid #e0ddd7;border-radius:6px;padding:12px 14px;font-size:13px;white-space:pre-wrap;line-height:1.7;color:#1a1a1a;margin-bottom:10px}
+.vi{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid #f0ede8}
+.vi:last-child{border-bottom:none}
+.vi.fo{opacity:.28;pointer-events:none}
+.vchk{margin-top:3px;width:14px;height:14px;accent-color:#1a1a1a;cursor:pointer;flex-shrink:0}
+.vd{flex:1;min-width:0}
+.vn{font-size:13px;font-weight:500}
+.ve{font-size:12px;color:#777;margin-top:1px;word-break:break-all}
+.vnt{font-size:11px;color:#888;margin-top:2px;font-style:italic}
+.vnt.w{color:#c0392b}.vnt.g{color:#2a7a3a;font-weight:600;font-style:normal}
+.vrk{font-size:10px;font-weight:600;color:#aaa;background:#f0ede8;border-radius:4px;padding:2px 6px;flex-shrink:0;margin-top:2px}
+.vrk.b{background:#1a1a1a;color:#fff}.vrk.g{background:#2a7a3a;color:#fff}
+.vtag{font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px}
+.tow{background:#fff3cd;color:#856404;border:1px solid #ffc107}
+.tres{background:#d1ecf1;color:#0c5460;border:1px solid #bee5eb}
+.eb{background:#f8f7f4;border:1px solid #e8e5df;border-radius:7px;padding:12px 14px;margin-top:9px}
+.ebh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px;flex-wrap:wrap}
+.ebl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#bbb}
+.ebv{font-family:'Aptos','Calibri',Arial,sans-serif;font-size:16px;color:#1a1a1a;white-space:pre-wrap;line-height:1.65}
+.pm{font-size:12px;color:#666;margin-bottom:10px}
+.pm strong{color:#1a1a1a}
+.nv{font-size:13px;color:#aaa;font-style:italic;padding:4px 0}
+.vfbar{font-size:11px;color:#888;margin-bottom:8px;padding:6px 10px;background:#f5f3ef;border-radius:5px}
+.cab{background:#fff;border:1px solid #e0ddd7;border-radius:10px;padding:16px 20px;margin-bottom:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.cab span{font-size:13px;color:#555;flex:1}
+.ebox{background:#fef0ee;border:1px solid #f5c6c0;border-radius:8px;padding:12px 16px;margin-bottom:14px}
+.etitle{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#c0392b;margin-bottom:8px}
+.eitem{font-size:13px;color:#922b21;display:flex;gap:7px;margin-bottom:4px;line-height:1.5}
+.sdot{width:6px;height:6px;border-radius:50%;background:#1a73e8;animation:pu 1.5s infinite;display:inline-block;margin-right:4px}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.3}}
+.ch{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.cv{font-size:13px;color:#aaa;transition:transform .2s}.cv.o{transform:rotate(90deg)}
+.cb{display:none;margin-top:12px}.cb.o{display:block}
+.maphint{font-size:11px;color:#aaa;margin-top:4px}
+.maprow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.mapa{font-size:12px;color:#555;font-style:italic}
+.sep{height:1px;background:#f0ede8;margin:14px 0}
+
+.sc{padding:5px 8px;border:none;outline:none;font-family:'Aptos','Calibri',Arial,sans-serif;font-size:12px;min-width:60px}
+
+.sc[contenteditable]:focus{background:#f0f7ff}
+.sca{background:#f0f8f0;text-align:right;font-weight:600;color:#2a7a3a}
+.sh{padding:6px 8px;font-size:11px;font-weight:700;text-align:left;color:#888;white-space:nowrap;border-bottom:1.5px solid #e8e5df}
+.vc-grid{width:100%;border-collapse:collapse;font-size:12px}
+.vc-grid th,.vc-grid td{border:1px solid #e3dfd8;padding:7px 8px;vertical-align:top}
+.vc-grid th{background:#f5f3ef;color:#666;font-weight:700;text-align:left;white-space:nowrap}
+.vc-grid td.money{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.vc-grid .vc-win{background:#eef8ef}
+.vc-grid .vc-diff{background:#fff7dd}
+.vc-grid .vc-warn{background:#fff0e8;color:#9a4b12}
+.vc-grid .vc-muted{background:#f7f7f7;color:#999}
+.vc-grid .vc-bad{background:#fdeceb;color:#922b21}
+.vc-rec{border:1px solid #b8d9ba;background:#f0f8f0;border-radius:7px;padding:10px 12px;margin:10px 0;font-size:13px;color:#1f5d2d;line-height:1.45}
+.vc-chip{display:inline-flex;align-items:center;border:1px solid #d6d1c8;border-radius:12px;padding:2px 7px;font-size:11px;color:#666;background:#fff;margin:2px 4px 2px 0}
+.vc-chip.bad{border-color:#e7b8b0;color:#922b21;background:#fff4f2}
+.vc-chip.warn{border-color:#f0d48b;color:#8a6415;background:#fff9e8}
+.vc-chip.good{border-color:#acd1ad;color:#1f6b32;background:#f1faf1}
+#vcBoxes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:stretch}
+.vc-box{border:1px solid #e0ddd7;border-radius:8px;background:#faf9f6;padding:12px;min-height:310px;display:flex;flex-direction:column}
+.vc-box-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.vc-box-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888}
+.vc-box textarea{background:#fff;min-height:250px;flex:1}
+@media (max-width:820px){#vcBoxes{grid-template-columns:1fr}.vc-box{min-height:240px}.vc-box textarea{min-height:180px}}
+.calc-pick{cursor:cell;user-select:none}
+.calc-selected{background:#dbeafe!important;color:#0b3d91!important;outline:2px solid #1a73e8!important;outline-offset:-2px}
+.calc-selected span{color:#0b3d91!important}
+</style>
+</head>
+<body>
+<header>
+  <h1>Logistics Quote Tool <span style="color:#555;font-weight:400">v14</span></h1>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <span style="font-size:12px;background:#1a3a5c;color:#7ec8f4;border-radius:20px;padding:3px 11px;display:flex;align-items:center"><span class="sdot"></span>Live Data</span>
+    <span style="font-size:11px;color:#666">Live Vendor Data · Auto-Filter · Batch Email · Validation</span>
+  </div>
+</header>
+
+<!-- VENDOR LOAD STATUS BANNER -->
+<div id="vendorLoadBanner" style="background:#e8f0fe;border-bottom:1px solid #c5d8fb;padding:8px 28px;display:flex;align-items:center;gap:8px;font-size:12px;color:#1a3a5c">
+  <span class="vl-dot" style="width:7px;height:7px;border-radius:50%;background:#1a73e8;animation:pu 1.2s infinite;flex-shrink:0;display:inline-block"></span>
+  <span id="vendorLoadText">Loading live vendor data from Google Drive…</span>
+</div>
+<div class="wrap">
+
+<!-- INPUT -->
+<div class="card">
+  <div style="font-size:12px;color:#777;line-height:1.5;margin:-2px 0 10px">You can paste an Excel two-column table here too: POD + Door Address. Same POD + same Door Address will be de-duped.</div>
+  <div class="ctitle"><span class="badge">1</span>Paste shipment info — single or batch (支持中英文)</div>
+  <textarea id="ri" placeholder="Single or batch (number each: 1. 2. 3. …)
+
+Example:
+1. ADD: 358 Sawmill River Rd, Millwood NY 10546
+POD: New York
+VOL: 1*40HQ  GW: 16000KGS
+
+2. ADD: 980 Derita Rd Suite C, Concord NC 28027
+POD: Charlotte
+VOL: 1*40HC  GW: 14500KGS"></textarea>
+  <div class="brow">
+    <button class="bp" onclick="processAll()">Process &amp; Format</button>
+    <button class="bg" onclick="clearAll()">Clear</button>
+    <button class="bg" onclick="fetchVendorData()" title="Reload vendor list from Google Drive" style="font-size:12px;color:#1a73e8;border-color:#1a73e8">↺ Reload vendors</button>
+  </div>
+</div>
+
+<!-- SHIPMENT MEMORY -->
+<div class="card" id="memcard">
+  <div class="ctitle"><span class="badge">M</span>Recent Shipments</div>
+  <div class="brow" style="margin:0 0 8px">
+    <button class="bs" onclick="confirmShipmentSelectionForEmail(this)">Confirm selection / Batch quote</button>
+  </div>
+  <div id="memList" style="font-size:13px;color:#777">No saved shipments yet.</div>
+</div>
+
+<!-- ERRORS -->
+<div id="ewrap" style="display:none"></div>
+
+<!-- RESULTS -->
+<div id="rwrap" style="display:none">
+  <div class="cab" id="cab" style="display:none">
+    <span id="bsum"></span>
+    <button class="bs" onclick="copyAllFmt()">Copy all formatted</button>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div id="panels"></div>
+</div>
+</div>
+
+<script>
+// ─── ZIP DB (condensed) ───────────────────────────────────────────────────────
+const ZDB={"10001":["New York","NY",40.7484,-73.9967],"10002":["New York","NY",40.7157,-73.9863],"10546":["Millwood","NY",41.2012,-73.8296],"07030":["Hoboken","NJ",40.744,-74.0324],"07201":["Elizabeth","NJ",40.664,-74.2107],"07036":["Linden","NJ",40.6223,-74.2446],"08807":["Bridgewater","NJ",40.5968,-74.6046],"08701":["Lakewood","NJ",40.0979,-74.2179],"08036":["Hainesport","NJ",39.984,-74.8349],"07101":["Newark","NJ",40.7357,-74.1724],"10301":["Staten Island","NY",40.6298,-74.0938],"11201":["Brooklyn","NY",40.6928,-73.9903],"13088":["Liverpool","NY",43.1064,-76.2177],"06001":["Avon","CT",41.7923,-72.8635],"06492":["Wallingford","CT",41.457,-72.8232],"02101":["Boston","MA",42.3601,-71.0589],"01460":["Littleton","MA",42.5376,-71.4868],"19101":["Philadelphia","PA",39.9526,-75.1652],"18641":["Avoca","PA",41.3445,-75.7285],"19341":["Exton","PA",40.029,-75.6213],"17055":["Mechanicsburg","PA",40.2142,-77.0086],"21201":["Baltimore","MD",39.2904,-76.6122],"20001":["Washington","DC",38.9072,-77.0369],"22003":["Annandale","VA",38.8312,-77.196],"23502":["Norfolk","VA",36.8468,-76.2853],"28201":["Charlotte","NC",35.2271,-80.8431],"28027":["Concord","NC",35.4088,-80.5795],"27601":["Raleigh","NC",35.7796,-78.6382],"28401":["Wilmington","NC",34.2257,-77.9447],"29401":["Charleston","SC",32.7765,-79.9311],"29650":["Greer","SC",34.9387,-82.2271],"30301":["Atlanta","GA",33.749,-84.388],"30519":["Buford","GA",34.1201,-83.9913],"30721":["Dalton","GA",34.7698,-84.971],"31401":["Savannah","GA",32.0809,-81.0912],"32536":["Crestview","FL",30.746,-86.5711],"33101":["Miami","FL",25.7617,-80.1918],"34747":["Kissimmee","FL",28.3072,-81.5484],"33602":["Tampa","FL",27.9506,-82.4572],"32201":["Jacksonville","FL",30.3322,-81.6557],"35201":["Birmingham","AL",33.5186,-86.8104],"35672":["Town Creek","AL",34.6726,-87.3592],"36601":["Mobile","AL",30.6954,-88.0399],"39702":["Columbus","MS",33.4957,-88.4273],"37201":["Nashville","TN",36.1627,-86.7816],"38101":["Memphis","TN",35.1495,-90.049],"40201":["Louisville","KY",38.2527,-85.7585],"45201":["Cincinnati","OH",39.1031,-84.512],"44101":["Cleveland","OH",41.4993,-81.6944],"43201":["Columbus","OH",39.9612,-82.9988],"44241":["Streetsboro","OH",41.2395,-81.346],"48201":["Detroit","MI",42.3314,-83.0458],"46201":["Indianapolis","IN",39.7684,-86.1581],"46168":["Plainfield","IN",39.7042,-86.3994],"60601":["Chicago","IL",41.8781,-87.6298],"60525":["Hodgkins","IL",41.7706,-87.8598],"60030":["Grayslake","IL",42.3445,-88.0423],"55401":["Minneapolis","MN",44.9778,-93.265],"63101":["St Louis","MO",38.627,-90.1994],"64101":["Kansas City","MO",39.0997,-94.5786],"68101":["Omaha","NE",41.2565,-95.9345],"75134":["Lancaster","TX",32.5918,-96.7561],"75201":["Dallas","TX",32.7767,-96.797],"77001":["Houston","TX",29.7604,-95.3698],"78201":["San Antonio","TX",29.4241,-98.4936],"79901":["El Paso","TX",31.7619,-106.485],"70112":["New Orleans","LA",29.9511,-90.0715],"80201":["Denver","CO",39.7392,-104.9903],"85001":["Phoenix","AZ",33.4484,-112.074],"84101":["Salt Lake City","UT",40.7608,-111.891],"84651":["Payson","UT",40.0444,-111.7324],"84401":["Ogden","UT",41.223,-111.9738],"89521":["Reno","NV",39.4772,-119.7558],"90001":["Los Angeles","CA",33.9731,-118.2479],"90802":["Long Beach","CA",33.7701,-118.1937],"94601":["Oakland","CA",37.8044,-122.2712],"98101":["Seattle","WA",47.6062,-122.3321],"97201":["Portland","OR",45.5231,-122.6765],"15201":["Pittsburgh","PA",40.4406,-79.9959],"14201":["Buffalo","NY",42.8864,-78.8784],"30662":["Royston","GA",34.2887,-83.1113],"46268":["Indianapolis","IN",39.9012,-86.2196],"46240":["Indianapolis","IN",39.9076,-86.1197],"46241":["Indianapolis","IN",39.7298,-86.2785],"46250":["Indianapolis","IN",39.9048,-85.9938],"46260":["Indianapolis","IN",39.8762,-86.1586],"46280":["Carmel","IN",39.9784,-86.118],"46032":["Carmel","IN",39.9784,-86.118],"46077":["Zionsville","IN",39.9512,-86.2557],"46060":["Noblesville","IN",40.0456,-85.9974],"46143":["Greenwood","IN",39.6137,-86.1066],"46227":["Indianapolis","IN",39.6762,-86.1421],"46219":["Indianapolis","IN",39.7748,-85.9938],"46222":["Indianapolis","IN",39.7831,-86.2218],"46203":["Indianapolis","IN",39.7384,-86.1066],"60188":["Carol Stream","IL",41.9131,-88.1348],"60148":["Lombard","IL",41.8803,-88.0076],"60440":["Bolingbrook","IL",41.6886,-88.0687],"30096":["Duluth","GA",34.0012,-84.1449],"30005":["Alpharetta","GA",34.0754,-84.2941],"30518":["Buford","GA",34.1076,-83.991],"30043":["Lawrenceville","GA",33.9526,-83.9877],"75019":["Coppell","TX",32.9543,-97.0146],"75039":["Irving","TX",32.8573,-96.9925],"77494":["Katy","TX",29.7858,-95.8244],"29456":["Ladson","SC",32.9882,-80.1034],"28273":["Charlotte","NC",35.1085,-80.9799],"33166":["Miami Springs","FL",25.8219,-80.2956],"33178":["Doral","FL",25.8194,-80.3548],"32824":["Orlando","FL",28.3695,-81.3784],"36695":["Mobile","AL",30.6296,-88.1704],"37027":["Brentwood","TN",36.0331,-86.7825],"37064":["Franklin","TN",35.9251,-86.8689],"38118":["Memphis","TN",35.0555,-89.9534],"40509":["Lexington","KY",37.9716,-84.3501],"41048":["Hebron","KY",39.0676,-84.7088],"44130":["Middleburg Heights","OH",41.3645,-81.8138],"43228":["Columbus","OH",39.9748,-83.1135],"48334":["Farmington Hills","MI",42.4959,-83.3677],"48326":["Auburn Hills","MI",42.6876,-83.2327],"19720":["New Castle","DE",39.6618,-75.5771],"21703":["Frederick","MD",39.4143,-77.4105],"23434":["Suffolk","VA",36.7282,-76.5836],"85043":["Phoenix","AZ",33.3942,-112.1107],"85234":["Gilbert","AZ",33.3528,-111.789],"80011":["Aurora","CO",39.7294,-104.8319],"98032":["Kent","WA",47.3809,-122.2348],"98188":["SeaTac","WA",47.4437,-122.2987],"97006":["Beaverton","OR",45.4929,-122.8028],"94536":["Fremont","CA",37.5485,-121.9886],"90670":["Santa Fe Springs","CA",33.9425,-118.0887],"91761":["Ontario","CA",34.0134,-117.6509],"77338":["Humble","TX",29.9988,-95.2624]};
+
+const PCOORDS={"NY NJ":[40.714,-74.006],"LA LB":[33.77,-118.193],"Boston":[42.36,-71.059],"Baltimore":[39.29,-76.612],"Philadelphia":[39.953,-75.165],"Norfolk":[36.847,-76.285],"Charlotte":[35.227,-80.843],"Charleston":[32.777,-79.931],"Savannah":[32.081,-81.091],"Atlanta":[33.749,-84.388],"Nashville":[36.163,-86.782],"Memphis":[35.15,-90.049],"Jacksonville":[30.332,-81.656],"Miami":[25.762,-80.192],"Tampa":[27.951,-82.457],"Mobile":[30.695,-88.04],"NOLA - New Orleans":[29.951,-90.072],"BIRMINGHAM":[33.519,-86.81],"Cleveland":[41.499,-81.694],"Columbus":[39.961,-82.999],"Cincinnati":[39.103,-84.512],"Detroit":[42.331,-83.046],"Indianapolis":[39.768,-86.158],"Louisville":[38.253,-85.759],"Chicago":[41.878,-87.63],"Pittsburgh":[40.441,-79.996],"Buffalo":[42.886,-78.878],"Minne/St. Paul":[44.978,-93.265],"St. Louis":[38.627,-90.199],"Kansas City":[39.1,-94.579],"Omaha":[41.257,-95.935],"Dallas":[32.777,-96.797],"Houston":[29.76,-95.37],"San Antonio":[29.424,-98.494],"Laredo":[27.5064,-99.5075],"EL PASO SANTA TERESA":[31.762,-106.485],"Denver":[39.739,-104.99],"Phoenix":[33.448,-112.074],"SLC":[40.761,-111.891],"Seattle":[47.606,-122.332],"Portland":[45.523,-122.677],"Oakland":[37.804,-122.271],"Greer, SC":[34.939,-82.227],"Wilmington":[34.226,-77.945]};
+ZDB["78045"]=["Laredo","TX",27.5906,-99.4890];
+PCOORDS['Seattle/Tacoma']=PCOORDS.Seattle;
+delete PCOORDS.Seattle;
+
+// ─── VENDOR DATA (Live from Google Drive) ────────────────────────────────────
+// VD is populated at startup by fetchVendorData() via the live Google Sheets feed.
+// Edit your data in Google Sheets "Vendor & POD List" — click "↺ Reload vendors" to sync.
+let VD = {};
+const VENDOR_SHEET_ID = "1IkGJwCelSPXm_aqXxYVZyfdj9hHqb7s0ViX9xC3VXq0";
+const VENDOR_SHEET_NAME = "";
+const VENDOR_SHEET_GID = "1805860766";
+const VENDOR_SHEET_CANDIDATES = [
+  { gid: VENDOR_SHEET_GID, label: 'gid ' + VENDOR_SHEET_GID },
+  { sheet: 'Contact List', label: 'Contact List' },
+  { sheet: 'Vendor & POD List', label: 'Vendor & POD List' },
+  { sheet: 'Vendor POD List', label: 'Vendor POD List' },
+  { sheet: 'Vendors', label: 'Vendors' },
+  { label: 'first sheet' }
+];
+
+// Parse the markdown table returned by Google Drive MCP read_file_content
+// Columns: Company Name | Note | POD | Contact
+function parseSheetToVD(markdownText) {
+  const result = {};
+  const lines = markdownText.split('\n');
+  for (const line of lines) {
+    if (!line.startsWith('|')) continue;
+    const cells = line.split('|').map(c => c.trim());
+    // cells[0] is empty (leading |), cells[1]=Name, cells[2]=Note, cells[3]=POD, cells[4]=Contact
+    if (cells.length < 5) continue;
+    const name = cells[1];
+    const note = cells[2];
+    const pod  = cells[3];
+    const contact = cells[4];
+    // Skip header rows and separator rows
+    if (!pod || pod === 'POD' || /^[-:]+$/.test(pod)) continue;
+    // Skip rows with no company name
+    if (!name || name === 'Company Name') continue;
+    // Normalize POD name
+    const podKey = normalizePod(pod.trim());
+    if (!podKey) continue;
+    // Clean up contact: strip display-name angle-bracket format "Name <email>" → keep raw string
+    const cleanContact = contact
+      .replace(/\\</g, '<').replace(/\\>/g, '>')   // unescape markdown
+      .replace(/[A-Za-z][^<]*<([^>]+)>/g, '$1')       // "Name <email>" → "email"
+      .replace(/\\u003c/gi, '').replace(/\\u003e/gi, '') // leftover unicode escapes
+      .trim();
+    if (!result[podKey]) result[podKey] = [];
+    result[podKey].push({ name: cleanName(name), contact: cleanContact, note: cleanNote(note) });
+  }
+  return result;
+}
+
+function parseGoogleTableToVD(table) {
+  const result = {};
+  const debug = { rows: 0, parsedRows: 0, skippedNoName: 0, skippedNoPod: 0, unmappedPods: {}, sampleRows: [] };
+  const cols = (table && table.cols || []).map(c => String(c.label || c.id || '').toLowerCase().trim());
+  const rows = (table && table.rows || []).map(row => (row.c || []).map(cell => {
+    if (!cell) return '';
+    if (cell.f != null) return String(cell.f).trim();
+    if (cell.v != null) return String(cell.v).trim();
+    return '';
+  }));
+  const colIndex = (labels, names, fallback) => {
+    for (const name of names) {
+      const idx = labels.findIndex(label => label === name || label.includes(name));
+      if (idx >= 0) return idx;
+    }
+    return fallback;
+  };
+  let nameIdx = colIndex(cols, ['company name', 'company', 'vendor', 'trucker', 'name'], 0);
+  let noteIdx = colIndex(cols, ['note', 'notes', 'remark'], 1);
+  let podIdx = colIndex(cols, ['pod', 'port', 'destination'], 2);
+  let contactIdx = colIndex(cols, ['contact', 'email', 'e-mail'], 3);
+  let startRow = 0;
+
+  for (let i = 0; i < Math.min(rows.length, 12); i++) {
+    const labels = rows[i].map(c => c.toLowerCase().trim());
+    const hName = colIndex(labels, ['company name', 'company', 'vendor', 'trucker', 'name'], -1);
+    const hPod = colIndex(labels, ['pod', 'port', 'destination'], -1);
+    const hContact = colIndex(labels, ['contact', 'email', 'e-mail'], -1);
+    if (hName >= 0 && hPod >= 0 && hContact >= 0) {
+      nameIdx = hName;
+      podIdx = hPod;
+      contactIdx = hContact;
+      const hNote = colIndex(labels, ['note', 'notes', 'remark'], -1);
+      noteIdx = hNote >= 0 ? hNote : noteIdx;
+      startRow = i + 1;
+      break;
+    }
+  }
+
+  let lastPod = '';
+  let lastPodKey = '';
+
+  for (const cells of rows.slice(startRow)) {
+    debug.rows++;
+    let name = cells[nameIdx] || '';
+    let note = cells[noteIdx] || '';
+    let pod = cells[podIdx] || '';
+    let contact = cells[contactIdx] || '';
+    let podKey = normalizePod(String(pod).trim());
+
+    if (!podKey) {
+      const scannedPodIdx = cells.findIndex(c => normalizePod(String(c || '').trim()));
+      if (scannedPodIdx >= 0) {
+        pod = cells[scannedPodIdx] || '';
+        podKey = normalizePod(String(pod).trim());
+        const before = cells.slice(0, scannedPodIdx).map(c => String(c || '').trim());
+        const after = cells.slice(scannedPodIdx + 1).map(c => String(c || '').trim());
+        name = name || before.find(Boolean) || '';
+        note = note || before.slice(1).find(Boolean) || '';
+        contact = contact || after.find(c => /@/.test(c)) || after.find(Boolean) || '';
+      }
+    }
+
+    if (podKey) {
+      lastPod = pod;
+      lastPodKey = podKey;
+    } else if (!String(pod || '').trim() && lastPodKey) {
+      pod = lastPod;
+      podKey = lastPodKey;
+    }
+
+    if (!pod || String(pod).trim().toLowerCase() === 'pod') { debug.skippedNoPod++; continue; }
+    if (!name || name === 'Company Name') { debug.skippedNoName++; continue; }
+    if (!podKey) {
+      const rawPod = String(pod || '').trim();
+      if (rawPod) debug.unmappedPods[rawPod] = (debug.unmappedPods[rawPod] || 0) + 1;
+      if (debug.sampleRows.length < 8) debug.sampleRows.push(cells.join(' | '));
+      continue;
+    }
+    const cleanContact = contact
+      .replace(/\\</g, '<').replace(/\\>/g, '>')
+      .replace(/[A-Za-z][^<]*<([^>]+)>/g, '$1')
+      .replace(/\\u003c/gi, '').replace(/\\u003e/gi, '')
+      .trim();
+    if (!result[podKey]) result[podKey] = [];
+    result[podKey].push({ name: cleanName(name), contact: cleanContact, note: cleanNote(note) });
+    debug.parsedRows++;
+  }
+  result.__debug = debug;
+  return result;
+}
+
+function loadVendorSheetTable(source) {
+  return new Promise((resolve, reject) => {
+    const cbName = '_vendorSheetCb_' + Date.now();
+    const script = document.createElement('script');
+    const params = new URLSearchParams();
+    params.set('tqx', 'out:json;responseHandler:' + cbName);
+    params.set('headers', '1');
+    params.set('range', 'A1:D1000');
+    params.set('tq', 'select A,B,C,D');
+    if (source) {
+      if (source.sheet) params.set('sheet', source.sheet);
+      else if (source.gid) params.set('gid', source.gid);
+    } else {
+      if (VENDOR_SHEET_NAME) params.set('sheet', VENDOR_SHEET_NAME);
+      else if (VENDOR_SHEET_GID) params.set('gid', VENDOR_SHEET_GID);
+    }
+
+    const cleanup = () => {
+      clearTimeout(timer);
+      delete window[cbName];
+      script.remove();
+    };
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error('Google Sheet load timed out. Share or publish "Vendor & POD List" so this tool can read it.'));
+    }, 6000);
+
+    window[cbName] = data => {
+      cleanup();
+      if (!data || data.status === 'error') {
+        const msg = data && data.errors && data.errors[0] && data.errors[0].detailed_message;
+        reject(new Error(msg || 'Google Sheet could not be read'));
+        return;
+      }
+      resolve({ table: data.table, source: source || {} });
+    };
+
+    script.onerror = () => {
+      cleanup();
+      reject(new Error('Google Sheet could not be read. Share or publish "Vendor & POD List" so this tool can read it.'));
+    };
+    script.src = 'https://docs.google.com/spreadsheets/d/' + VENDOR_SHEET_ID + '/gviz/tq?' + params.toString();
+    document.head.appendChild(script);
+  });
+}
+
+async function loadVendorSheetParsed() {
+  const errors = [];
+  const candidates = [];
+  for (const source of VENDOR_SHEET_CANDIDATES) {
+    try {
+      const loaded = await loadVendorSheetTable(source);
+      const parsed = parseGoogleTableToVD(loaded.table);
+      const debug = parsed.__debug || {};
+      delete parsed.__debug;
+      const podCount = Object.keys(parsed).length;
+      const vendorCount = Object.values(parsed).flat().length;
+      if (podCount > 0) {
+        candidates.push({ parsed, podCount, vendorCount, source: loaded.source, debug });
+        continue;
+      }
+      errors.push((source.label || 'sheet') + ': parsed 0 PODs' + (debug.rows ? ` (${debug.rows} rows read)` : ''));
+    } catch (err) {
+      errors.push((source.label || 'sheet') + ': ' + err.message);
+    }
+  }
+  if (candidates.length) {
+    candidates.sort((a,b) => (b.vendorCount - a.vendorCount) || (b.podCount - a.podCount));
+    return candidates[0];
+  }
+  throw new Error(errors.join(' | '));
+}
+
+function withTimeout(promise, ms, message) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(message)), ms);
+    promise.then(
+      value => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      err => {
+        clearTimeout(timer);
+        reject(err);
+      }
+    );
+  });
+}
+
+function cleanName(s) {
+  return s.replace(/\\/g, '').trim();
+}
+function cleanNote(s) {
+  let note = String(s || '')
+    .replace(/\\/g, '')
+    .replace(/\!/g, '!')
+    .replace(/\|/g, '|')
+    .replace(/\s+/g, ' ')
+    .trim();
+  note = note.replace(/^\|+|\|+$/g, '').trim();
+  if (!note) return '';
+
+  const parts = note.split('|').map(p => p.trim()).filter(Boolean);
+  if (!parts.length) return '';
+
+  const shortParts = parts.filter(p => p.length <= 3).length;
+  const looksLikeBrokenFormatting = parts.length >= 4 && shortParts / parts.length >= 0.6;
+  if (looksLikeBrokenFormatting) return '';
+
+  return parts.length > 1 ? parts.join(' / ') : note;
+}
+
+// Map sheet POD values → canonical VD keys used in the tool
+function normalizePod(raw) {
+  const original = String(raw || '').trim();
+  if (!original || /@/.test(original) || original.length > 60) return null;
+  const r = original.toLowerCase().replace(/\s+/g, ' ').trim();
+  const loose = r.replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
+  const has = function(){return Array.from(arguments).some(function(term){return loose.includes(term);});};
+  const MAP = [
+    [/^alaska$/,                      'Alaska'],
+    [/^atlanta$/,                     'Atlanta'],
+    [/^baltimore$/,                   'Baltimore'],
+    [/^birmingham$/i,                 'BIRMINGHAM'],
+    [/^boston$/,                      'Boston'],
+    [/^buffalo$/,                     'Buffalo'],
+    [/^charleston$/,                  'Charleston'],
+    [/^charlotte$/,                   'Charlotte'],
+    [/^chicago$/,                     'Chicago'],
+    [/^cincinnati$/,                  'Cincinnati'],
+    [/^cleveland$/,                   'Cleveland'],
+    [/^columbus$/,                    'Columbus'],
+    [/^dallas$/,                      'Dallas'],
+    [/^denver$/,                      'Denver'],
+    [/^detroit$/,                     'Detroit'],
+    [/^el paso/,                      'EL PASO SANTA TERESA'],
+    [/^greer/,                        'Greer, SC'],
+    [/^hawaii.*honolulu/,             'Hawaii - Honolulu'],
+    [/^hawaii/,                       'Hawaii - Honolulu'],
+    [/^houston$/,                     'Houston'],
+    [/^indianapolis$/,                'Indianapolis'],
+    [/^jacksonville$/,                'Jacksonville'],
+    [/^kansas city$/,                 'Kansas City'],
+    [/^la\s*[/&-]?\s*lb$|^los angeles.*long beach|^long beach.*los angeles/, 'LA LB'],
+    [/^laredo$/,                      'Laredo'],
+    [/^louisville$/,                  'Louisville'],
+    [/^memphis$/,                     'Memphis'],
+    [/^miami$/,                       'Miami'],
+    [/minne.*st.*paul|st.*paul.*minne/, 'Minne/St. Paul'],
+    [/^mobile$/,                      'Mobile'],
+    [/^nashville$/,                   'Nashville'],
+    [/^nola|new orleans/,             'NOLA - New Orleans'],
+    [/^norfolk$/,                     'Norfolk'],
+    [/^ny nj$/,                       'NY NJ'],
+    [/^oakland$/,                     'Oakland'],
+    [/^omaha$/,                       'Omaha'],
+    [/^philadelphia$/,                'Philadelphia'],
+    [/^phoenix$/,                     'Phoenix'],
+    [/^pittsburgh$/,                  'Pittsburgh'],
+    [/^portland$/,                    'Portland'],
+    [/^san antonio$/,                 'San Antonio'],
+    [/^savannah$/,                    'Savannah'],
+    [/^(?:seattle|tacoma)/,           'Seattle/Tacoma'],
+    [/^slc$/,                         'SLC'],
+    [/^st\.? louis$/,                 'St. Louis'],
+    [/^tampa$/,                       'Tampa'],
+    [/^wilmington$/,                  'Wilmington'],
+  ];
+  for (const [re, key] of MAP) {
+    if (re.test(r)) return key;
+  }
+  if (has('alaska')) return 'Alaska';
+  if (has('atlanta')) return 'Atlanta';
+  if (has('baltimore')) return 'Baltimore';
+  if (has('birmingham','birminghan')) return 'BIRMINGHAM';
+  if (has('boston')) return 'Boston';
+  if (has('buffalo')) return 'Buffalo';
+  if (has('charleston')) return 'Charleston';
+  if (has('charlotte')) return 'Charlotte';
+  if (has('chicago')) return 'Chicago';
+  if (has('cincinnati')) return 'Cincinnati';
+  if (has('cleveland')) return 'Cleveland';
+  if (has('columbus')) return 'Columbus';
+  if (has('dallas')) return 'Dallas';
+  if (has('denver')) return 'Denver';
+  if (has('detroit')) return 'Detroit';
+  if (has('el paso','santa teresa')) return 'EL PASO SANTA TERESA';
+  if (has('greer')) return 'Greer, SC';
+  if (has('hawaii','honolulu')) return 'Hawaii - Honolulu';
+  if (has('houston')) return 'Houston';
+  if (has('indianapolis')) return 'Indianapolis';
+  if (has('jacksonville')) return 'Jacksonville';
+  if (has('kansas city')) return 'Kansas City';
+  if (has('la lb','los angeles','long beach','lax','pola','polb')) return 'LA LB';
+  if (has('laredo')) return 'Laredo';
+  if (has('louisville')) return 'Louisville';
+  if (has('memphis')) return 'Memphis';
+  if (has('miami')) return 'Miami';
+  if (has('minneapolis','st paul')) return 'Minne/St. Paul';
+  if (has('mobile')) return 'Mobile';
+  if (has('nashville')) return 'Nashville';
+  if (has('nola','new orleans')) return 'NOLA - New Orleans';
+  if (has('norfolk')) return 'Norfolk';
+  if (has('ny nj','new york','newark')) return 'NY NJ';
+  if (has('oakland')) return 'Oakland';
+  if (has('omaha')) return 'Omaha';
+  if (has('philadelphia')) return 'Philadelphia';
+  if (has('phoenix')) return 'Phoenix';
+  if (has('pittsburgh')) return 'Pittsburgh';
+  if (has('portland')) return 'Portland';
+  if (has('san antonio')) return 'San Antonio';
+  if (has('savannah')) return 'Savannah';
+  if (has('seattle','tacoma')) return 'Seattle/Tacoma';
+  if (has('slc','salt lake')) return 'SLC';
+  if (has('st louis','saint louis')) return 'St. Louis';
+  if (has('tampa')) return 'Tampa';
+  if (has('wilmington')) return 'Wilmington';
+  return null; // skip unmapped PODs (Dry Van, LCL, etc.)
+}
+
+async function fetchVendorData() {
+  const banner = document.getElementById('vendorLoadBanner');
+  const bannerText = document.getElementById('vendorLoadText');
+
+  if (window._vendorBannerHideTimer) clearTimeout(window._vendorBannerHideTimer);
+  if (banner) {
+    banner.style.display = 'flex';
+    banner.style.background = '#e8f0fe';
+    banner.style.borderColor = '#c5d8fb';
+    const dot = banner.querySelector('.vl-dot');
+    if (dot) dot.style.background = '#1a73e8';
+    if (bannerText) bannerText.textContent = 'Loading live vendor data from Google Drive...';
+  }
+
+  try {
+    const loaded = await withTimeout(
+      loadVendorSheetParsed(),
+      20000,
+      'Google Sheet load timed out. Please check sharing/publish settings, then click Reload vendors.'
+    );
+    const parsed = loaded.parsed;
+    const podCount = loaded.podCount;
+    const vendorCount = loaded.vendorCount;
+
+    VD = parsed;
+
+    if (banner) {
+      bannerText.textContent = `Live data loaded - ${podCount} PODs, ${vendorCount} vendors (${loaded.source.label || 'sheet'})`;
+      const dbg = loaded.debug || {};
+      if (dbg.rows) {
+        const unmapped = Object.entries(dbg.unmappedPods || {}).slice(0, 8).map(x => x[0] + ' (' + x[1] + ')').join(', ');
+        bannerText.textContent += ` | rows read ${dbg.rows}, parsed ${dbg.parsedRows}`;
+        if (unmapped) bannerText.textContent += ` | unmapped PODs: ${unmapped}`;
+      }
+      banner.style.background = '#e8f5e9';
+      banner.style.borderColor = '#b2dfdb';
+      banner.querySelector('.vl-dot').style.background = '#2a7a3a';
+      window._vendorBannerHideTimer = setTimeout(() => {
+        if (banner) banner.style.display = 'none';
+      }, 6000);
+    }
+
+  } catch (err) {
+    console.error("fetchVendorData error:", err);
+    if (banner) {
+      bannerText.textContent = `⚠ Could not load live data: ${err.message}`;
+      banner.style.background = '#fff3cd';
+      banner.style.borderColor = '#ffc107';
+      banner.querySelector('.vl-dot').style.background = '#f0ad4e';
+    }
+  }
+}
+
+function populatePodSelects() {}
+
+
+
+
+const ALIASES={"la lb":"LA LB","la":"LA LB","lb":"LA LB","los angeles":"LA LB","long beach":"LA LB","lax":"LA LB","pola":"LA LB","polb":"LA LB","ny nj":"NY NJ","new york":"NY NJ","newark":"NY NJ","slc":"SLC","salt lake city":"SLC","salt lake":"SLC","chicago":"Chicago","atlanta":"Atlanta","savannah":"Savannah","nashville":"Nashville","boston":"Boston","baltimore":"Baltimore","philadelphia":"Philadelphia","cleveland":"Cleveland","columbus":"Columbus","cincinnati":"Cincinnati","detroit":"Detroit","indianapolis":"Indianapolis","louisville":"Louisville","memphis":"Memphis","dallas":"Dallas","houston":"Houston","miami":"Miami","tampa":"Tampa","jacksonville":"Jacksonville","charlotte":"Charlotte","charleston":"Charleston","norfolk":"Norfolk","seattle/tacoma":"Seattle/Tacoma","seattle":"Seattle/Tacoma","tacoma":"Seattle/Tacoma","portland":"Portland","oakland":"Oakland","kansas city":"Kansas City","st louis":"St. Louis","saint louis":"St. Louis","minneapolis":"Minne/St. Paul","st paul":"Minne/St. Paul","mobile":"Mobile","birmingham":"BIRMINGHAM","buffalo":"Buffalo","denver":"Denver","phoenix":"Phoenix","pittsburgh":"Pittsburgh","omaha":"Omaha","wilmington":"Wilmington","new orleans":"NOLA - New Orleans","nola":"NOLA - New Orleans","san antonio":"San Antonio","laredo":"Laredo","el paso":"EL PASO SANTA TERESA","greer":"Greer, SC","alaska":"Alaska","honolulu":"Hawaii - Honolulu","hawaii":"Hawaii - Honolulu"};
+
+const STATES=['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'];
+const STATE_FULL={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming',DC:'DC'};
+const STATE_ABBR=Object.fromEntries(Object.entries(STATE_FULL).map(function(x){return [x[1].toLowerCase(),x[0]];}));
+const STABBR={'street':'St','avenue':'Ave','boulevard':'Blvd','drive':'Dr','lane':'Ln','road':'Rd','court':'Ct','place':'Pl','highway':'Hwy','way':'Way','circle':'Cir','parkway':'Pkwy','suite':'Ste','st':'St','ave':'Ave','blvd':'Blvd','dr':'Dr','ln':'Ln','rd':'Rd','ct':'Ct','pl':'Pl','hwy':'Hwy','cir':'Cir','pkwy':'Pkwy','ste':'Ste'};
+// ─── COMMERCIAL / RESIDENTIAL DETECTION ─────────────────────────────────────
+// Commercial signals: business suffixes, unit/suite/dock, industrial keywords
+const COMKW_STRONG=/\b(suite|ste|unit|dock|bay|floor|bldg|building|warehouse|distribution|logistics|freight|terminal|depot|industrial|manufacturing|fulfillment|center|centre|complex|plaza|park)\b/i;
+const COMKW_ENTITY=/\b(corp|llc|inc|ltd|co\.|company|group|enterprises?|solutions?|industries|systems?|services?|supply|stores?|auto|motors?|foods?|pharma)\b/i;
+// Street-only address with no commercial signal → likely residential
+const STREET_PATTERN=/^\d+\s+\w.*\b(st|ave|blvd|dr|ln|rd|ct|pl|hwy|cir|pkwy|way|street|avenue|boulevard|drive|lane|road|court|place|highway|circle|parkway)\b/i;
+
+function isCommercial(addr){
+  if(!addr||addr==='[Address]')return null; // unknown
+  if(COMKW_STRONG.test(addr)||COMKW_ENTITY.test(addr))return true;
+  // Has a suite/unit number pattern like "123 Main St, Suite C" or "Bldg 5"
+  if(/\b(suite|ste|unit|#)\s*[a-z0-9-]+/i.test(addr))return true;
+  // Looks like a plain residential street address → not commercial
+  if(STREET_PATTERN.test(addr.trim()))return false;
+  return null; // can't tell
+}
+
+function isRes(addr){
+  // Legacy: used for vendor filtering & email notices
+  const c=isCommercial(addr);
+  return c===false; // only flag residential when we're confident it's NOT commercial
+}
+
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const $=id=>document.getElementById(id);
+function H(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function Q(s){return s.replace(/'/g,'\\x27');}
+function Attr(s){return H(s).replace(/"/g,'&quot;');}
+function mapsUrl(addr){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(addr)+'&basemap=satellite';}
+function JSArg(s){return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,'\\x27').replace(/\r?\n/g,' ');}
+function copyPlainText(text){
+  var ta=document.createElement('textarea');
+  ta.value=text;ta.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:0';
+  document.body.appendChild(ta);ta.focus();ta.select();
+  var ok=false;try{ok=document.execCommand('copy');}catch(e){}
+  document.body.removeChild(ta);
+  if(ok)return Promise.resolve(true);
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    return navigator.clipboard.writeText(text).then(function(){return true;});
+  }
+  return Promise.reject(new Error('Copy failed'));
+}
+function hav(a,b,c,d){const R=3959,dL=(c-a)*Math.PI/180,dG=(d-b)*Math.PI/180,e=Math.sin(dL/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dG/2)**2;return R*2*Math.atan2(Math.sqrt(e),Math.sqrt(1-e));}
+function nearPOD(la,ln){let b=null,bd=Infinity;for(const[p,[a,o]]of Object.entries(PCOORDS)){const d=hav(la,ln,a,o);if(d<bd){bd=d;b=p;}}return b;}
+function emails(c){const o=[];for(const p of c.split(/[;,]/)){const m=p.match(/[\w.+%-]+@[\w.-]+\.[a-z]{2,}/i);if(m)o.push(m[0].trim());}return[...new Set(o)];}
+
+function fmtA(raw){
+  return raw.replace(/^[一二三四五六七八九十\d]+[\.。)）\]】]+\s*/,'').trim().split(/\s+/).map(t=>{
+    const c=t.replace(/,$/,''),s=t.endsWith(',')?',':'';
+    if(STATES.includes(c.toUpperCase()))return c.toUpperCase()+s;
+    if(/^\d/.test(c))return c+s;
+    const lo=c.toLowerCase();
+    if(STABBR[lo])return STABBR[lo]+s;
+    return c.charAt(0).toUpperCase()+c.slice(1).toLowerCase()+s;
+  }).join(' ');
+}
+
+function stateAbbr(raw){
+  const s=String(raw||'').trim();
+  const up=s.toUpperCase();
+  if(STATES.includes(up))return up;
+  return STATE_ABBR[s.toLowerCase()]||s;
+}
+
+function cityOnly(addr){
+  addr=String(addr||'').trim();
+  const fullState='Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming|DC';
+  const m=addr.match(new RegExp('([A-Za-z][A-Za-z\\s.]+),\\s*('+fullState+'|[A-Z]{2})(?:\\s*,\\s*|\\s+)?(\\d{5})?\\b','i'));
+  if(!m)return addr;
+  const state=stateAbbr(m[2]);
+  return `${m[1].trim()}, ${state}${m[3]?' '+m[3]:''}`;
+}
+function compactDeliveryForEmail(addr){
+  addr=String(addr||'').trim();
+  if(!addr)return addr;
+  const fullState='Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming|DC';
+  const byCommaZip=addr.match(new RegExp(',\\s*([^,]+),\\s*('+fullState+'|[A-Z]{2})(?:\\s*,\\s*|\\s+)(\\d{5})\\b','i'));
+  if(byCommaZip){
+    const state=stateAbbr(byCommaZip[2]);
+    return `${byCommaZip[1].trim()}, ${state} ${byCommaZip[3]}`;
+  }
+  const byComma=addr.match(new RegExp(',\\s*([^,]+),\\s*('+fullState+'|[A-Z]{2})\\b','i'));
+  if(byComma){
+    const state=stateAbbr(byComma[2]);
+    return `${byComma[1].trim()}, ${state}`;
+  }
+  const simple=addr.match(new RegExp('^([A-Za-z][A-Za-z\\s.]+?)\\s+('+fullState+'|[A-Z]{2})\\s+(\\d{5})$','i'));
+  if(simple){
+    const state=stateAbbr(simple[2]);
+    return `${simple[1].trim()}, ${state} ${simple[3]}`;
+  }
+  return cityOnly(addr);
+}
+function emailFormatted(b){
+  if(b&&b.isTableBatch)return b.formatted||'';
+  if(!b||b.res)return b&&b.formatted||'';
+  const compact=compactDeliveryForEmail(b.fullAddr||b.dispAddr||b.rawAddr||'');
+  return (b.formatted||'').replace(/^Deliver to: .+$/m,'Deliver to: '+compact);
+}
+function emailSubject(b){
+  if(!b)return'';
+  if(b.isTableBatch)return `Rate Inquiry // ${b.podDisplay||b.podKey||'POD'} Shipments`;
+  const compact=compactDeliveryForEmail(b.fullAddr||b.dispAddr||b.rawAddr||b.city||'');
+  if(b.isExport)return `${compact||b.city||''} - ${b.podDisplay||b.podKey||''}`.trim();
+  return `${b.podDisplay||b.podKey||''} - ${compact||b.city||''}`.trim();
+}
+function cityDisp(addr){
+  return compactDeliveryForEmail(addr);
+}
+
+function normPOD(raw,strict){
+  const r=raw.toLowerCase().replace(/,/g,'').trim();
+  if(/los angeles|long beach|la lb|lax|pola|polb|\bla\b|\blb\b/.test(r))return{d:'LA LB',k:'LA LB'};
+  if(/new york|ny nj|newark/.test(r))return{d:'NY NJ',k:'NY NJ'};
+  if(/salt lake|\bslc\b/.test(r))return{d:'Salt Lake City',k:'SLC'};
+  if(/\bstl\b/.test(r))return{d:'St. Louis',k:'St. Louis'};
+  if(/\bkci\b|\bmci\b/.test(r))return{d:'Kansas City',k:'Kansas City'};
+  if(/\bord\b/.test(r))return{d:'Chicago',k:'Chicago'};
+  if(/\bdfw\b/.test(r))return{d:'Dallas',k:'Dallas'};
+  if(/\biah\b|\bhou\b/.test(r))return{d:'Houston',k:'Houston'};
+  if(/\bjax\b/.test(r))return{d:'Jacksonville',k:'Jacksonville'};
+  if(/\bcvg\b/.test(r))return{d:'Cincinnati',k:'Cincinnati'};
+  if(/\bind\b/.test(r))return{d:'Indianapolis',k:'Indianapolis'};
+  const MAP=[
+    [/savannah/,'Savannah','Savannah'],
+    [/chicago/,'Chicago','Chicago'],
+    [/atlanta/,'Atlanta','Atlanta'],
+    [/nashville/,'Nashville','Nashville'],
+    [/boston/,'Boston','Boston'],
+    [/baltimore/,'Baltimore','Baltimore'],
+    [/philadelphia/,'Philadelphia','Philadelphia'],
+    [/cleveland/,'Cleveland','Cleveland'],
+    [/columbus/,'Columbus','Columbus'],
+    [/cincinnati/,'Cincinnati','Cincinnati'],
+    [/detroit/,'Detroit','Detroit'],
+    [/indianapolis/,'Indianapolis','Indianapolis'],
+    [/louisville/,'Louisville','Louisville'],
+    [/memphis/,'Memphis','Memphis'],
+    [/dallas/,'Dallas','Dallas'],
+    [/houston/,'Houston','Houston'],
+    [/miami/,'Miami','Miami'],
+    [/tampa/,'Tampa','Tampa'],
+    [/jacksonville/,'Jacksonville','Jacksonville'],
+    [/charlotte/,'Charlotte','Charlotte'],
+    [/charleston/,'Charleston','Charleston'],
+    [/norfolk/,'Norfolk','Norfolk'],
+    [/seattle|tacoma/,'Seattle/Tacoma','Seattle/Tacoma'],
+    [/portland/,'Portland','Portland'],
+    [/oakland/,'Oakland','Oakland'],
+    [/kansas city/,'Kansas City','Kansas City'],
+    [/st\.?\s*louis|saint louis/,'St. Louis','St. Louis'],
+    [/minneapolis|st\.?\s*paul/,'Minneapolis / St. Paul','Minne/St. Paul'],
+    [/mobile/,'Mobile','Mobile'],
+    [/birmingham/,'Birmingham','BIRMINGHAM'],
+    [/buffalo/,'Buffalo','Buffalo'],
+    [/denver/,'Denver','Denver'],
+    [/phoenix/,'Phoenix','Phoenix'],
+    [/pittsburgh/,'Pittsburgh','Pittsburgh'],
+    [/omaha/,'Omaha','Omaha'],
+    [/wilmington/,'Wilmington','Wilmington'],
+    [/new orleans|nola/,'New Orleans','NOLA - New Orleans'],
+    [/san antonio/,'San Antonio','San Antonio'],
+    [/laredo/,'Laredo','Laredo'],
+    [/el paso/,'El Paso','EL PASO SANTA TERESA'],
+    [/greer/,'Greer','Greer'],
+    [/alaska/,'Alaska','Alaska'],
+    [/honolulu|hawaii/,'Honolulu','Hawaii - Honolulu'],
+  ];
+  for(const[re,d,k]of MAP)if(re.test(r))return{d,k};
+  for(const[a,k]of Object.entries(ALIASES))if(r.includes(a))return{d:k,k};
+  if(strict)return{d:'',k:''};
+  // Strip state abbreviation from raw display (e.g. "Savannah, GA" → "Savannah")
+  return{d:raw.trim().replace(/,\s*[A-Z]{2}$/,''),k:raw.trim().replace(/,\s*[A-Z]{2}$/,'')};
+}
+
+function parseCtr(raw){
+  if(!raw)return'1x40HC';
+  // Strip anything after GW / weight info that may be on the same line
+  raw=raw.replace(/\s+g\.?w\.?[：:\s].*/i,'').replace(/\s+[\d,]+\s*(?:kgs?|tons?).*/i,'').trim();
+  raw=raw.replace(/\*/g,'x');
+  return raw.split(/[+&]/).map(p=>{
+    p=p.trim().toUpperCase();
+    // Normalize HQ → HC (40HQ and 40HQ variants)
+    p=p.replace(/40HQ/g,'40HC');
+    if(/^\d+X/.test(p))return p;
+    if(/^\d+(GP|HC|HQ|RF|RH|OT|FLAT)/.test(p))return'1x'+p;
+    if(/^(GP|HC|HQ|RF|RH|OT|FLAT)/.test(p))return'1x'+p;
+    return p;
+  }).join(' + ');
+}
+
+function parseWt(raw){
+  if(!raw)return'Legal Weight';
+  // LCL: keep as-is with weight
+  if(/lcl/i.test(raw)){
+    const m=raw.match(/([\d,]+(?:\.\d+)?\s*(?:kgs?|tons?))/i);
+    if(m){
+      let wStr=m[1].trim();
+      if(/ton/i.test(wStr)){const n=parseFloat(wStr)*1000;return n.toLocaleString('en-US')+' KGS';}
+      const n=parseFloat(wStr.replace(/[^0-9.]/g,''));
+      if(n>=10)return n.toLocaleString('en-US')+' KGS / LCL';
+    }
+    return'Legal Weight / LCL';
+  }
+  let n=0;
+  // T/t suffix (with optional "on"/"ons") = metric ton → ×1000. Covers: 25.5T, 25.5t, 25.5ton, 25.5tons, 25.5 T
+  if(/[\d]\s*t(?:ons?)?\s*$/i.test(raw.trim())){const m=raw.match(/([\d,]+(?:\.[\d]+)?)\s*t/i);if(m)n=parseFloat(m[1].replace(/,/g,''))*1000;}
+  else{const m=raw.match(/([\d,]+)/);if(m)n=parseFloat(m[1].replace(/,/g,''));}
+  if(!n||n<10)return'Legal Weight';
+  return n.toLocaleString('en-US')+' KGS';
+}
+
+function normalizeParseWhitespace(value){
+  return String(value||'').replace(/[\u00A0\u1680\u2000-\u200B\u202F\u205F\u3000\uFEFF]/g,' ');
+}
+
+function chkOW(w,c){
+  if(w==='Legal Weight')return false;
+  const n=parseFloat(w.replace(/[^0-9.]/g,''));
+  // For mixed containers, use strictest threshold (20GP = 17200)
+  if(/20GP/i.test(c)&&!/40[HG]C|40HC|40HQ/i.test(c))return n>17200;
+  return n>19900;
+}
+
+function detectSOC(raw){
+  const text=String(raw||'');
+  const noReturn=/\bSOC\b\s*no need to return to (?:the )?depot|no need to return to (?:the )?depot\s*\bSOC\b/i.test(text)||/SOC/i.test(text)&&(/无需还箱|不用还箱|不需还箱/.test(text));
+  return{soc:noReturn||/\bSOC\b/i.test(text),socNoReturn:noReturn};
+}
+
+function extractDGDetail(raw){
+  const text=String(raw||'');
+  const classes=[...text.matchAll(/\bclass\s*#?\s*([1-9](?:\.\d)?)\b/gi)].map(m=>'Class '+m[1]);
+  const explicit=text.match(/\bDG\s*[:\-]\s*([\w\/\-\.]+(?:\/[\w\/\-\.]+)*)/i);
+  const uns=[...text.matchAll(/\bUN\s*[\-:]?\s*(\d{4})\b/gi)].map(m=>'UN'+m[1]);
+  const details=classes.concat(explicit?['DG: '+explicit[1].trim()]:[]).concat(uns);
+  const unique=[...new Set(details)];
+  return{detail:unique.join(' / ')};
+}
+
+function dgDetailText(dg){
+  if(!dg||!dg.detail)return'';
+  return ` (${dg.detail})`;
+}
+
+function feeNotice(ow,res,reefer,hazmat,blankLine){
+  const fees=[];
+  if(ow)fees.push('the OW fee');
+  if(hazmat)fees.push('the HAZMAT fee and placard removal fee');
+  if(res)fees.push('the residential charge');
+  if(reefer)fees.push('the Reefer charge');
+  if(!fees.length)return'';
+  const joined=fees.length===1?fees[0]:fees.length===2?fees.join(' and '):fees.slice(0,-1).join(', ')+', and '+fees[fees.length-1];
+  return 'Please kindly advise '+joined+'.\n'+(blankLine?'\n':'');
+}
+
+// ─── VENDOR SORT/FILTER ──────────────────────────────────────────────────────
+function vflags(note){
+  const n=(note||'').toLowerCase();
+  return{noOW:/no ow/.test(n),noRes:/no residential/.test(n),owOK:/ow ok|ow yes|ow\//.test(n),resOK:/residential ok|residential yes/.test(n),best:/best rate/.test(n),good:/good rate|good service|good all/.test(n)};
+}
+function sortVendors(vs,ow,res){
+  return vs.map((v,i)=>({...v,i,f:vflags(v.note),filtered:(ow&&vflags(v.note).noOW)||(res&&vflags(v.note).noRes)}))
+    .sort((a,b)=>{
+      if(a.filtered&&!b.filtered)return 1;if(!a.filtered&&b.filtered)return-1;
+      if(a.f.best&&!b.f.best)return-1;if(!a.f.best&&b.f.best)return 1;
+      if(a.f.good&&!b.f.good)return-1;if(!a.f.good&&b.f.good)return 1;
+      return a.i-b.i;
+    });
+}
+
+
+function stripAddrNoise(addr){
+  addr=addr.replace(/[,\s]+(USA?)[,\s]*$/i,'').trim();
+  addr=addr.replace(/(\b\d{5}\b)\s+(\d+\s*[x*]\s*\d+\s*(?:HC|HQ|GP|RF|RH|OT|FLAT|FT|ST)[\w\s]*|\d+\s*[x*]\s*(?:HC|HQ|GP|RF|RH|OT|FLAT)[\w\s]*|[\d,]+\s*(?:kgs?|tons?)[\s\S]*)$/i,'$1').trim();
+  addr=addr.replace(/[,\s]+(USA?)[,\s]*$/i,'').trim();
+  return addr;
+}
+
+function looksLikeDeliveryAddr(text){
+  const v=(text||'').trim();
+  return (
+    /\b[A-Z]{2}\s+\d{5}\b/.test(v) ||
+    /^\d{5}$/.test(v) ||
+    /^\d+\s+\w/.test(v) ||
+    /\b(st|ave|blvd|dr|ln|rd|ct|pl|hwy|cir|pkwy|way|street|avenue|boulevard|drive|lane|road|court|place|highway|circle|parkway)\b/i.test(v)
+  );
+}
+
+function splitPodDashAddress(line){
+  const m=(line||'').match(/^(.+?)\s*[-–—]\s*(.+)$/);
+  if(!m)return null;
+  const podPart=m[1].trim();
+  const addrPart=m[2].trim();
+  const podTry=normPOD(podPart,true);
+  if(podTry&&podTry.k&&looksLikeDeliveryAddr(addrPart)){
+    return{pod:podPart,addr:stripAddrNoise(addrPart)};
+  }
+  return null;
+}
+
+// ─── PARSE ONE SHIPMENT ──────────────────────────────────────────────────────
+const ADDR_ZH=['道门地址','送货地址','派送地址','送到','收货地址','送达地址','交货地址','目的地址'];
+const PICKUP_ZH=['提货地址','取货地址','发货地址','起运地址','提货','取货'];
+
+function splitAddressDashPort(line){
+  line=String(line||'').replace(/[\u2013\u2014]/g,'-');
+  const m=(line||'').match(/^(.+)\s*[-â€“â€”]\s*(.+)$/);
+  if(!m)return null;
+  const addrPart=m[1].trim().replace(/^(?:address|addr|add|pick\s*up|pickup|shipper|origin|from)[：:\s]+/i,'');
+  const portPart=m[2].trim();
+  const portTry=normPOL(portPart,true);
+  if(portTry&&portTry.k&&looksLikeDeliveryAddr(addrPart)){
+    return{addr:stripAddrNoise(addrPart),pol:portPart};
+  }
+  return null;
+}
+
+function normPOL(raw,strict){
+  // Normalize POL the same way as POD
+  return normPOD(raw,strict);
+}
+
+function parseShip(block){
+  block=normalizeParseWhitespace(block);
+  const lines=block.split('\n').map(l=>l.replace(/^\d+[\.)\]]\s*/,'').replace(/^[\.。·•\-–—]\s*/,'').trim()).filter(Boolean);
+  let podRaw='',polRaw='',rawAddr='',rawPickup='',rawCtr='',rawWt='',standaloneAddr=false;
+
+  for(const l of lines){
+    if(!rawAddr){const m=l.match(/^(?:delivery\s*(?:add(?:ress)?|address)?|deliver(?:y)?\s*(?:to)?|des(?:t(?:ination)?)?|destination|final(?:y)?\s+delivery(?:\s+address)?|final\s+destination)[ï¼š:\s]+(.+)/i);if(m)rawAddr=stripAddrNoise(m[1].trim());}
+    // POD / POL
+    if(!podRaw){const m=l.match(/^pod[：:\s]+(.+)/i);if(m)podRaw=m[1].trim();}
+    if(!polRaw){const m=l.match(/^pol[：:\s]+(.+)/i);if(m)polRaw=m[1].trim();}
+    if(/^[-–—]/.test(podRaw))podRaw='';
+    // DES / DEST / Destination as POD shorthand (when value looks like a city, not a street address)
+    if(!podRaw){const m=l.match(/^des(?:t(?:ination)?)?[：:\s]+(.+)/i);if(m){const v=m[1].trim();if(!/^\d+\s+\w/.test(v))podRaw=v;}}
+    // Standalone "NY" or "NJ" on its own line → treat as POD shorthand
+    if(rawAddr&&/^(?:delivery\s*(?:add(?:ress)?|address)?|deliver(?:y)?\s*(?:to)?|des(?:t(?:ination)?)?|destination|final(?:y)?\s+delivery(?:\s+address)?|final\s+destination)[ï¼š:\s]+/i.test(l))podRaw='';
+    if(!podRaw){const m=l.match(/^(NY|NJ)$/i);if(m)podRaw='NY NJ';}
+    // "NY NJ" or "NY/NJ" together on its own line
+    if(!podRaw){const m=l.match(/^NY\s*[\/,]?\s*NJ$/i);if(m)podRaw='NY NJ';}
+    // "POD - Delivery address" shorthand, e.g. "LA LB - Irvine CA 92612"
+    if((!podRaw||!rawAddr)&&!rawPickup){
+      const pa=splitPodDashAddress(l);
+      if(pa){
+        if(!podRaw)podRaw=pa.pod;
+        if(!rawAddr)rawAddr=pa.addr;
+      }
+    }
+    // "Pickup address - POL" shorthand means EXPORT, e.g. "123 Main St, Dallas TX 75201 - Houston"
+    if((!rawPickup||!polRaw)&&!rawAddr&&!podRaw){
+      const ap=splitAddressDashPort(l);
+      if(ap){
+        if(!rawPickup)rawPickup=ap.addr;
+        if(!polRaw)polRaw=ap.pol;
+      }
+    }
+    // Container / Weight
+    if(!rawCtr){const m=l.match(/vol(?:ume)?[：:\s]+(.+)/i);if(m){rawCtr=m[1].trim();// strip trailing GW info
+rawCtr=rawCtr.replace(/\s+g\.?w\.?[：:\s].*/i,'').replace(/\s+[\d,]+\s*(?:kgs?|tons?).*/i,'').trim();}}
+    if(!rawWt){const m=l.match(/g\.?w\.?[：:\s]+(.+)/i);if(m)rawWt=m[1].trim();}
+    // Delivery address (IMPORT)
+    if(!rawAddr){for(const kw of ADDR_ZH){if(l.includes(kw)){rawAddr=l.replace(new RegExp(`.*${kw}[：:]*\\s*`),'').trim();break;}}}
+    if(!rawAddr){const m=l.match(/^(?:address|addr|add|door delivery|deliver(?:y)?\s*(?:to)?|ddp|ship\s*to|consignee|final\s+destination|送到)[：:\s]+(.+)/i);if(m)rawAddr=stripAddrNoise(m[1].trim());}
+    // DES/DEST/Destination as address ONLY when the value looks like a street address (has leading digits)
+    if(!rawAddr){const m=l.match(/^des(?:t(?:ination)?)?[：:\s]+(.+)/i);if(m){const v=m[1].trim();if(/^\d+\s+\w/.test(v)||/\b(st|ave|blvd|dr|rd|ct|ln|pl|hwy|pkwy)\b/i.test(v))rawAddr=stripAddrNoise(v);}}
+    // "to: <address>" shorthand
+    if(!rawAddr){const mt=l.match(/^to\s*[：:\s]+(.+)/i);if(mt)rawAddr=stripAddrNoise(mt[1].trim());}
+    // "POD - <address>" — when the part after dash looks like an address (has digits/street)
+    if(!rawAddr){const mp=l.match(/^pod\s*[-–]\s*(.+)/i);if(mp){const v=mp[1].trim();if(/\d/.test(v))rawAddr=stripAddrNoise(v);}}
+    // Pickup address (EXPORT)
+    if(!rawPickup){for(const kw of PICKUP_ZH){if(l.includes(kw)){rawPickup=l.replace(new RegExp(`.*${kw}[：:]*\\s*`),'').trim();break;}}}
+    if(!rawPickup){const m=l.match(/^(?:pick\s*up|pickup|shipper|origin|from)[：:\s]+(.+)/i);if(m)rawPickup=m[1].trim();}
+    // RULE: standalone address — if a line looks like a street address with no keyword prefix,
+    // automatically treat it as the delivery address and show map button.
+    if(!rawAddr&&!rawPickup){
+      const lc=l.trim();
+      const looksLikeAddr=(
+        (/^\d+\s+\w/.test(lc)&&/\b(st|ave|blvd|dr|ln|rd|ct|pl|hwy|cir|pkwy|way|street|avenue|boulevard|drive|lane|road|court|place|highway|circle|parkway)\b/i.test(lc))||
+        /\b[A-Z]{2}\s+\d{5}\b/.test(lc)||
+        /^\d{5}$/.test(lc)
+      );
+      const looksLikeOtherField=/^(pod|pol|vol|volume|g\.?w\.?|gw|ctr|container|eta|etd|shipper|bl|b\/l|vessel|voyage|booking)/i.test(lc);
+      if(looksLikeAddr&&!looksLikeOtherField){
+        const stripped=stripAddrNoise(lc);
+        if(!rawCtr||!rawWt){
+          const noise=lc.slice(stripped.length).trim();
+          if(noise){
+            if(!rawCtr){const cm=noise.match(/\d+\s*[x*]\s*\d+\s*(?:HC|HQ|GP|RF|RH|OT|FLAT)/i)||noise.match(/\d+\s*[x*]\s*(?:HC|HQ|GP|RF|RH|OT|FLAT)/i);if(cm)rawCtr=cm[0];}
+            if(!rawWt){const wm=noise.match(/([\d,]+)\s*(?:kgs?|tons?)/i);if(wm)rawWt=wm[0];}
+          }
+        }
+        rawAddr=stripped;standaloneAddr=true;
+      }
+    }
+  }
+
+  if(!rawCtr||!rawWt){
+    const j=lines.join(' ');
+    // Weight/container pairs may arrive without labels: "19,500KGS / 20GP".
+    const pair=j.match(/([\d][\d,]*(?:\.\d+)?\s*(?:kgs?|tons?))\s*\/\s*((?:\d+\s*[x*]\s*)?\d+\s*(?:HC|HQ|GP|RF|RH|OT|FLAT))/i);
+    if(pair){
+      if(!rawWt)rawWt=pair[1].trim();
+      if(!rawCtr)rawCtr=pair[2].trim();
+    }
+    if(!rawCtr){const m=j.match(/vol(?:ume)?[：:\s]+(\S+)/i);if(m)rawCtr=m[1];}
+    if(!rawWt){const m=j.match(/g\.?w\.?[：:\s]+([\d.,]+\s*(?:kgs?|tons?)?)/i);if(m)rawWt=m[1];}
+  }
+  // ── Bare weight fallback: catch "16000KGS" / "16000 KGS" / "16 tons" even without GW: prefix
+  if(!rawWt){
+    const j=lines.join(' ');
+    // Match a standalone weight: digits (with optional comma) followed immediately by kgs/tons unit
+    const mw=j.match(/(?:^|[\s,;|])([\d][\d,]*(?:\.\d+)?\s*(?:kgs?|t(?:ons?)?)\b)/i);
+    if(mw)rawWt=mw[1].trim();
+  }
+  // ── Bare container fallback: catch "1*40HQ" / "2x40HC" on any line without VOL: prefix
+  if(!rawCtr){
+    const j=lines.join(' ');
+    const mc=j.match(/(?:^|[\s,;|/])(\d+\s*[x*]\s*\d+\s*(?:HC|HQ|GP|RF|RH|OT|FLAT))/i)
+           ||j.match(/(?:^|[\s,;|/])(\d+\s*[x*]\s*(?:HC|HQ|GP|RF|RH|OT|FLAT))/i)
+           ||j.match(/(?:^|[\s,;|/])(\d+\s*(?:HC|HQ|GP|RF|RH|OT|FLAT))/i);
+    if(mc)rawCtr=mc[1].trim();
+  }
+
+  // Determine mode: EXPORT if (pickup + POL), IMPORT if (POD + delivery)
+  const isExport=!!(rawPickup&&polRaw)||(!podRaw&&!rawAddr&&rawPickup);
+
+  // ── POD from city name anywhere in block ───────────────────────────────────
+  if(!podRaw&&!isExport){
+    for(const l of lines){
+      // Skip lines that look like addresses or weights
+      if(/^\d+\s+\w/.test(l.trim())||/\bkgs?\b|\btons?\b/i.test(l))continue;
+      const tryPod=normPOD(l,true);
+      if(tryPod&&tryPod.k){podRaw=l;break;}
+    }
+  }
+
+  // ZIP-only expand (IMPORT delivery address)
+  let zipOnly=false;
+  if(!isExport){
+    if(rawAddr&&/^\d{5}$/.test(rawAddr.trim())){
+      const z=rawAddr.trim();
+      if(ZDB[z]){const[c,s,la,ln]=ZDB[z];rawAddr=`${c}, ${s} ${z}`;zipOnly=true;if(!podRaw)podRaw=nearPOD(la,ln);}
+    }
+    if(!rawAddr){
+      const zm=block.replace(/\n/g,' ').match(/(?:^|\s)(\d{5})(?:\s|$)/);
+      if(zm&&ZDB[zm[1]]){const[c,s,la,ln]=ZDB[zm[1]];rawAddr=`${c}, ${s} ${zm[1]}`;zipOnly=true;if(!podRaw)podRaw=nearPOD(la,ln);}
+    }
+  }
+
+  const ctr=parseCtr(rawCtr);
+  const wt=parseWt(rawWt);
+  const ow=chkOW(wt,ctr);
+  const socInfo=detectSOC(block);
+  const socSuffix=socInfo.soc?(socInfo.socNoReturn?' SOC no need to return to the depot':' SOC'):'';
+
+  if(isExport){
+    // ── EXPORT ──────────────────────────────────────────────────────────────
+    const polObj=polRaw?normPOL(polRaw):{d:'[POL]',k:''};
+    let pickupFmt=rawPickup?fmtA(rawPickup):'[Pickup Address]';
+    let pickupRes=isRes(pickupFmt);
+    // Header city from pickup address
+    const pickupCity=(()=>{
+      const m=pickupFmt.match(/([A-Za-z][A-Za-z\s.]+),\s*([A-Z]{2})(?:\s+\d{5})?/);
+      return m?`${m[1].trim()}, ${m[2]}`:pickupFmt.split(',')[0].trim();
+    })();
+    // Title line: [City] - [Pick up address]
+    const titleLine=`${pickupCity} - ${pickupFmt}`;
+    // Body
+    let notice='';
+    if(ow&&pickupRes) notice='Please kindly advise the OW fee and the residential charge.\n';
+    // Detect HAZMAT/DG — also catches DG:9/3077/III style
+    const hazmat=/hazmat|dangerous\s*goods?|\bclass\s*#?\s*\d|\bdg\b|\bdg\s*:|\bUN\s*[\-:]?\s*\d{4}\b/i.test(block);
+    // Extract DG detail string like "9/3077/III"
+    const dgInfo=extractDGDetail(block);
+    const dgDetail=dgInfo.detail;
+    const reeferTempExp=block.match(/[-−]?\d+\s*(?:°\s*)?[CF]\b|[-−]\d+\s*(?:degrees?|摄氏度|°)/i);
+    const reefer=!!(reeferTempExp||/\breefer\b|冷冻|冷藏|温控|temperature[:\s]/i.test(block));
+    notice=feeNotice(ow,pickupRes,reefer,hazmat,false);
+    let body='';
+    if(notice)body+=`${notice}`;
+    body+=`Pick up: ${pickupFmt}\nPOL: ${polObj.d||'________'}\n${wt} / ${ctr}${socSuffix}${ow?' ****OW':''}${hazmat?' HAZMAT':''}${reefer?' Reefer':''}`;
+    if(hazmat&&dgDetail) body+=dgDetailText(dgInfo);
+    return{formatted:body.trim(),podKey:polObj.k,podDisplay:polObj.d,fullAddr:pickupFmt,dispAddr:pickupFmt,city:pickupCity,res:pickupRes,ow,hazmat,dgDetail,reefer,soc:socInfo.soc,socNoReturn:socInfo.socNoReturn,wt,ctr,rawAddr:rawPickup||'',standaloneAddr,isExport:true,raw:block};
+  } else {
+    // ── IMPORT ──────────────────────────────────────────────────────────────
+    let podObj=podRaw?normPOD(podRaw):{d:'[POD]',k:''};
+    if(!podRaw||podObj.d==='[POD]'){
+      const zm=(rawAddr||'').match(/\b(\d{5})\b/);
+      if(zm&&ZDB[zm[1]]){const[,,la,ln]=ZDB[zm[1]];const np=nearPOD(la,ln);if(np&&VD[np])podObj=normPOD(np);}
+    }
+    if(!podObj.k&&rawAddr){
+      const addrPodTry=normPOD(rawAddr,true);
+      if(addrPodTry&&addrPodTry.k) podObj=addrPodTry;
+    }
+    if(!podObj.k&&rawAddr){
+      const zm2=rawAddr.match(/\b(\d{5})\b/);
+      if(zm2&&ZDB[zm2[1]]){
+        const[,,la,ln]=ZDB[zm2[1]];
+        const np=nearPOD(la,ln);
+        if(np&&VD[np]){podObj=normPOD(np);}
+      }
+    }
+
+    // Address display logic — commercial-first
+    let fullFmt=rawAddr?(zipOnly?rawAddr:fmtA(rawAddr)):'[Address]';
+    let res=false;
+    let resWarning=false; // show warning in UI when not clearly commercial
+    let dispAddr='[Address]';
+    if(rawAddr){
+      const comResult=zipOnly?true:isCommercial(fullFmt);
+      if(comResult===true){
+        // Confirmed commercial → strip to city+zip only
+        res=false;
+        dispAddr=cityOnly(fullFmt);
+      } else if(comResult===false){
+        // Clearly residential → keep full address + add charge note
+        res=true;
+        resWarning=true;
+        dispAddr=fullFmt;
+      } else {
+        // Unknown (can't determine) → treat as commercial but warn
+        res=false;
+        resWarning=true; // show "can't confirm commercial" warning
+        dispAddr=cityOnly(fullFmt);
+      }
+    }
+
+    // Destination city for title line
+    const destCity=(()=>{
+      if(dispAddr==='[Address]')return '[City]';
+      const m=dispAddr.match(/([A-Za-z][A-Za-z\s.]+),\s*([A-Z]{2})(?:\s+\d{5})?/);
+      return m?`${m[1].trim()}, ${m[2]}`:dispAddr.split(',')[0].trim();
+    })();
+    // Title: [Destination city] - [delivery address or city+zip]
+    const titleLine=`${destCity} - ${dispAddr}`;
+
+    // Notice (above POD line)
+    let notice='';
+    if(ow&&res) notice='Please kindly advise the OW fee and the residential charge.\n';
+
+    // Detect HAZMAT/DG — also catches DG:9/3077/III style
+    const hazmat=/hazmat|dangerous\s*goods?|\bclass\s*#?\s*\d|\bdg\b|\bdg\s*:|\bUN\s*[\-:]?\s*\d{4}\b/i.test(block);
+    // Extract DG detail string like "9/3077/III" from patterns like "DG:9/3077/III"
+    const dgInfo=extractDGDetail(block);
+    const dgDetail=dgInfo.detail;
+
+    // Detect Reefer temperature requirement
+    const reeferTemp=block.match(/[-−]?\d+\s*(?:°\s*)?[CF]\b|[-−]\d+\s*(?:degrees?|摄氏度|°)/i);
+    const reefer=!!(reeferTemp||/\breefer\b|冷冻|冷藏|温控|temperature[:\s]/i.test(block));
+
+    // Output format (original 3-line): notice / POD / Deliver to / weight+container
+    let out=feeNotice(ow,res,reefer,hazmat,true);
+    out+=`POD: ${podObj.d||'________'}\nDeliver to: ${dispAddr}\n${wt} / ${ctr}${socSuffix}${ow?' ****OW':''}${hazmat?' HAZMAT':''}${reefer?' Reefer':''}`;
+    if(hazmat&&dgDetail) out+=dgDetailText(dgInfo);
+
+    return{formatted:out.trim(),podKey:podObj.k,podDisplay:podObj.d,fullAddr:fullFmt,dispAddr,city:cityDisp(dispAddr!=='[Address]'?dispAddr:(rawAddr||'')),res,resWarning,ow,hazmat,dgDetail,reefer,soc:socInfo.soc,socNoReturn:socInfo.socNoReturn,wt,ctr,rawAddr:rawAddr||'',standaloneAddr,isExport:false,raw:block};
+  }
+}
+
+// ─── VALIDATION ──────────────────────────────────────────────────────────────
+function validate(b,idx){
+  const e=[];
+  if(b&&b.isTableBatch)return e;
+  if(!b.podKey){
+    const label=b.isExport?'POL':'POD';
+    e.push(`Shipment #${idx+1}: 📝 ${label} not auto-detected — please fill in manually`);
+  }
+  if(!b.rawAddr){
+    const label=b.isExport?'pick up address':'delivery address';
+    e.push(`Shipment #${idx+1}: ❗ Missing ${label}`);
+  }
+  if(b.wt!=='Legal Weight'){
+    const n=parseFloat(b.wt.replace(/[^0-9.]/g,''));
+    if(n>50000)e.push(`Shipment #${idx+1}: ❗ Weight ${b.wt} seems abnormally high — verify`);
+    if(n>0&&n<100)e.push(`Shipment #${idx+1}: ❗ Weight ${b.wt} very low — did you mean tons?`);
+  }
+  return e;
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+let BT=[];
+
+function cleanBatchCell(s){
+  return String(s||'')
+    .replace(/^"+|"+$/g,'')
+    .replace(/\s+/g,' ')
+    .replace(/\b(?:USA|UNITED STATES(?: OF AMERICA)?)\b\.?$/i,'')
+    .replace(/[,\s]+$/,'')
+    .trim();
+}
+
+function parseBatchTableInput(raw){
+  raw=String(raw||'').replace(/\r/g,'').trim();
+  if(!raw||raw.indexOf('\t')<0)return null;
+  const rows=raw.split('\n').map(line=>line.split('\t').map(cleanBatchCell)).filter(cells=>cells.some(Boolean));
+  if(rows.length<2)return null;
+
+  let start=0,podIdx=0,addrIdx=1;
+  const header=rows[0].map(c=>c.toLowerCase());
+  const hp=header.findIndex(c=>/\bpod\b|port|terminal/.test(c));
+  const ha=header.findIndex(c=>/door|address|deliver|delivery|destination|final/.test(c));
+  if(hp>=0&&ha>=0){podIdx=hp;addrIdx=ha;start=1;}
+
+  const seen=new Set();
+  const groups=[];
+  const byPod={};
+  let duplicateCount=0;
+  for(let i=start;i<rows.length;i++){
+    const cells=rows[i];
+    const rawPod=cleanBatchCell(cells[podIdx]||'');
+    const addr=cleanBatchCell(cells[addrIdx]||'');
+    if(!rawPod||!addr)continue;
+    const podObj=normPOD(rawPod,false);
+    const podDisplay=podObj.d||rawPod;
+    const podKey=podObj.k||podDisplay;
+    const dedupeKey=(podKey+'|'+addr).toLowerCase().replace(/\s+/g,' ');
+    if(seen.has(dedupeKey)){duplicateCount++;continue;}
+    seen.add(dedupeKey);
+    if(!byPod[podKey]){
+      byPod[podKey]={podKey,podDisplay,rows:[],firstAddr:addr};
+      groups.push(byPod[podKey]);
+    }
+    byPod[podKey].rows.push({pod:podDisplay,addr});
+  }
+  if(!groups.length)return null;
+  return groups.map((g,idx)=>{
+    const tableLines=g.rows.map(r=>`${r.pod}\t${r.addr}`);
+    return {
+      formatted:tableLines.join('\n')+'\n\nLegal weight / 40HC',
+      podKey:g.podKey,
+      podDisplay:g.podDisplay,
+      fullAddr:g.firstAddr,
+      dispAddr:g.firstAddr,
+      city:g.podDisplay+' Shipments',
+      rawAddr:g.firstAddr,
+      raw:g.rows.map(r=>`${r.pod}\t${r.addr}`).join('\n'),
+      isTableBatch:true,
+      tableRows:g.rows,
+      duplicateCount,
+      res:false,
+      resWarning:false,
+      ow:false,
+      hazmat:false,
+      reefer:false,
+      wt:'Legal weight',
+      ctr:'40HC',
+      idx
+    };
+  });
+}
+
+function processAll(){
+  const raw=$('ri').value.trim();if(!raw)return;
+  const tableBatch=parseBatchTableInput(raw);
+  if(tableBatch){
+    BT=tableBatch;
+  } else {
+    const parts=raw.trim().split(/\n(?=\d+[\.)\]]\s)/);
+    BT=parts.map(p=>p.trim()).filter(Boolean).map((p,i)=>({raw:p,idx:i,...parseShip(p)}));
+    saveShipmentMemory(BT);
+  }
+  emailInited.clear(); // reset so email fields are re-populated fresh each time
+
+  // Errors
+  const errs=BT.flatMap((b,i)=>validate(b,i));
+  const ew=$('ewrap');
+  if(errs.length){
+    ew.style.display='block';
+    ew.innerHTML=`<div class="ebox"><div class="etitle">⚠️ Validation Warnings</div>${errs.map(e=>`<div class="eitem"><span>•</span><span>${H(e)}</span></div>`).join('')}</div>`;
+  } else {ew.style.display='none';ew.innerHTML='';}
+
+  $('tabs').innerHTML='';$('panels').innerHTML='';
+  const isBatch=BT.length>1;
+  if(isBatch){$('bsum').textContent=`${BT.length} shipments processed`;$('cab').style.display='flex';}
+  else $('cab').style.display='none';
+
+  BT.forEach((b,i)=>{
+    if(isBatch){
+      const t=document.createElement('div');t.className='tab'+(i===0?' on':'');
+      t.textContent=b.isTableBatch?`${b.podDisplay} (${b.tableRows.length})`:`#${i+1} ${b.city.split(',')[0]}`;t.onclick=()=>swTab(i);
+      $('tabs').appendChild(t);
+    }
+    const p=document.createElement('div');p.className='bp2'+(i===0?' on':'');p.id=`p${i}`;
+    p.innerHTML=renderPanel(b,i);$('panels').appendChild(p);
+  });
+
+  $('rwrap').style.display='block';
+  // Pre-populate email subject/body immediately — no need to check a trucker first
+  setTimeout(()=>{
+    BT.forEach((_,i)=>updEmail(i));
+    // Auto-fill calc POD/Deliver from email body — runs after updEmail populates the fields
+    setTimeout(()=>{
+      autoFillCalcFromEmail();
+      if(typeof autoFillCalcNotes==='function') autoFillCalcNotes();
+      if(typeof buildQuoteTable==='function') buildQuoteTable();
+    }, 50);
+  },120);
+  if(typeof autoFillCalcNotes==='function') autoFillCalcNotes();
+}
+
+function renderMapCheck(b,i){
+  const rows=((BT&&BT.length>1)?BT.map(function(x,idx){return {b:x,idx:idx};}):[{b:b,idx:i}])
+    .filter(function(x){return x.b&&x.b.fullAddr&&x.b.fullAddr!=='[Address]';});
+  if(!rows.length)return'';
+  const rowHTML=rows.map(function(x){
+    const prefix=(BT&&BT.length>1)?`<span style="font-size:11px;color:#888;font-weight:600;min-width:72px">Shipment #${x.idx+1}</span>`:'';
+    return `<div class="maprow">${prefix}<span class="mapa">${H(x.b.fullAddr)}</span>
+    <button type="button" class="bmap" onclick="openSat('${Attr(JSArg(x.b.fullAddr))}')">Google Maps</button>
+    <span style="display:inline-flex;align-items:center;gap:4px;margin-left:2px">
+      <input type="checkbox" class="resShipCb" data-idx="${x.idx}" id="resCb${i}_${x.idx}" ${x.b.res?'checked':''} onchange="confirmResidential(${x.idx},this.checked)" style="width:14px;height:14px;accent-color:#c0392b;cursor:pointer;margin:0">
+      <label for="resCb${i}_${x.idx}" style="font-size:11px;color:#c0392b;cursor:pointer;user-select:none">Residential</label>
+    </span></div>`;
+  }).join('');
+  const hint=`${b.standaloneAddr?'Address auto-detected - treated as delivery address. ':''} ${b.res?'<span style="color:#c0392b;font-weight:600">Residential</span> - residential charge note added.':b.resWarning?'<span style="color:#e67e22;">Cannot confirm commercial</span> - please verify.':'Commercial confirmed - city+ZIP used.'} Verify via satellite.
+    ${BT&&BT.length>1?'Check Residential per shipment above.':''}`;
+  return `<div class="sep"></div>
+    <div class="ctitle" style="margin-bottom:8px">Map check</div>
+    ${rowHTML}
+    <div class="maphint">${hint}</div>`;
+}
+
+function renderPanel(b,i){
+  const vs=(b.podKey&&VD[b.podKey]||[]).filter(v=>v.contact&&v.contact.trim());
+  const sv=sortVendors(vs,b.ow,b.res);
+  const fc=sv.filter(v=>v.filtered).length;
+  const fmsgs=[];
+  if(b.ow)fmsgs.push('OW → "No OW" vendors moved down');
+  if(b.res)fmsgs.push('Residential → "No residential" vendors moved down');
+  if(sv.some(v=>v.f.best||v.f.good))fmsgs.push('Best/Good rate sorted to top ↑');
+
+  let vHTML='';
+  if(!sv.length){vHTML=`<div class="nv">No vendors for POD: ${b.podKey||'unknown'}</div>`;}
+  else sv.forEach((v,vi)=>{
+    const em=emails(v.contact);if(!em.length)return;
+    const estr=em.join('; ');
+    const se=estr.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+    const rk=v.f.best?'b':v.f.good?'g':'';
+    const nc=v.f.best||v.f.good?'g':(v.note&&/dont use/i.test(v.note)?'w':'');
+    const tags=[...(v.f.owOK&&b.ow?['<span class="vtag tow">OW OK</span>']:[]),...(v.f.resOK&&b.res?['<span class="vtag tres">Res OK</span>']:[])].join('');
+    vHTML+=`<div class="vi${v.filtered?' fo':''}" id="vi${i}_${vi}">
+      <input type="checkbox" class="vchk" id="vc${i}_${vi}" data-e="${se}" data-b="${i}" data-v="${vi}" onchange="onVC(this)" ${v.filtered?'disabled':''}>
+      <span class="vrk ${rk}">#${vi+1}</span>
+      <div class="vd"><label for="vc${i}_${vi}" style="cursor:${v.filtered?'not-allowed':'pointer'}">
+        <div class="vn">${H(v.name||'?')}${tags}</div>
+        <div class="ve">${H(em.join(', '))}</div>
+        ${v.note?`<div class="vnt ${nc}">${H(v.note)}</div>`:''}
+      </label></div>
+      <span id="cf${i}_${vi}" style="font-size:11px;color:#2a7a3a;opacity:0;transition:opacity .4s;flex-shrink:0;min-width:46px">Copied!</span>
+    </div>`;
+  });
+
+  const mrHTML='';
+
+  return`<div class="card">
+    <div class="ctitle"><span class="badge">2</span>Formatted</div>
+    <div class="fbox" id="fmt${i}">${H(b.formatted)}</div>
+    <div class="brow"><button class="bs" onclick="copyTextBtn(document.getElementById('fmt${i}').innerText,this)">Copy</button></div>
+    ${renderMapCheck(b,i)}
+  </div>
+
+  <div class="card">
+    <div class="ctitle"><span class="badge">3</span>Vendors${fc?`<span style="font-size:11px;font-weight:400;color:#c0392b;margin-left:8px">${fc} filtered</span>`:''}
+    </div>
+    <div class="pm">Matched: <strong>${H(b.podKey||'—')}</strong> — ${sv.length} vendor${sv.length!==1?'s':''}</div>
+    ${fmsgs.length?`<div class="vfbar">🔍 ${fmsgs.join(' · ')}</div>`:''}
+    <div id="vl${i}">${vHTML}</div>
+    ${mrHTML}
+  </div>
+
+  <div class="card" id="ec${i}">
+    <div class="ctitle"><span class="badge">4</span>Email</div>
+    <div class="eb"><div class="ebh"><div class="ebl">Subject</div><button class="bs" onclick="copyTextBtn(document.getElementById('es${i}').innerText,this,${i})">Copy</button></div><div class="ebv" id="es${i}" contenteditable="true" spellcheck="false" style="outline:none;cursor:text;border-radius:4px;padding:3px 5px;margin:-3px -5px;border:1.5px solid transparent;transition:border-color .15s" onfocus="this.style.borderColor='#a8c7fa'" onblur="this.style.borderColor='transparent'"></div></div>
+    <div class="eb"><div class="ebh"><div class="ebl">Body</div><div style="display:flex;gap:6px"><button class="bs" onclick="resetEmail(${i})" style="color:#aaa;border-color:#e0ddd7;font-size:11px">↺ Reset</button><button class="bs" onclick="copyTextBtn(document.getElementById('eb${i}').innerText,this,${i})">Copy</button></div></div><div class="ebv" id="eb${i}" contenteditable="true" spellcheck="false" style="outline:none;cursor:text;min-height:80px;border-radius:4px;padding:3px 5px;margin:-3px -5px;border:1.5px solid transparent;transition:border-color .15s" onfocus="this.style.borderColor='#a8c7fa'" onblur="this.style.borderColor='transparent'"></div></div>
+    <div class="brow" style="margin-top:10px">
+      <button class="bmail" onclick="openMail(${i})">✉ Open in Mail ↗</button>
+      <button class="bs" onclick="openMailToTruckers(${i})" style="margin-left:8px">📨 Email selected truckers ↗</button>
+      <button class="bs" onclick="prepareOutlookDrafts(${i})" style="margin-left:8px;color:#1a73e8;border-color:#1a73e8">Outlook drafts</button>
+    </div>
+    <div style="margin-top:9px;padding:8px 10px;border:1px solid #f0ede8;background:#faf9f6;border-radius:6px;font-size:11px;color:#777">
+      <label style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-weight:700;color:#555">MSDS attachment</span>
+        <input id="msds${i}" type="file" onchange="rememberMSDSFile(${i},this)" style="font-size:11px;max-width:260px">
+        <span id="msdsName${i}" style="color:#2a7a3a;font-weight:700"></span>
+      </label>
+      <div style="margin-top:4px;color:#999">Use "Outlook drafts" below, then choose "Download .eml with MSDS" to open a draft with this attachment.</div>
+    </div>
+    <div style="font-size:11px;color:#888;margin-top:6px">Tip: Check truckers → "Email selected truckers" → send ① first. For Outlook threading: open the sent email → <strong>Forward</strong> → delete "Fw:" from subject → send to next trucker. Repeat. (Browser mailto: can't inject Outlook's Thread-Index header.)</div>
+  </div>`;
+}
+
+function confirmResidential(i, checked){
+  if(!BT||!BT[i])return;
+  BT[i].res=checked;
+  BT[i].resWarning=false;
+
+  if(checked){
+    // Keep full address for residential
+    if(BT[i].fullAddr&&BT[i].fullAddr!=='[Address]'){
+      BT[i].dispAddr=BT[i].fullAddr;
+      // Also update the Deliver to: line inside formatted text
+      BT[i].formatted=BT[i].formatted.replace(/^Deliver to: .+$/m,'Deliver to: '+BT[i].fullAddr);
+    }
+    // Add residential charge notice to formatted text
+    var fmt=BT[i].formatted;
+    var resLine='Please kindly advise the residential charge.';
+    var owResLine='Please kindly advise the OW fee and the residential charge.';
+    if(!fmt.includes(resLine)&&!fmt.includes(owResLine)){
+      if(BT[i].ow){
+        fmt=fmt.replace(/^Please kindly advise the OW fee\.\n\n/,'');
+        fmt=owResLine+'\n\n'+fmt;
+      } else {
+        fmt=resLine+'\n\n'+fmt;
+      }
+      BT[i].formatted=fmt;
+    }
+  } else {
+    // Unchecked — revert to commercial (city+zip only)
+    var newDispAddr=cityOnly(BT[i].fullAddr||'');
+    BT[i].dispAddr=newDispAddr;
+    // Also update the Deliver to: line inside formatted text
+    BT[i].formatted=BT[i].formatted.replace(/^Deliver to: .+$/m,'Deliver to: '+newDispAddr);
+    // Remove residential notice from formatted
+    BT[i].formatted=BT[i].formatted
+      .replace(/^Please kindly advise the OW fee and the residential charge\.\n\n/,BT[i].ow?'Please kindly advise the OW fee.\n\n':'')
+      .replace(/^Please kindly advise the residential charge\.\n\n/,'');
+  }
+
+  // Update formatted display
+  var fmtEl=document.getElementById('fmt'+i);
+  if(fmtEl)fmtEl.innerText=BT[i].formatted;
+  document.querySelectorAll('.resShipCb[data-idx="'+i+'"]').forEach(function(cb){cb.checked=checked;});
+  // Update email body for this shipment only. Use the Recent Shipments confirm button for batch quoting.
+  var subj=document.getElementById('es'+i);
+  if(subj)subj.textContent=emailSubject(BT[i]);
+  var bd=document.getElementById('eb'+i);
+  if(bd)bd.textContent='Hi Team,\n\nCan you please quote? Thank you.\n\n'+emailFormatted(BT[i]);
+
+  // Re-render vendor list
+  var vsEl=document.getElementById('vl'+i);
+  if(vsEl){
+    const b=BT[i];
+    const vs=(VD[b.podKey]||[]);
+    const sv=sortVendors(vs,b.ow,b.res);
+    let vHTML='';
+    if(!sv.length){vHTML=`<div class="nv">No vendors for POD: ${b.podKey||'unknown'}</div>`;}
+    else sv.forEach((v,vi)=>{
+      const em=emails(v.contact);if(!em.length)return;
+      const estr=em.join('; ');
+      const se=estr.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+      const rk=v.f.best?'b':v.f.good?'g':'';
+      const nc=v.f.best||v.f.good?'g':(v.note&&/dont use/i.test(v.note)?'w':'');
+      const tags=[...(v.f.owOK&&b.ow?['<span class="vtag tow">OW OK</span>']:[]),...(v.f.resOK&&b.res?['<span class="vtag tres">Res OK</span>']:[])].join('');
+      vHTML+=`<div class="vi${v.filtered?' fo':''}" id="vi${i}_${vi}">
+        <input type="checkbox" class="vchk" id="vc${i}_${vi}" data-e="${se}" data-b="${i}" data-v="${vi}" onchange="onVC(this)" ${v.filtered?'disabled':''}>
+        <span class="vrk ${rk}">#${vi+1}</span>
+        <div class="vd"><label for="vc${i}_${vi}" style="cursor:${v.filtered?'not-allowed':'pointer'}">
+          <div class="vn">${H(v.name||'?')}${tags}</div>
+          <div class="ve">${H(em.join(', '))}</div>
+          ${v.note?`<div class="vnt ${nc}">${H(v.note)}</div>`:''}
+        </label></div>
+        <span id="cf${i}_${vi}" style="font-size:11px;color:#2a7a3a;opacity:0;transition:opacity .4s;flex-shrink:0;min-width:46px">Copied!</span>
+      </div>`;
+    });
+    vsEl.innerHTML=vHTML;
+  }
+
+  // Add or remove Residential fee row in quote table
+  var tbl=document.getElementById('quoteTable');
+  if(tbl){
+    var existingResRow=Array.from(tbl.querySelectorAll('tr')).find(function(tr){
+      var first=tr.querySelector('td');return first&&first.textContent.trim()==='Residential fee';
+    });
+    if(checked&&!existingResRow){
+      var chassisRow=Array.from(tbl.querySelectorAll('tr')).find(function(tr){
+        var first=tr.querySelector('td');return first&&first.textContent.trim()==='Chassis';
+      });
+      if(chassisRow){
+        var f2='font-family:Calibri,Arial,sans-serif;font-size:'+_qtFontSize+'px;';
+        var cs2='border:1px solid #a8c8a0;padding:5px 10px;'+f2;
+        var newRow=document.createElement('tr');
+        newRow.innerHTML=
+          '<td style="'+cs2+'background:#d6e8d0;font-weight:600;color:#1a3a1a;white-space:nowrap;vertical-align:bottom;" contenteditable="false">Residential fee</td>'
+          +'<td style="'+cs2+'background:#f0f7ee;white-space:nowrap;vertical-align:bottom;" contenteditable="true" spellcheck="false">$ </td>'
+          +'<td style="'+cs2+'background:#f0f7ee;color:#4a6645;white-space:nowrap;vertical-align:bottom;font-style:italic;" contenteditable="true" spellcheck="false">Per container</td>';
+        chassisRow.parentNode.insertBefore(newRow,chassisRow.nextSibling);
+      }
+    } else if(!checked&&existingResRow){
+      existingResRow.remove();
+    }
+  }
+}
+
+function onVC(cb){
+  const i=cb.dataset.b,vi=cb.dataset.v,e=cb.dataset.e;
+  if(cb.checked){
+    copyPlainText(e).then(()=>{
+      const f=$('cf'+i+'_'+vi);
+      if(f){f.style.opacity='1';setTimeout(()=>f.style.opacity='0',1500);}
+    }).catch(()=>{
+      alert('Copy failed. Please copy manually:\n\n'+e);
+    });
+  }
+  updEmail(i);
+}
+
+const emailInited=new Set();
+const msdsFiles={};
+
+function rememberMSDSFile(i,input){
+  const file=input&&input.files&&input.files[0];
+  msdsFiles[i]=file||null;
+  const nameEl=document.getElementById('msdsName'+i);
+  if(nameEl)nameEl.textContent=file?'Selected: '+file.name:'';
+}
+
+function updEmail(i){
+  const b=BT[i];if(!b)return;
+  const s=$('es'+i),bd=$('eb'+i);
+  if(!emailInited.has(i)){
+    if(s)s.textContent=emailSubject(b);
+    if(bd)bd.textContent=`Hi Team,\n\nCan you please quote? Thank you.\n\n${emailFormatted(b)}`;
+    emailInited.add(i);
+  }
+}
+
+function updateEmailBodyFromMemory(i,forceSubject){
+  const b=BT[i];if(!b)return;
+  const s=$('es'+i),bd=$('eb'+i);
+  const items=selectedSamePodShipments(b);
+  const count=items.length;
+  const subj=count>1?batchQuoteSubject(items,b):emailSubject(b);
+  const intro=count>1?'Can you please quote the below shipments? Thank you.':'Can you please quote? Thank you.';
+  const bodyItems=count?mergedShipmentBody(items):emailFormatted(b);
+  if(s&&(forceSubject||!s.textContent.trim()))s.textContent=subj;
+  if(bd)bd.textContent=`Hi Team,\n\n${intro}\n\n${bodyItems}`;
+}
+
+function refreshEmailBodiesFromMemory(){
+  if(!BT)return;
+  BT.forEach(function(_,i){updateEmailBodyFromMemory(i,true);});
+}
+
+function activeShipmentIndex(){
+  const active=document.querySelector('.bp2.on');
+  if(active&&/^p\d+$/.test(active.id||''))return parseInt(active.id.slice(1),10);
+  return 0;
+}
+
+function checkedShipmentMemoryRecords(){
+  const ids=Array.from(document.querySelectorAll('.memShipCb'))
+    .filter(function(cb){return cb.checked;})
+    .map(function(cb){return decodeShipmentMemoryId(cb.dataset.id||'');});
+  const saved=readShipmentMemory();
+  return ids.map(function(id){return saved.find(function(r){return r.id===id;});}).filter(Boolean);
+}
+
+function memoryRecordToBT(r,idx){
+  const addr=r.fullAddr||r.rawAddr||r.delivery||'';
+  const isExport=isMemoryExport(r);
+  return{
+    raw:r.raw||'',
+    idx:idx,
+    formatted:r.formatted||'',
+    podKey:r.podKey||r.podDisplay||'',
+    podDisplay:r.podDisplay||r.podKey||'',
+    fullAddr:r.fullAddr||r.rawAddr||r.delivery||'',
+    dispAddr:r.delivery||compactDeliveryForEmail(addr)||addr,
+    city:cityDisp(r.delivery||addr),
+    res:!!r.res,
+    resWarning:false,
+    ow:!!r.ow,
+    hazmat:!!r.hazmat,
+    reefer:!!r.reefer,
+    soc:!!r.soc,
+    socNoReturn:!!r.socNoReturn,
+    wt:r.wt||'Legal Weight',
+    ctr:r.ctr||'1x40HC',
+    rawAddr:r.rawAddr||r.fullAddr||r.delivery||'',
+    standaloneAddr:false,
+    isExport:isExport
+  };
+}
+
+function renderResultsFromMemory(records){
+  BT=records.map(memoryRecordToBT);
+  emailInited.clear();
+  $('ewrap').style.display='none';
+  $('ewrap').innerHTML='';
+  $('tabs').innerHTML='';
+  $('panels').innerHTML='';
+  const isBatch=BT.length>1;
+  if(isBatch){$('bsum').textContent=`${BT.length} shipments selected`;$('cab').style.display='flex';}
+  else $('cab').style.display='none';
+  BT.forEach(function(b,i){
+    if(isBatch){
+      const t=document.createElement('div');t.className='tab'+(i===0?' on':'');
+      t.textContent=`#${i+1} ${String(b.city||b.delivery||'Shipment').split(',')[0]}`;
+      t.onclick=function(){swTab(i);};
+      $('tabs').appendChild(t);
+    }
+    const p=document.createElement('div');p.className='bp2'+(i===0?' on':'');p.id=`p${i}`;
+    p.innerHTML=renderPanel(b,i);
+    $('panels').appendChild(p);
+  });
+  $('rwrap').style.display='block';
+  BT.forEach(function(_,i){updEmail(i);});
+}
+
+function confirmShipmentSelectionForEmail(btn){
+  if(!BT||!BT.length){
+    const records=checkedShipmentMemoryRecords();
+    if(!records.length){alert('Please select shipment records in Recent Shipments first.');return;}
+    const pods=[...new Set(records.map(function(r){return r.podKey||r.podDisplay||'';}))];
+    if(pods.length>1){alert('Please select shipments with the same POD only.');return;}
+    renderResultsFromMemory(records);
+  }
+  const i=activeShipmentIndex();
+  const b=BT[i];if(!b)return;
+  const items=selectedSamePodShipments(b);
+  if(!items.length){alert('Please select at least one same-POD shipment first.');return;}
+  const s=$('es'+i),bd=$('eb'+i);
+  const count=items.length;
+  if(s)s.textContent=count>1?batchQuoteSubject(items,b):emailSubject(b);
+  const intro=count>1?'Can you please quote the below shipments? Thank you.':'Can you please quote? Thank you.';
+  if(bd)bd.textContent=`Hi Team,\n\n${intro}\n\n${mergedShipmentBody(items)}`;
+  markShipmentEmailSent(items.map(function(item){return item.id;}));
+  if(btn){
+    const old=btn.textContent;
+    btn.textContent=count>1?'Batch quote ready':'Email ready';
+    btn.classList.add('ok');
+    setTimeout(function(){btn.textContent=old;btn.classList.remove('ok');},1400);
+  }
+  const emailCard=document.getElementById('ec'+i);
+  if(emailCard)emailCard.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// Called right after cards are rendered — pre-populate email fields immediately
+function initEmailAll(){
+  if(!BT)return;
+  BT.forEach((_,i)=>updEmail(i));
+}
+
+function resetEmail(i){
+  const b=BT[i];if(!b)return;
+  const s=$('es'+i),bd=$('eb'+i);
+  if(s)s.textContent=emailSubject(b);
+  if(bd)bd.textContent=`Hi Team,\n\nCan you please quote? Thank you.\n\n${emailFormatted(b)}`;
+}
+
+function openMail(i){
+  const b=BT[i];if(!b)return;
+  const subj=($('es'+i)||{}).innerText||emailSubject(b);
+  const body=($('eb'+i)||{}).innerText||`Hi Team,\n\nCan you please quote? Thank you.\n\n${emailFormatted(b)}`;
+  markCurrentShipmentEmailSent(i);
+  window.open(`mailto:?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`,'_blank');
+}
+
+const CC_EMAIL='tr.us@maplelanelogistics.com';
+
+function openMailToTruckers(i){
+  const b=BT[i];if(!b)return;
+  const checked=[];
+  document.querySelectorAll(`.vchk[data-b="${i}"]`).forEach(cb=>{
+    if(cb.checked&&cb.dataset.e){
+      const vi=cb.dataset.v;
+      const nameEl=document.querySelector(`#vi${i}_${vi} .vn`);
+      const name=nameEl?nameEl.textContent.trim():'Trucker';
+      const em=cb.dataset.e.split(/;\s*/).filter(Boolean);
+      if(em.length)checked.push({name,emails:em});
+    }
+  });
+  if(!checked.length){alert('Please check at least one trucker first.');return;}
+  const subj=($('es'+i)||{}).innerText||emailSubject(b);
+  const body=($('eb'+i)||{}).innerText||`Hi Team,\n\nCan you please quote? Thank you.\n\n${emailFormatted(b)}`;
+  const subjEnc=encodeURIComponent(subj);
+  const bodyEnc=encodeURIComponent(body);
+  const cc=encodeURIComponent(CC_EMAIL);
+
+  let existing=document.getElementById('truckerMailModal');
+  if(existing)existing.remove();
+  const modal=document.createElement('div');
+  modal.id='truckerMailModal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+
+  // First trucker = normal send; rest = forward trick (same subject, no Fw: prefix)
+  const firstHref=`mailto:${encodeURIComponent(checked[0].emails.join(', '))}?cc=${cc}&subject=${subjEnc}&body=${bodyEnc}`;
+
+  let linksHtml='';
+  // Step 1 — first email
+  linksHtml+=`<div style="margin-bottom:14px">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#1a73e8;margin-bottom:6px">① Send first email</div>
+    <a href="${firstHref}" style="display:block;padding:10px 16px;background:#1a1a1a;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;font-family:inherit" onclick="this.style.background='#2a7a3a';this.innerHTML='✓ '+this.innerHTML">
+      ✉ ${checked[0].name}<br><span style="font-size:11px;color:#aaa;font-weight:400">${checked[0].emails.join(', ')}</span>
+    </a>
+  </div>`;
+
+  if(checked.length>1){
+    linksHtml+=`<div style="margin-bottom:10px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:4px">② Forward to remaining (same subject = same Outlook thread)</div>
+      <div style="font-size:11px;color:#aaa;margin-bottom:8px;line-height:1.5">These open with the <em>same subject line</em>. Outlook will group them in one conversation — no need to manually forward.</div>`;
+    checked.slice(1).forEach(({name,emails},idx)=>{
+      const href=`mailto:${encodeURIComponent(emails.join(', '))}?cc=${cc}&subject=${subjEnc}&body=${bodyEnc}`;
+      linksHtml+=`<a href="${href}" style="display:block;padding:10px 16px;margin-bottom:8px;background:#f5f3ef;color:#1a1a1a;text-decoration:none;border-radius:6px;font-size:13px;font-family:inherit;border:1px solid #e0ddd7" onclick="this.style.background='#e8f5e9';this.style.borderColor='#2a7a3a'">
+        ↪ ${name}<br><span style="font-size:11px;color:#888;font-weight:400">${emails.join(', ')}</span>
+      </a>`;
+    });
+    linksHtml+='</div>';
+  }
+
+  modal.innerHTML=`<div style="background:#fff;border-radius:12px;padding:24px;max-width:540px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#aaa;margin-bottom:4px">Email Drafts</div>
+    <div style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:2px">${checked.length} trucker${checked.length>1?'s':''} — same subject line</div>
+    <div style="font-size:12px;color:#888;margin-bottom:6px">Subject: <em>${subj}</em></div>
+    <div style="font-size:12px;color:#888;margin-bottom:16px">CC: ${CC_EMAIL}</div>
+    ${linksHtml}
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid #f0ede8;display:flex;justify-content:flex-end">
+      <button onclick="document.getElementById('truckerMailModal').remove()" style="font-family:inherit;font-size:13px;padding:7px 18px;border-radius:6px;border:1px solid #d0cdc7;background:#fff;cursor:pointer;color:#555">Done</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+  markCurrentShipmentEmailSent(i);
+  modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
+}
+
+function getSelectedTruckerDrafts(i){
+  const b=BT[i];if(!b)return[];
+  const subj=(($('es'+i)||{}).innerText||emailSubject(b)).trim();
+  const body=(($('eb'+i)||{}).innerText||`Hi Team,\n\nCan you please quote? Thank you.\n\n${emailFormatted(b)}`).trim();
+  const drafts=[];
+  document.querySelectorAll(`.vchk[data-b="${i}"]`).forEach(cb=>{
+    if(!cb.checked||!cb.dataset.e)return;
+    const vi=cb.dataset.v;
+    const nameEl=document.querySelector(`#vi${i}_${vi} .vn`);
+    const name=nameEl?nameEl.textContent.replace(/\s+/g,' ').trim():'Trucker';
+    const emails=cb.dataset.e.split(/;\s*/).filter(Boolean);
+    if(!emails.length)return;
+    drafts.push({
+      shipment:i+1,
+      shipmentId:shipmentMemoryId(b),
+      pod:b.podDisplay||b.podKey||'',
+      delivery:b.city||'',
+      vendor:name,
+      to:emails,
+      cc:[CC_EMAIL],
+      subject:subj,
+      body:body,
+      msdsFile:msdsFiles[i]||null
+    });
+  });
+  return drafts;
+}
+
+function mailtoForDraft(d){
+  const enc=function(v){return encodeURIComponent(v||'').replace(/%20/g,' ');};
+  return 'mailto:'+d.to.map(enc).join(',')
+    +'?cc='+d.cc.map(enc).join(',')
+    +'&subject='+encodeURIComponent(d.subject)
+    +'&body='+encodeURIComponent(d.body);
+}
+
+function outlookWebForDraft(d){
+  const params=new URLSearchParams();
+  params.set('to',d.to.join(';'));
+  params.set('cc',d.cc.join(';'));
+  params.set('subject',d.subject);
+  params.set('body',d.body);
+  return 'https://outlook.office.com/mail/deeplink/compose?'+params.toString();
+}
+
+function emlAsciiFileName(name){
+  return (name||'MSDS.pdf').replace(/[\\/:*?"<>|]+/g,'_').replace(/[^\x20-\x7E]/g,'_').trim()||'MSDS.pdf';
+}
+function emlSafeHeaderValue(v){
+  return String(v||'').replace(/[\r\n]+/g,' ').trim();
+}
+function emlBase64FromBytes(bytes){
+  var binary='';
+  for(var i=0;i<bytes.length;i+=0x8000){
+    binary+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));
+  }
+  return btoa(binary);
+}
+function emlBase64Utf8(text){
+  return emlBase64FromBytes(new TextEncoder().encode(text||''));
+}
+function emlFoldBase64(b64){
+  return (b64.match(/.{1,76}/g)||['']).join('\r\n');
+}
+function emlHeader(v){
+  v=emlSafeHeaderValue(v);
+  return /^[\x20-\x7E]*$/.test(v)?v:'=?UTF-8?B?'+emlBase64Utf8(v)+'?=';
+}
+function emlAddresses(list){
+  return (list||[]).map(emlSafeHeaderValue).filter(Boolean).join(', ');
+}
+async function buildEmlDraftBlob(d){
+  var attachment=d.msdsFile||null;
+  var boundary='----=_LogisticsTool_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+  var lines=[
+    'X-Unsent: 1',
+    'To: '+emlAddresses(d.to),
+    'Cc: '+emlAddresses(d.cc),
+    'Subject: '+emlHeader(d.subject),
+    'MIME-Version: 1.0'
+  ];
+  if(attachment){
+    var fileBytes=new Uint8Array(await attachment.arrayBuffer());
+    var fileName=emlAsciiFileName(attachment.name);
+    var fileType=attachment.type||'application/octet-stream';
+    lines.push('Content-Type: multipart/mixed; boundary="'+boundary+'"');
+    lines.push('');
+    lines.push('--'+boundary);
+    lines.push('Content-Type: text/plain; charset="utf-8"');
+    lines.push('Content-Transfer-Encoding: base64');
+    lines.push('');
+    lines.push(emlFoldBase64(emlBase64Utf8(d.body)));
+    lines.push('--'+boundary);
+    lines.push('Content-Type: '+fileType+'; name="'+fileName+'"');
+    lines.push('Content-Transfer-Encoding: base64');
+    lines.push('Content-Disposition: attachment; filename="'+fileName+'"');
+    lines.push('');
+    lines.push(emlFoldBase64(emlBase64FromBytes(fileBytes)));
+    lines.push('--'+boundary+'--');
+  } else {
+    lines.push('Content-Type: text/plain; charset="utf-8"');
+    lines.push('Content-Transfer-Encoding: base64');
+    lines.push('');
+    lines.push(emlFoldBase64(emlBase64Utf8(d.body)));
+  }
+  return new Blob([lines.join('\r\n')],{type:'message/rfc822'});
+}
+async function downloadEmlDraft(idx,btn){
+  const drafts=window._outlookDraftPackage||[];
+  const d=drafts[idx];
+  if(!d)return;
+  if(!d.msdsFile&&!confirm('No MSDS file selected. Download this draft without attachment?'))return;
+  markShipmentEmailSent([d.shipmentId]);
+  if(btn){
+    btn.disabled=true;
+    btn.textContent='Building...';
+  }
+  try{
+    const blob=await buildEmlDraftBlob(d);
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=emlAsciiFileName((d.vendor||'trucker')+' - '+(d.subject||'quote'))+'.eml';
+    a.style.display='none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){
+      URL.revokeObjectURL(url);
+      if(a.parentNode)a.parentNode.removeChild(a);
+    },1000);
+    if(btn){
+      btn.textContent=d.msdsFile?'Downloaded with MSDS':'Downloaded .eml';
+      btn.classList.add('ok');
+      setTimeout(function(){btn.textContent=d.msdsFile?'Download .eml with MSDS':'Download .eml';btn.disabled=false;btn.classList.remove('ok');},1600);
+    }
+  }catch(e){
+    if(btn){btn.textContent=d.msdsFile?'Download .eml with MSDS':'Download .eml';btn.disabled=false;}
+    alert('Could not build the Outlook .eml draft: '+(e&&e.message?e.message:e));
+  }
+}
+
+function openMailDraft(idx,btn){
+  const drafts=window._outlookDraftPackage||[];
+  const d=drafts[idx];
+  if(!d)return;
+  markShipmentEmailSent([d.shipmentId]);
+  const url=mailtoForDraft(d);
+  copyPlainText('To: '+d.to.join(', ')+'\nCC: '+d.cc.join(', ')+'\nSubject: '+d.subject+'\n\n'+d.body).catch(function(){});
+  if(btn){
+    btn.style.borderColor='#2a7a3a';
+    btn.style.color='#2a7a3a';
+    btn.textContent='Opening...';
+  }
+  const a=document.createElement('a');
+  a.href=url;
+  a.style.display='none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){
+    if(a.parentNode)a.parentNode.removeChild(a);
+    if(btn){
+      btn.textContent='Open Outlook Draft';
+      btn.classList.add('ok');
+      setTimeout(function(){btn.classList.remove('ok');},1200);
+    }
+  },500);
+}
+
+function copyOutlookDraftPackage(btn){
+  const drafts=window._outlookDraftPackage||[];
+  if(!drafts.length)return;
+  markShipmentEmailSent(drafts.map(function(d){return d.shipmentId;}));
+  const text=drafts.map((d,idx)=>
+    `Draft ${idx+1}\nTo: ${d.to.join(', ')}\nCC: ${d.cc.join(', ')}\nSubject: ${d.subject}\n\n${d.body}`
+  ).join('\n\n---\n\n');
+  copyPlainText(text).then(()=>{
+    const old=btn.textContent;
+    btn.textContent='Copied package';
+    btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent=old;btn.classList.remove('ok');},1600);
+  }).catch(()=>alert('Copy failed. Please copy from the draft preview manually.'));
+}
+
+function prepareOutlookDrafts(i){
+  const drafts=getSelectedTruckerDrafts(i);
+  if(!drafts.length){alert('Please check at least one trucker first.');return;}
+  window._outlookDraftPackage=drafts;
+  markCurrentShipmentEmailSent(i);
+
+  let existing=document.getElementById('outlookDraftModal');
+  if(existing)existing.remove();
+  const modal=document.createElement('div');
+  modal.id='outlookDraftModal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+
+  let rows='';
+  drafts.forEach((d,idx)=>{
+    rows+=`<div style="border:1px solid #e8e5df;border-radius:8px;padding:12px 14px;margin-bottom:10px;background:#fff">
+      <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#1a1a1a">${idx+1}. ${H(d.vendor)}</div>
+          <div style="font-size:11px;color:#777;line-height:1.45">To: ${H(d.to.join(', '))}<br>CC: ${H(d.cc.join(', '))}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+          <button type="button" onclick="openMailDraft(${idx},this)" style="white-space:nowrap;background:#fff;color:#555;text-decoration:none;border-radius:6px;padding:7px 11px;font-size:12px;border:1px solid #d0cdc7;cursor:pointer;font-family:inherit">Quick draft (no attachment)</button>
+          <button type="button" onclick="downloadEmlDraft(${idx},this)" style="white-space:nowrap;background:#fff;color:#1a73e8;text-decoration:none;border-radius:6px;padding:7px 11px;font-size:12px;border:1px solid #1a73e8;cursor:pointer;font-family:inherit">${d.msdsFile?'Download .eml with MSDS':'Download .eml'}</button>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#888;margin-bottom:6px">Subject: ${H(d.subject)}</div>
+      ${d.msdsFile?`<div style="font-size:11px;color:#2a7a3a;margin-bottom:6px;font-weight:700">Attachment: ${H(d.msdsFile.name)}</div>`:`<div style="font-size:11px;color:#b26b00;margin-bottom:6px">No MSDS selected for this shipment.</div>`}
+      <pre style="white-space:pre-wrap;margin:0;max-height:130px;overflow:auto;background:#faf9f6;border:1px solid #f0ede8;border-radius:6px;padding:8px;font-family:Calibri,Arial,sans-serif;font-size:12px;line-height:1.45;color:#333">${H(d.body)}</pre>
+    </div>`;
+  });
+
+  modal.innerHTML=`<div style="background:#fff;border-radius:12px;padding:22px;max-width:760px;width:100%;max-height:86vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#1a73e8;margin-bottom:4px">Outlook draft preview</div>
+    <div style="font-size:16px;font-weight:600;color:#1a1a1a;margin-bottom:4px">${drafts.length} draft${drafts.length!==1?'s':''} prepared</div>
+    <div style="font-size:12px;color:#777;line-height:1.5;margin-bottom:14px">For MSDS attachments, use the .eml button, then open the downloaded file in Outlook, review, and send.</div>
+    ${rows}
+    <div style="display:flex;justify-content:space-between;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid #f0ede8;flex-wrap:wrap">
+      <button class="bs" onclick="copyOutlookDraftPackage(this)">Copy draft package</button>
+      <button onclick="document.getElementById('outlookDraftModal').remove()" style="font-family:inherit;font-size:13px;padding:7px 18px;border-radius:6px;border:1px solid #d0cdc7;background:#fff;cursor:pointer;color:#555">Close</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
+}
+
+function swTab(idx){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',i===idx));
+  document.querySelectorAll('.bp2').forEach((p,i)=>p.classList.toggle('on',i===idx));
+  updateMemoryChecksForPod(BT&&BT[idx]?(BT[idx].podKey||BT[idx].podDisplay||''):'');
+  updEmail(idx);
+}
+
+function copyAllFmt(){
+  const all=BT.map(b=>b.formatted).join('\n\n---\n\n');
+  navigator.clipboard.writeText(all).then(()=>{
+    const btn=event.target;btn.textContent='Copied!';btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent='Copy all formatted';btn.classList.remove('ok');},1800);
+  });
+}
+
+// ── MAP EMBED ────────────────────────────────────────────────────────────────
+function openSat(addr){
+  const url=mapsUrl(addr);
+  copyPlainText(url).catch(function(){});
+  window.open(url,'_blank');
+}
+
+// ── SAVE TO GOOGLE SHEET ────────────────────────────────────────────────────
+var SHEET_URL='https://script.google.com/macros/s/AKfycbxEtO4y17ItJYbHyYy1jmQB2DBkBczmrGCR3_rcUDy4qrKCnHa0yag705ZSzyOuLGZg6g/exec';
+
+function saveToSheet(btn){
+  var q=window._lastQuote;
+  if(!q){alert('Please generate the Quote Template first.');return;}
+
+  // Read NET and SELLING from Calc table (first data row)
+  var net='', selling='';
+  var calcTbl=document.querySelector('#calcOut table');
+  if(calcTbl){
+    var dataRow=calcTbl.querySelector('tr:nth-child(2)');
+    if(dataRow){
+      var cells=dataRow.querySelectorAll('td');
+      // If has label column: cells[0]=trucker, cells[1]=NET, cells[2]=SELLING
+      // If no label column: cells[0]=NET, cells[1]=SELLING
+      var offset=cells.length>=3?1:0;
+      net=cells[offset]?cells[offset].textContent.replace(/\(.*\)/,'').trim():'';
+      selling=cells[offset+1]?cells[offset+1].textContent.trim():'';
+    }
+  }
+
+  var trucker='';
+  var rmEl=document.querySelector('.rm-selected-trucker');
+  if(rmEl) trucker=rmEl.textContent.trim();
+  var now=new Date();
+  var dateStr=(now.getMonth()+1)+'/'+(now.getDate());
+
+  var deliveryTo=q.deliveryTo||'';
+
+  // Notes: only write if special tags exist
+  var notesParts=[];
+  if(q.wt) notesParts.push(q.wt);
+  if(q.ctr) notesParts.push(q.ctr);
+  var notes='';
+  if(q.special) notes=notesParts.join(' / ')+(notesParts.length?' / ':'')+q.special;
+
+  var payload={
+    date: dateStr,
+    customer: '',
+    pod: q.pod,
+    deliveryTo: deliveryTo,
+    delivery: deliveryTo,
+    zip: q.zip||'',
+    trucker: trucker,
+    net: net,
+    selling: selling,
+    special: q.special,
+    notes: notes
+  };
+
+  btn.textContent='Saving…';
+  btn.disabled=true;
+
+  var cbName='_sheetCb_'+Date.now();
+  var url=SHEET_URL+'?callback='+cbName+'&data='+encodeURIComponent(JSON.stringify(payload));
+  var done=false;
+
+  window[cbName]=function(res){
+    if(done)return;
+    done=true;
+    clearTimeout(window['_sheetTimer_'+cbName]);
+    delete window[cbName];
+    var s=document.getElementById('_sheetScript');
+    if(s)s.remove();
+    if(res&&res.ok){
+      btn.textContent='✓ Saved!';
+      btn.style.color='#1a6b3a';
+      setTimeout(function(){btn.textContent='💾 Save to Sheet';btn.disabled=false;btn.style.color='';},2500);
+    } else {
+      btn.textContent='❌ Failed';
+      btn.disabled=false;
+      setTimeout(function(){btn.textContent='💾 Save to Sheet';btn.style.color='';},2500);
+      alert('Save failed: '+(res&&res.error?res.error:'Unknown error'));
+    }
+  };
+
+  window['_sheetTimer_'+cbName]=setTimeout(function(){
+    if(done)return;
+    done=true;
+    delete window[cbName];
+    btn.textContent='❌ Timeout';
+    btn.disabled=false;
+    setTimeout(function(){btn.textContent='💾 Save to Sheet';btn.style.color='';},2500);
+    alert('Save timed out — Apps Script may not be deployed correctly.');
+  },12000);
+
+  var s=document.createElement('script');
+  s.id='_sheetScript';
+  s.src=url;
+  s.onerror=function(){
+    if(done)return;
+    done=true;
+    clearTimeout(window['_sheetTimer_'+cbName]);
+    delete window[cbName];
+    btn.textContent='❌ Failed';
+    btn.disabled=false;
+    setTimeout(function(){btn.textContent='💾 Save to Sheet';btn.style.color='';},2500);
+    alert('Could not load Apps Script — check deployment URL.');
+  };
+  document.head.appendChild(s);
+}
+
+function copyTextBtn(text,btn,shipmentIdx){
+  var ta=document.createElement('textarea');
+  ta.value=text;ta.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:0';
+  document.body.appendChild(ta);ta.focus();ta.select();
+  var ok=false;try{ok=document.execCommand('copy');}catch(e){}
+  document.body.removeChild(ta);
+  if(!ok&&navigator.clipboard)navigator.clipboard.writeText(text).catch(function(){});
+  if(typeof shipmentIdx==='number')markCurrentShipmentEmailSent(shipmentIdx);
+  const o=btn.textContent;btn.textContent='Copied!';btn.classList.add('ok');
+  setTimeout(()=>{btn.textContent=o;btn.classList.remove('ok');},1500);
+}
+
+function clearAll(){
+  $('ri').value='';$('rwrap').style.display='none';$('ewrap').style.display='none';$('ewrap').innerHTML='';
+  $('tabs').innerHTML='';$('panels').innerHTML='';BT=[];emailInited.clear();
+  // Reset calc input user-edit flags so new parse data flows in
+  ['calcPod','calcDeliv'].forEach(function(id){var el=document.getElementById(id);if(el)el._userEdited=false;});
+  var pi=document.getElementById('calcPod'),di=document.getElementById('calcDeliv');
+  if(pi){pi._userEdited=false;}if(di){di._userEdited=false;}
+}
+
+const SHIPMENT_MEMORY_KEY='logisticsTool.recentShipments.v1';
+const SHIPMENT_MEMORY_LIMIT=50;
+let shipmentMemoryCache=null;
+
+function readShipmentMemory(){
+  if(shipmentMemoryCache)return shipmentMemoryCache;
+  try{
+    const data=JSON.parse(localStorage.getItem(SHIPMENT_MEMORY_KEY)||'[]');
+    shipmentMemoryCache=Array.isArray(data)?data:[];
+  }catch(e){shipmentMemoryCache=[];}
+  return shipmentMemoryCache;
+}
+
+function writeShipmentMemory(items){
+  shipmentMemoryCache=items.slice(0,SHIPMENT_MEMORY_LIMIT);
+  try{localStorage.setItem(SHIPMENT_MEMORY_KEY,JSON.stringify(shipmentMemoryCache));}catch(e){}
+}
+
+function shipmentMemoryId(b){
+  return [
+    b.podKey||b.podDisplay||'',
+    b.rawAddr||b.dispAddr||b.fullAddr||'',
+    b.ctr||'',
+    b.wt||''
+  ].join('|').toLowerCase().replace(/\s+/g,' ').trim();
+}
+
+function isMemoryExport(r){
+  return !!(r&&(r.isExport||(/^Pick up:/mi.test(r.formatted||'')&&/^POL:/mi.test(r.formatted||''))));
+}
+
+function shipmentMemoryTitle(r){
+  if(isMemoryExport(r))return (r.delivery||'Pick up address')+' - '+(r.podDisplay||r.podKey||'POL');
+  return (r.podDisplay||r.podKey||'POD')+' -> '+(r.delivery||'Delivery address');
+}
+
+function shipmentMemoryArg(id){
+  return encodeURIComponent(id||'').replace(/'/g,'%27');
+}
+
+function decodeShipmentMemoryId(id){
+  try{return decodeURIComponent(id||'');}catch(e){return id||'';}
+}
+
+function saveShipmentMemory(items){
+  if(!items||!items.length)return;
+  let saved=readShipmentMemory();
+  items.forEach(function(b){
+    if(!b||!b.formatted)return;
+    const id=shipmentMemoryId(b);
+    if(!id||id==='|||')return;
+    const existing=saved.find(function(x){return x.id===id;});
+    const rec={
+      id:id,
+      ts:Date.now(),
+      podKey:b.podKey||'',
+      podDisplay:b.podDisplay||'',
+      delivery:b.dispAddr&&b.dispAddr!=='[Address]'?b.dispAddr:(b.rawAddr||b.fullAddr||''),
+      formatted:b.formatted,
+      fullAddr:b.fullAddr||'',
+      rawAddr:b.rawAddr||'',
+      raw:b.raw||'',
+      ctr:b.ctr||'',
+      wt:b.wt||'',
+      ow:!!b.ow,
+      res:!!b.res,
+      hazmat:!!b.hazmat,
+      reefer:!!b.reefer,
+      soc:!!b.soc,
+      socNoReturn:!!b.socNoReturn,
+      isExport:!!b.isExport,
+      emailSentAt:(existing&&existing.emailSentAt)||b.emailSentAt||0
+    };
+    saved=saved.filter(function(x){return x.id!==id;});
+    saved.unshift(rec);
+  });
+  writeShipmentMemory(saved);
+  renderShipmentMemory();
+}
+
+function currentMemoryPod(){
+  const active=document.querySelector('.bp2.on');
+  if(active&&/^p\d+$/.test(active.id||'')){
+    const idx=parseInt(active.id.slice(1),10);
+    if(BT&&BT[idx])return BT[idx].podKey||BT[idx].podDisplay||'';
+  }
+  return (BT&&BT[0]&&(BT[0].podKey||BT[0].podDisplay))||'';
+}
+
+function updateMemoryChecksForPod(pod){
+  document.querySelectorAll('.memShipCb').forEach(function(cb){
+    cb.checked=!!pod&&cb.dataset.pod===pod;
+  });
+}
+
+function renderShipmentMemory(){
+  const el=document.getElementById('memList');
+  if(!el)return;
+  const saved=readShipmentMemory();
+  if(!saved.length){
+    el.innerHTML='<span style="color:#aaa">No saved shipments yet.</span>';
+    return;
+  }
+  const activePod=currentMemoryPod();
+  el.innerHTML=saved.map(function(r){
+    const flags=[r.ow?'OW':'',r.res?'Residential':'',r.hazmat?'HAZMAT':'',r.reefer?'Reefer':'',r.soc?(r.socNoReturn?'SOC no return':'SOC'):''].filter(Boolean).join(' / ');
+    const meta=[r.wt,r.ctr,flags].filter(Boolean).join(' · ');
+    const d=new Date(r.ts);
+    const time=(d.getMonth()+1)+'/'+d.getDate()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+    const checked=activePod&&(r.podKey||r.podDisplay||'')===activePod?' checked':'';
+    const emailSent=r.emailSentAt?'<span style="display:inline-flex;align-items:center;gap:4px;color:#2a7a3a;font-weight:700;background:#e8f5e9;border:1px solid #b2dfdb;border-radius:999px;padding:1px 7px;margin-left:6px">Email sent</span>':'';
+    return `<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid #f0ede8">
+      <input type="checkbox" class="memShipCb" data-id="${Attr(shipmentMemoryArg(r.id))}" data-pod="${Attr(r.podKey||r.podDisplay||'')}"${checked} title="Include this shipment in merged same-POD drafts" style="margin-top:11px;width:14px;height:14px;accent-color:#1a1a1a;cursor:pointer;flex-shrink:0">
+      <button class="bs" onclick="showShipmentMemory('${Attr(shipmentMemoryArg(r.id))}')" style="text-align:left;flex:1;border-color:#e0ddd7;background:#fff;padding:7px 10px">
+        <span style="display:block;font-size:13px;color:#1a1a1a;font-weight:600">${H(shipmentMemoryTitle(r))}${emailSent}</span>
+        <span style="display:block;font-size:11px;color:#888;margin-top:2px">${H(meta||'Formatted shipment')} · ${H(time)}</span>
+      </button>
+      <button class="bs" onclick="deleteShipmentMemory('${Attr(shipmentMemoryArg(r.id))}')" title="Delete this record" style="font-size:12px;color:#c0392b;border-color:#f1c4bd;padding:7px 10px">Delete</button>
+    </div>`;
+  }).join('');
+}
+
+function markShipmentEmailSent(ids){
+  const idSet=new Set((ids||[]).map(function(id){return decodeShipmentMemoryId(id||'');}).filter(Boolean));
+  if(!idSet.size)return;
+  const now=Date.now();
+  const saved=readShipmentMemory();
+  let changed=false;
+  saved.forEach(function(r){
+    if(idSet.has(r.id)){
+      r.emailSentAt=now;
+      changed=true;
+    }
+  });
+  if(changed){
+    writeShipmentMemory(saved);
+    renderShipmentMemory();
+  }
+}
+
+function markCurrentShipmentEmailSent(i){
+  if(!BT||!BT[i])return;
+  const b=BT[i];
+  const items=selectedSamePodShipments(b);
+  const ids=(items&&items.length?items:[currentToMergeItem(b)]).map(function(item){return item.id;});
+  markShipmentEmailSent(ids);
+}
+
+function findShipmentMemory(id){
+  id=decodeShipmentMemoryId(id);
+  return readShipmentMemory().find(function(r){return r.id===id;});
+}
+
+function showShipmentMemory(id){
+  id=decodeShipmentMemoryId(id);
+  const r=findShipmentMemory(id);
+  if(!r)return;
+  const old=document.getElementById('shipmentMemoryModal');
+  if(old)old.remove();
+  const modal=document.createElement('div');
+  modal.id='shipmentMemoryModal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  modal.innerHTML=`<div style="background:#fff;border-radius:12px;padding:22px;max-width:720px;width:100%;max-height:86vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#aaa;margin-bottom:4px">Saved shipment</div>
+    <div style="font-size:16px;font-weight:600;color:#1a1a1a;margin-bottom:4px">${H(shipmentMemoryTitle(r))}</div>
+    <div style="font-size:12px;color:#888;margin-bottom:12px">${H([r.wt,r.ctr].filter(Boolean).join(' / '))}</div>
+    <pre id="shipmentMemoryText" style="white-space:pre-wrap;margin:0;max-height:260px;overflow:auto;background:#faf9f6;border:1px solid #f0ede8;border-radius:6px;padding:11px;font-family:Calibri,Arial,sans-serif;font-size:14px;line-height:1.55;color:#222">${H(r.formatted)}</pre>
+    <div style="display:flex;justify-content:space-between;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid #f0ede8;flex-wrap:wrap">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="bp" onclick="copyPlainText(findShipmentMemory('${Attr(shipmentMemoryArg(r.id))}').formatted);this.textContent='Copied!'">Copy formatted</button>
+        <button class="bs" onclick="useShipmentInCalculator('${Attr(shipmentMemoryArg(r.id))}',this)">Use in calculator</button>
+        <button class="bs" onclick="restoreShipmentInput('${Attr(shipmentMemoryArg(r.id))}',this)">Restore to input</button>
+        <button class="bs" onclick="deleteShipmentMemory('${Attr(shipmentMemoryArg(r.id))}')" style="color:#c0392b;border-color:#f1c4bd">Delete</button>
+      </div>
+      <button class="bs" onclick="document.getElementById('shipmentMemoryModal').remove()">Close</button>
+    </div>
+  </div>`;
+  modal.addEventListener('click',function(e){if(e.target===modal)modal.remove();});
+  document.body.appendChild(modal);
+}
+
+function memoryEmailFormatted(r){
+  if(!r)return'';
+  if(r.res)return r.formatted||'';
+  const compact=compactDeliveryForEmail(r.fullAddr||r.rawAddr||r.delivery||'');
+  return (r.formatted||'').replace(/^Deliver to: .+$/m,'Deliver to: '+compact);
+}
+
+function memoryToMergeItem(r){
+  const current=(BT||[]).find(function(b){return shipmentMemoryId(b)===r.id;});
+  if(current)return currentToMergeItem(current);
+  const isExport=isMemoryExport(r);
+  return{
+    id:r.id,
+    podKey:r.podKey||r.podDisplay||'',
+    podDisplay:r.podDisplay||r.podKey||'',
+    delivery:r.delivery||'',
+    subjectDelivery:compactDeliveryForEmail(r.fullAddr||r.rawAddr||r.delivery||''),
+    formatted:memoryEmailFormatted(r),
+    ts:r.ts||0,
+    isExport:isExport
+  };
+}
+
+function currentToMergeItem(b){
+  return{
+    id:shipmentMemoryId(b),
+    podKey:b.podKey||b.podDisplay||'',
+    podDisplay:b.podDisplay||b.podKey||'',
+    delivery:b.dispAddr||b.rawAddr||b.fullAddr||'',
+    subjectDelivery:compactDeliveryForEmail(b.fullAddr||b.rawAddr||b.dispAddr||b.city||''),
+    formatted:emailFormatted(b),
+    ts:Date.now(),
+    isExport:!!b.isExport
+  };
+}
+
+function batchQuoteSubject(items,b){
+  const pod=(b&&b.podDisplay)||(b&&b.podKey)||(items&&items[0]&&(items[0].podDisplay||items[0].podKey))||'POD';
+  const isExport=!!((b&&b.isExport)||(items||[]).some(function(item){return item.isExport;}));
+  const seen=new Set();
+  const deliveries=(items||[]).map(function(item){
+    return item.subjectDelivery||compactDeliveryForEmail(item.delivery||'');
+  }).filter(function(addr){
+    if(!addr||seen.has(addr))return false;
+    seen.add(addr);
+    return true;
+  });
+  if(isExport)return `${deliveries.join('/')} - ${pod}`.trim();
+  return `${pod} - ${deliveries.join('/')}`.trim();
+}
+
+function selectedSamePodShipments(b){
+  const pod=b.podKey||b.podDisplay||'';
+  const saved=readShipmentMemory().filter(function(r){return (r.podKey||r.podDisplay||'')===pod;});
+  const boxes=Array.from(document.querySelectorAll('.memShipCb')).filter(function(cb){
+    return cb.dataset.pod===pod;
+  });
+  const checkedIds=new Set(boxes.filter(function(cb){return cb.checked;}).map(function(cb){return decodeShipmentMemoryId(cb.dataset.id||'');}));
+  let items=saved.filter(function(r){return !boxes.length||checkedIds.has(r.id);}).map(memoryToMergeItem);
+  (BT||[]).filter(function(x){return (x.podKey||x.podDisplay||'')===pod;}).forEach(function(x){
+    const item=currentToMergeItem(x);
+    if((!boxes.length||checkedIds.has(item.id))&&!items.some(function(existing){return existing.id===item.id;}))items.push(item);
+  });
+  const current=currentToMergeItem(b);
+  const currentInSaved=saved.some(function(r){return r.id===current.id;});
+  if(!currentInSaved&&!items.some(function(x){return x.id===current.id;}))items.unshift(current);
+  items=items.filter(function(x){return x.formatted;});
+  items.sort(function(a,b){return (a.ts||0)-(b.ts||0);});
+  return items;
+}
+
+function mergedShipmentBody(items){
+  if(!items||!items.length)return'';
+  if(items.length===1)return items[0].formatted;
+  return items.map(function(item,idx){
+    return (idx+1)+'.\n'+item.formatted;
+  }).join('\n\n');
+}
+
+function useShipmentInCalculator(id,btn){
+  id=decodeShipmentMemoryId(id);
+  const r=findShipmentMemory(id);
+  if(!r)return;
+  const p=document.getElementById('calcPod'),d=document.getElementById('calcDeliv');
+  if(p){p.value=r.podDisplay||r.podKey||'';p._userEdited=true;}
+  if(d){d.value=r.delivery||'';d._userEdited=true;}
+  if(typeof runCalc==='function')runCalc();
+  if(btn){btn.textContent='Added to calculator';btn.classList.add('ok');}
+}
+
+function restoreShipmentInput(id,btn){
+  id=decodeShipmentMemoryId(id);
+  const r=findShipmentMemory(id);
+  if(!r)return;
+  $('ri').value=r.raw||r.formatted||'';
+  if(btn){btn.textContent='Restored';btn.classList.add('ok');}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function deleteShipmentMemory(id){
+  id=decodeShipmentMemoryId(id);
+  const saved=readShipmentMemory().filter(function(r){return r.id!==id;});
+  writeShipmentMemory(saved);
+  renderShipmentMemory();
+  const modal=document.getElementById('shipmentMemoryModal');
+  if(modal&&!findShipmentMemory(id))modal.remove();
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+// Kick off live vendor data fetch from Google Drive on page load
+renderShipmentMemory();
+fetchVendorData();
+
+
+// ─── QUOTE TEMPLATE ──────────────────────────────────────────────────────────
+function buildQuoteTable(){
+  var selling='';
+  var calcTbl=document.querySelector('#calcOut table');
+  if(calcTbl){
+    var sells=[];
+    Array.from(calcTbl.querySelectorAll('tr')).slice(1).forEach(function(tr){
+      var cells=tr.querySelectorAll('td');
+      var last=cells[cells.length-1];
+      if(last){
+        // Strip leading $ and whitespace, keep just the number
+        var txt=last.textContent.trim().replace(/^\$\s*/,'');
+        sells.push(txt);
+      }
+    });
+    selling=sells.join(' / ');
+  }
+  var emailSubj='';
+  var esEl=document.getElementById('es0');
+  if(typeof BT!=='undefined'&&BT&&BT[0])emailSubj=emailSubject(BT[0]);
+  else if(esEl&&esEl.innerText.trim())emailSubj=esEl.innerText.trim();
+  if(!emailSubj){
+    var pod=document.getElementById('calcPod').value||'';
+    var deliv=compactDeliveryForEmail(document.getElementById('calcDeliv').value||'');
+    emailSubj=[pod,deliv].filter(Boolean).join(' - ');
+  }
+  var podKey=(typeof BT!=='undefined'&&BT&&BT[0]&&(BT[0].podKey||BT[0].podDisplay))||'';
+  if(!podKey){
+    var calcPodEl=document.getElementById('calcPod');
+    var fallbackPod=(calcPodEl&&calcPodEl.value)||emailSubj.split(' - ')[0]||'';
+    var fallbackPodObj=typeof normPOD==='function'?normPOD(fallbackPod,true):null;
+    podKey=(fallbackPodObj&&fallbackPodObj.k)||fallbackPod;
+  }
+  var surchargeLines=[];
+  if(/la\s*lb|los angeles|long beach/i.test(podKey)) surchargeLines.push("PierPass at LA LB: TMF+CTF $50/20', or $100/40' ($52.5/20' or $105/40' starting from 8/1)");
+  if(/oakland/i.test(podKey))           surchargeLines.push('Gate Fee at Oakland: $55 each ctn / $ 60 each ctn (effective 7/1/2026)');
+  if(/boston/i.test(podKey))            surchargeLines.push("Usage Fee at Boston: $65/20' or $85/40'");
+  if(/miami/i.test(podKey))             surchargeLines.push('Landing Fee at Miami: $110/POMTOC, $98.5/APM & Port Everglades each ctn');
+  if(/ny|nj|new york|new jersey/i.test(podKey)){
+    surchargeLines.push('Port Liberty NY Toll-$150 if applicable each way');
+    surchargeLines.push('Port Liberty Bayonne Toll-$40 if applicable each way.');
+  }
+
+  // Snapshot for Save to Sheet
+  var delivTo=(typeof BT!=='undefined'&&BT&&BT[0])?compactDeliveryForEmail(BT[0].fullAddr||BT[0].dispAddr||BT[0].rawAddr||''):'';
+  var zip=(typeof BT!=='undefined'&&BT&&BT[0])?BT[0].fullAddr.match(/\b\d{5}\b/)||'':'';
+  if(Array.isArray(zip))zip=zip[0]||'';
+  var ctr=(typeof BT!=='undefined'&&BT&&BT[0])?BT[0].ctr:'';
+  var wt=(typeof BT!=='undefined'&&BT&&BT[0])?BT[0].wt:'';
+  var specialParts=[];
+  if(typeof BT!=='undefined'&&BT){
+    if(BT.some(function(b){return b.ow;})) specialParts.push('OW');
+    if(BT.some(function(b){return b.reefer;})) specialParts.push('Reefer');
+    if(BT.some(function(b){return b.hazmat;})) specialParts.push('HAZMAT');
+    if(BT.some(function(b){return b.res;})) specialParts.push('Residential');
+  }
+  window._lastQuote={
+    pod: podKey||emailSubj.split('-')[0].trim(),
+    deliveryTo: delivTo,
+    zip: zip,
+    ctr: ctr,
+    wt: wt,
+    selling: selling?('$'+selling.split('/')[0].trim()):'',
+    special: specialParts.join(' / '),
+    emailSubj: emailSubj
+  };
+
+  var wrap=document.getElementById('quoteTableWrap');
+  var fs=_qtFontSize+'px';
+  var ff='font-family:Calibri,Arial,sans-serif;';
+  var bdr='border:1px solid #b8c8b4;';
+  var base=ff+'font-size:'+fs+';'+bdr+'padding:5px 10px;';
+  // Label col: sage green ONLY for the POD row (rowWide), plain white for data rows
+  var lcs=base+'background:#fff;font-weight:600;color:#1a1a1a;vertical-align:bottom;';
+  var vcs=base+'background:#fff;color:#1a1a1a;vertical-align:bottom;';
+  var gcs=base+'background:#fff;color:#555;vertical-align:bottom;font-style:italic;';
+  var sageBg='#c8dfc4';
+  window._qtBase=base;window._qtLcs=lcs;window._qtVcs=vcs;window._qtGcs=gcs;
+
+  function rowWide(label,val,boldVal){
+    // POD & Delivery row and Equipment row: sage green label, white value
+    var labelStyle=base+'background:'+sageBg+';font-weight:600;color:#1a1a1a;white-space:nowrap;vertical-align:bottom;';
+    var valStyle=base+'background:#fff;'+(boldVal?'font-weight:600;':'')+'color:#1a1a1a;vertical-align:bottom;';
+    return '<tr>'
+      +'<td style="'+labelStyle+'" contenteditable="false">'+label+'</td>'
+      +'<td colspan="2" style="'+valStyle+'" contenteditable="true" spellcheck="false">'+val+'</td>'
+      +'</tr>';
+  }
+  function row3(label,val,note){
+    return '<tr>'
+      +'<td style="'+lcs+'" contenteditable="false">'+label+'</td>'
+      +'<td style="'+vcs+'" contenteditable="true" spellcheck="false">'+val+'</td>'
+      +'<td style="'+gcs+'" contenteditable="true" spellcheck="false">'+note+'</td>'
+      +'</tr>';
+  }
+  function rowFull(txt,extraStyle){
+    return '<tr><td colspan="3" style="'+base+'background:#fff;'+(extraStyle||'')+'color:#222;" contenteditable="true" spellcheck="false">'+txt+'</td></tr>';
+  }
+  function rowSection(txt){
+    // Sage green section header rows, black bold text
+    return '<tr><td colspan="3" style="'+base+'background:'+sageBg+';font-weight:700;font-size:'+(parseInt(fs))+'px;color:#1a1a1a;letter-spacing:.03em;text-align:center;padding:5px 10px;" contenteditable="false">'+txt+'</td></tr>';
+  }
+
+  // Build Equipment/Load Details value from BT shipments
+  var eqLines=['Legal Weight (less 17.2MT/20 or 19.9MT/40HC)'];
+  if(typeof BT!=='undefined'&&BT&&BT.length){
+    BT.forEach(function(b){
+      var specialTags=[];
+      var rawText=(b.raw||'').toLowerCase();
+      // Detect OW
+      if(b.ow) specialTags.push('****OW');
+      // Detect HAZMAT/DG
+      if(b.hazmat) specialTags.push('HAZMAT');
+      // Detect Reefer
+      if(/40rh|40rf|reefer/i.test(b.ctr||'')||/reefer/i.test(rawText)) specialTags.push('Reefer');
+      if(specialTags.length){
+        // Format: [weight] [tags] / [container]  — matching formatter line 3 style
+        var wtStr=b.wt&&b.wt!=='Legal Weight'?b.wt:'Legal Weight';
+        eqLines.push(wtStr+' / '+b.ctr+' '+specialTags.join(' '));
+      }
+    });
+  }
+  // Build HTML for Equipment/Load Details: bold the special cargo lines
+  var eqHtml=eqLines.map(function(line,i){
+    if(i===0) return line; // first line = legal weight, normal
+    return '<strong>'+line+'</strong>'; // OW/HAZMAT/Reefer lines = bold
+  }).join('<br>');
+
+  var html='<table id="quoteTable" style="border-collapse:collapse;table-layout:fixed;width:600px;border:2px solid #b8c8b4;"><colgroup><col style="width:33.33%"><col style="width:33.33%"><col style="width:33.34%"></colgroup>';
+  html+=rowWide('POD & Delivery', emailSubj, true);
+  html+=rowWide('Equipment/Load Details',eqHtml);
+  var hasToll=window._calcToll&&window._calcToll>0;
+  var truckLabel=hasToll?'Truck + FSC + Toll':'Truck + FSC';
+  html+=row3(truckLabel,'$ '+selling,'Per container');
+  var needsTriaxle=(typeof BT!=='undefined'&&BT&&BT.some(function(b){return b.ow&&/(?:^|x)20GP\b/i.test(b.ctr||'');}));
+  html+=row3(needsTriaxle?'Triaxle':'Chassis',needsTriaxle?'$ 75':'$ 45','Per Day, min 2');
+  var anyReefer=(typeof BT!=='undefined'&&BT&&BT.some(function(b){return b.reefer;}));
+  if(anyReefer) html+=row3('Reefer fee','$ ','Per container');
+  var anyRes=(typeof BT!=='undefined'&&BT&&BT.some(function(b){return b.res;}));
+  if(anyRes) html+=row3('Residential fee','$ ','Per container');
+  var anyHazmat=(typeof BT!=='undefined'&&BT&&BT.some(function(b){return b.hazmat;}));
+  if(anyHazmat) html+=row3('HAZMAT fee','$ ','Per container');
+  var anyOW=(typeof BT!=='undefined'&&BT&&BT.some(function(b){return b.ow;}));
+  if(anyOW) html+=row3('OW fee','$ ','Per container');
+  html+='<tr id="qtAddAnchorTop"></tr>';
+  html+=rowSection('If Needed');
+  html+=row3('Prepull / Stop Off / Redelivery','$ 150','Per occurrence');
+  html+=row3('Yard Storage','$ 50','Per day');
+  html+=row3('Detention','$ 95','Per Hour, 1 hr free');
+  html+=row3('Chassis Split','$ 125','Per occurrence');
+  if(anyHazmat) html+=row3('Placard Removal fee','$','Per Placard');
+  if(/minne|st\.?\s*paul/i.test(podKey)) html+=row3('CP / UP Rail Surcharge','$ 150','Per occurrence');
+  if(/denver/i.test(podKey)) html+=row3('BNSF Hudson Surcharge','$ 150','Per occurrence');
+  if(/chicago/i.test(podKey)) html+=row3('SOC return fee','$ 225','Per container');
+  html+='<tr id="qtAddAnchor"></tr>';
+  html+='<tr><td colspan="3" style="'+base+'background:#fff;color:#222;white-space:pre-line;font-size:'+(parseInt(fs)-1)+'px;" contenteditable="true" spellcheck="false">1-2 Chassis split will incur for the grounded rail yards &amp; when returning SOC empty.\nCincinnati/Atlanta/Memphis : ALL terminals grounded. 2 splits will be incurred.\nGrounded facility = No chassis available.</td></tr>';
+  html+=rowSection('TRUCK SURCHARGES');
+  if(surchargeLines.length){
+    surchargeLines.forEach(function(line){ html+=rowFull(line,''); });
+  } else {
+    html+=rowFull('','');
+  }
+  var finalNote='Please note that due to the increased fuel price, our rate is updated on the daily basis. Rate applies for business delivery/live unload/COC.';
+  if(anyRes){
+      finalNote+='\n\nFor residential deliveries, please note that it is the customer\'s responsibility to ensure there is a legal truck route to the delivery location.\n\nAdditionally, the customer must have the capability to unload the container contents without the use of a loading dock.';
+  }
+  html+=rowFull(finalNote,'font-size:'+(parseInt(fs)-1)+'px;white-space:pre-line;');
+  html+='</table>';
+
+  html+='<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center">';
+  html+='<button id="qtUndoBtn" class="bs" onclick="qtUndo()" style="font-size:11px;padding:3px 10px;opacity:0.38" disabled title="Undo (撤销)">↩ Undo</button>';
+  html+='<button id="qtRedoBtn" class="bs" onclick="qtRedo()" style="font-size:11px;padding:3px 10px;opacity:0.38" disabled title="Redo (重做)">↪ Redo</button>';
+  html+='<span style="width:1px;height:18px;background:#e0ddd7;display:inline-block;margin:0 2px"></span>';
+  html+='<button class="bs" onclick="addQuoteRowAt(\'qtAddAnchorTop\')" style="font-size:11px;padding:3px 10px">+ Add row below Chassis</button>';
+  html+='<button class="bs" onclick="addQuoteRow()" style="font-size:11px;padding:3px 10px">+ Add row below Chassis Split</button>';
+  html+='<span style="width:1px;height:18px;background:#e0ddd7;display:inline-block;margin:0 2px"></span>';
+  html+='<button class="bs" onclick="copyQuoteTable(this)" style="font-size:11px;padding:3px 10px">Copy table</button>';
+  html+='<button class="bs" onclick="saveToSheet(this)" style="font-size:11px;padding:3px 10px;color:#1a6b3a;border-color:#1a6b3a">💾 Save to Sheet</button>';
+  html+='<button class="bs" onclick="_qtUndo=[];_qtRedo=[];buildQuoteTable()" style="font-size:11px;padding:3px 10px;color:#aaa;border-color:#e0ddd7">↺ Reset</button>';
+  html+='</div>';
+  html+='<div style="display:flex;align-items:center;gap:6px;margin-top:7px;flex-wrap:wrap">';
+  html+='<span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#bbb">Font size</span>';
+  html+='<button class="bs" onclick="qtFontAdj(-1)" style="font-size:12px;padding:2px 9px;line-height:1.4">−</button>';
+  html+='<span id="qtFontLabel" style="font-size:12px;color:#555;min-width:30px;text-align:center">14</span>';
+  html+='<button class="bs" onclick="qtFontAdj(+1)" style="font-size:12px;padding:2px 9px;line-height:1.4">+</button>';
+  html+='<span style="font-size:11px;color:#bbb">pt — applies to all table cells</span>';
+  html+='</div>';
+
+  wrap.innerHTML=html;
+  wrap.style.display='block';
+  _qtUndo=[];_qtRedo=[];_qtSetLastSnapshot();_qtUpdateBtns();
+}
+function _makeAddedRow(){
+  // Use exact same styles set by buildQuoteTable
+  var lcs=window._qtLcs||('font-family:Calibri,Arial,sans-serif;font-size:'+_qtFontSize+'px;border:1px solid #b8c8b4;padding:5px 10px;background:#fff;font-weight:600;color:#1a1a1a;white-space:nowrap;vertical-align:bottom;');
+  var vcs=window._qtVcs||('font-family:Calibri,Arial,sans-serif;font-size:'+_qtFontSize+'px;border:1px solid #b8c8b4;padding:5px 10px;background:#fff;color:#1a1a1a;white-space:nowrap;vertical-align:bottom;');
+  var gcs=window._qtGcs||('font-family:Calibri,Arial,sans-serif;font-size:'+_qtFontSize+'px;border:1px solid #b8c8b4;padding:5px 10px;background:#fff;color:#555;white-space:nowrap;vertical-align:bottom;font-style:italic;');
+  var tr=document.createElement('tr');
+  var td1=document.createElement('td');
+  td1.setAttribute('contenteditable','true');td1.setAttribute('spellcheck','false');td1.style.cssText=lcs;
+  var td2=document.createElement('td');
+  td2.setAttribute('contenteditable','true');td2.setAttribute('spellcheck','false');td2.style.cssText=vcs;
+  var td3=document.createElement('td');
+  td3.setAttribute('contenteditable','true');td3.setAttribute('spellcheck','false');td3.style.cssText=gcs;
+  var td4=document.createElement('td');
+  td4.style.cssText='border:none;padding:0;width:16px;vertical-align:middle;';
+  var btn=document.createElement('button');
+  btn.textContent='✕';btn.className='qt-del';
+  btn.style.cssText='background:none;border:none;color:#ccc;cursor:pointer;font-size:11px;padding:2px 3px;line-height:1;font-family:inherit;';
+  btn.title='Remove row';
+  btn.type='button';
+  td4.appendChild(btn);
+  tr.appendChild(td1);tr.appendChild(td2);tr.appendChild(td3);tr.appendChild(td4);
+  return tr;
+}
+function addQuoteRowAt(anchorId){
+  var anchor=document.getElementById(anchorId||'qtAddAnchor');
+  if(!anchor)return;
+  qtPush();
+  anchor.parentNode.insertBefore(_makeAddedRow(), anchor);
+  _qtSetLastSnapshot();
+  _qtUpdateBtns();
+}
+function addQuoteRow(){
+  var anchor=document.getElementById('qtAddAnchor');
+  if(!anchor)return;
+  qtPush();
+  anchor.parentNode.insertBefore(_makeAddedRow(), anchor);
+  _qtSetLastSnapshot();
+  _qtUpdateBtns();
+}
+// ─── QUOTE TABLE UNDO/REDO ────────────────────────────────────────────────────
+var _qtUndo=[], _qtRedo=[], _qtLastHtml='';
+function _qtCurrentHtml(){
+  var tbl=document.getElementById('quoteTable');
+  return tbl?tbl.outerHTML:'';
+}
+function _qtSetLastSnapshot(){
+  _qtLastHtml=_qtCurrentHtml();
+  var tbl=document.getElementById('quoteTable');
+  var td=tbl&&tbl.querySelector('td');
+  var fs=td&&parseFloat(td.style.fontSize);
+  if(fs){
+    _qtFontSize=fs;
+    var lbl=document.getElementById('qtFontLabel');
+    if(lbl)lbl.textContent=_qtFontSize;
+  }
+}
+function qtPush(){
+  var current=_qtCurrentHtml();
+  if(!current) return;
+  if(_qtUndo[_qtUndo.length-1]!==current) _qtUndo.push(current);
+  if(_qtUndo.length>40) _qtUndo.shift();
+  _qtRedo=[];
+  _qtLastHtml=current;
+  _qtUpdateBtns();
+}
+function qtRecordInputChange(){
+  var current=_qtCurrentHtml();
+  if(!current) return;
+  var prev=_qtLastHtml||current;
+  if(prev!==current){
+    if(_qtUndo[_qtUndo.length-1]!==prev) _qtUndo.push(prev);
+    if(_qtUndo.length>40) _qtUndo.shift();
+    _qtRedo=[];
+    _qtLastHtml=current;
+  }
+  _qtUpdateBtns();
+}
+var _qtFontSize=14;
+function qtFontAdj(delta){
+  var tbl=document.getElementById('quoteTable');
+  var lbl=document.getElementById('qtFontLabel');
+  if(!tbl)return;
+  qtPush();
+  _qtFontSize=Math.max(7,Math.min(20,_qtFontSize+delta));
+  if(lbl)lbl.textContent=_qtFontSize;
+  tbl.querySelectorAll('td').forEach(function(td){
+    td.style.fontSize=_qtFontSize+'px';
+  });
+  _qtSetLastSnapshot();
+  _qtUpdateBtns();
+}
+
+function qtUndo(){
+  var tbl=document.getElementById('quoteTable');
+  if(!tbl||!_qtUndo.length) return;
+  _qtRedo.push(tbl.outerHTML);
+  var prev=_qtUndo.pop();
+  var tmp=document.createElement('div');
+  tmp.innerHTML=prev;
+  tbl.parentNode.replaceChild(tmp.firstChild, tbl);
+  _qtSetLastSnapshot();
+  _qtUpdateBtns();
+}
+function qtRedo(){
+  var tbl=document.getElementById('quoteTable');
+  if(!tbl||!_qtRedo.length) return;
+  _qtUndo.push(tbl.outerHTML);
+  var next=_qtRedo.pop();
+  var tmp=document.createElement('div');
+  tmp.innerHTML=next;
+  tbl.parentNode.replaceChild(tmp.firstChild, tbl);
+  _qtSetLastSnapshot();
+  _qtUpdateBtns();
+}
+function _qtUpdateBtns(){
+  var u=document.getElementById('qtUndoBtn'),r=document.getElementById('qtRedoBtn');
+  if(u){u.disabled=!_qtUndo.length;u.style.opacity=_qtUndo.length?'1':'0.38';}
+  if(r){r.disabled=!_qtRedo.length;r.style.opacity=_qtRedo.length?'1':'0.38';}
+}
+// Track contenteditable changes in the quote table for undo
+document.addEventListener('input',function(e){
+  var tbl=document.getElementById('quoteTable');
+  if(tbl&&tbl.contains(e.target)&&e.target.isContentEditable){
+    // debounce — only save if user pauses 600ms
+    qtRecordInputChange();
+  }
+});
+document.addEventListener('click',function(e){
+  if(e.target&&e.target.classList&&e.target.classList.contains('qt-del')){
+    var tr=e.target.closest('tr');
+    if(tr){
+      qtPush();
+      tr.remove();
+      _qtSetLastSnapshot();
+      _qtUpdateBtns();
+    }
+  }
+});
+
+function copyQuoteTable(btn){
+  var tbl=document.getElementById('quoteTable');
+  if(!tbl)return;
+  // Clone table and strip qt-del buttons so they don't appear in Outlook
+  var clone=tbl.cloneNode(true);
+  clone.querySelectorAll('.qt-del').forEach(function(el){
+    // Remove the entire 4th td that contains the delete button
+    var td=el.closest('td');if(td)td.remove();else el.remove();
+  });
+  var tmp=document.createElement('div');
+  tmp.style.cssText='position:fixed;top:-9999px;left:-9999px';
+  tmp.appendChild(clone);
+  document.body.appendChild(tmp);
+  var range=document.createRange();
+  range.selectNode(clone);
+  var sel=window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  var ok=false;
+  try{ok=document.execCommand('copy');}catch(e){}
+  sel.removeAllRanges();
+  document.body.removeChild(tmp);
+  sel.removeAllRanges();
+  if(ok){
+    var o=btn.textContent;btn.textContent='✓ Copied';
+    setTimeout(function(){btn.textContent=o;},1400);
+  } else {
+    // Fallback: plain text TSV
+    var lines=[];
+    tbl.querySelectorAll('tr').forEach(function(tr){
+      var cells=[];
+      tr.querySelectorAll('td,th').forEach(function(td){cells.push(td.innerText.trim());});
+      lines.push(cells.join('\t'));
+    });
+    navigator.clipboard.writeText(lines.join('\n')).then(function(){
+      var o=btn.textContent;btn.textContent='✓ Copied (text)';
+      setTimeout(function(){btn.textContent=o;},1400);
+    });
+  }
+}
+
+// ─── PRICE CALCULATOR ────────────────────────────────────────────────────────
+// --- VENDOR QUOTE COMPARE ----------------------------------------------------
+var VC_QUOTES=[];
+
+function vcCurrentShipmentFlags(){
+  var flags={ow:false,res:false,reefer:false,hazmat:false};
+  if(typeof BT!=='undefined'&&BT&&BT.length){
+    BT.forEach(function(b){
+      flags.ow=flags.ow||!!b.ow;
+      flags.res=flags.res||!!b.res;
+      flags.reefer=flags.reefer||!!b.reefer;
+      flags.hazmat=flags.hazmat||!!b.hazmat;
+    });
+  }
+  var notesEl=document.getElementById('calcNotes');
+  var notes=(notesEl&&notesEl.value||'').toLowerCase();
+  flags.ow=flags.ow||/ow|overweight/.test(notes);
+  flags.res=flags.res||/residential/.test(notes);
+  flags.reefer=flags.reefer||/reefer|genset|temperature/.test(notes);
+  flags.hazmat=flags.hazmat||/hazmat|dangerous|class\s*[1-9]|\bdg\b/.test(notes);
+  return flags;
+}
+
+function vcMoney(n){
+  if(n===null||n===undefined||n===''||isNaN(n))return '';
+  return '$'+Number(n).toLocaleString('en-US',{maximumFractionDigits:2});
+}
+
+function vcAmount(text){
+  text=String(text||'');
+  if(/\bfree\b/i.test(text))return 0;
+  var m=text.match(/\$\s*([\d,]+(?:\.\d+)?)/);
+  if(!m)m=text.match(/(?:^|[\s|])([\d,]+(?:\.\d+)?)\s*(?:\/|per|daily|day|hour|event|load|container|ctn)\b/i);
+  if(!m)return null;
+  return parseFloat(m[1].replace(/,/g,''));
+}
+
+function vcPct(text){
+  var m=String(text||'').match(/([\d.]+)\s*%\s*(?:FSC|fuel|thru|currently)?/i);
+  return m?parseFloat(m[1]):null;
+}
+
+function vcNormLine(line){
+  return String(line||'')
+    .replace(/\*\*/g,'')
+    .replace(/\\-/g,'-')
+    .replace(/\\\+/g,'+')
+    .replace(/&amp;/g,'&')
+    .replace(/[\u2012\u2013\u2014]/g,'-')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+function vcNewCharge(amount,note,ifNeeded,unclear,included){
+  return {
+    amount: amount===null||amount===undefined?null:Number(amount),
+    note: note||'',
+    ifNeeded: !!ifNeeded,
+    unclear: !!unclear,
+    included: !!included
+  };
+}
+
+function vcSetCharge(q,key,amount,note,ifNeeded,unclear,included){
+  if(amount===null&&!(included||unclear))return;
+  var existing=q.charges[key];
+  if(!existing||existing.amount===null||(amount!==null&&amount>existing.amount)){
+    q.charges[key]=vcNewCharge(amount,note,ifNeeded,unclear,included);
+  } else {
+    existing.note=[existing.note,note].filter(Boolean).join('; ');
+    existing.ifNeeded=existing.ifNeeded&&!!ifNeeded;
+    existing.unclear=existing.unclear||!!unclear;
+    existing.included=existing.included||!!included;
+  }
+}
+
+function vcKeyForLabel(label){
+  var l=String(label||'').toLowerCase();
+  if(/fuel|fsc|fuel surcharge/.test(l))return'fsc';
+  if(/drayage|base|line haul|linehaul/.test(l))return'drayage';
+  if(/toll/.test(l))return'toll';
+  if(/chassis split/.test(l))return'chassisSplit';
+  if(/triaxle|chassis/.test(l))return'chassis';
+  if(/yard pull|prepull|pre-pull|pre pull/.test(l))return'prepull';
+  if(/yard storage|storage/.test(l))return'storage';
+  if(/detention|waiting time|wait time/.test(l))return'detention';
+  if(/residential|\bres\b/.test(l))return'res';
+  if(/\bow\b|overweight/.test(l))return'ow';
+  if(/reefer|genset|temperature/.test(l))return'reefer';
+  if(/hazmat|hazard|dangerous|class\s*[1-9]|\bdg\b/.test(l))return'hazmat';
+  return'';
+}
+
+function vcSplitBlocks(raw){
+  raw=String(raw||'').replace(/\r/g,'').trim();
+  if(!raw)return[];
+  var blocks=raw.split(/\n\s*-{3,}\s*\n/g).map(function(x){return x.trim();}).filter(Boolean);
+  if(blocks.length===1&&/\n\s*Vendor\s*:/i.test(raw)){
+    blocks=raw.split(/\n(?=\s*Vendor\s*:)/i).map(function(x){return x.trim();}).filter(Boolean);
+  }
+  return blocks;
+}
+
+function vcQuoteBlocksFromBoxes(){
+  var boxes=Array.from(document.querySelectorAll('.vcQuoteBox'));
+  var blocks=[];
+  boxes.forEach(function(box){
+    var raw=(box.value||'').trim();
+    if(!raw)return;
+    var split=vcSplitBlocks(raw);
+    if(split.length>1)blocks=blocks.concat(split);
+    else blocks.push(raw);
+  });
+  return blocks;
+}
+
+function refreshVendorQuoteBoxTitles(){
+  Array.from(document.querySelectorAll('#vcBoxes .vc-box')).forEach(function(box,idx){
+    var title=box.querySelector('.vc-box-title');
+    if(title)title.textContent='Vendor quote '+(idx+1);
+    var del=box.querySelector('.vc-del');
+    if(del)del.style.display=document.querySelectorAll('#vcBoxes .vc-box').length>1?'inline-flex':'none';
+  });
+}
+
+function addVendorQuoteBox(){
+  var wrap=document.getElementById('vcBoxes');
+  if(!wrap)return;
+  var box=document.createElement('div');
+  box.className='vc-box';
+  var head=document.createElement('div');
+  head.className='vc-box-head';
+  var title=document.createElement('div');
+  title.className='vc-box-title';
+  title.textContent='Vendor quote';
+  var del=document.createElement('button');
+  del.type='button';
+  del.className='bs vc-del';
+  del.textContent='Remove';
+  del.style.cssText='font-size:11px;padding:3px 9px;color:#c0392b;border-color:#f1c4bd';
+  del.onclick=function(){box.remove();refreshVendorQuoteBoxTitles();};
+  head.appendChild(title);
+  head.appendChild(del);
+  var ta=document.createElement('textarea');
+  ta.className='vcQuoteBox';
+  ta.rows=5;
+  ta.placeholder='Paste another vendor quote here';
+  box.appendChild(head);
+  box.appendChild(ta);
+  wrap.appendChild(box);
+  refreshVendorQuoteBoxTitles();
+  if(ta)ta.focus();
+}
+
+function vcVendorName(block,idx){
+  var m=block.match(/^\s*Vendor\s*:\s*(.+)$/im)||block.match(/^\s*From\s*:\s*(.+)$/im);
+  if(m)return vcNormLine(m[1]).replace(/<[^>]+>/g,'').trim();
+  var first=block.split('\n').map(function(x){return vcNormLine(x);}).find(function(x){return x&&!/^subject/i.test(x);})||'';
+  if(/\b(LLC|INC|CARTAGE|TRUCK|TRUCKING|LOGISTICS|DELIVERS|TRANSPORT|DRAYAGE)\b/i.test(first))return first;
+  return 'Vendor '+(idx+1);
+}
+
+function vcParseQuote(block,idx){
+  var q={vendor:vcVendorName(block,idx),subject:'',raw:block,drayage:null,fscPct:null,fscAmount:null,baseNet:null,quoteType:'',charges:{},warnings:[],notes:[],totalNet:0,score:0,canRecommend:true,disqualified:false,preferenceNote:'',detentionFreeHours:0};
+  var subj=block.match(/Subject(?: line)?\s*:\s*(.+)$/im);
+  if(subj)q.subject=vcNormLine(subj[1]);
+  var lines=block.split('\n').map(vcNormLine).filter(Boolean);
+  var accessorialMode=false;
+  lines.forEach(function(line){
+    var lower=line.toLowerCase();
+    if(/other accessorial|accessorial charges|may apply/.test(lower))accessorialMode=true;
+    if(/^vendor\s*:|^from\s*:|^subject(?: line)?\s*:/i.test(line))return;
+    var pipeCells=null;
+    if(line.indexOf('|')>=0){
+      pipeCells=line.split('|').map(vcNormLine).filter(function(c){return c;});
+      if(pipeCells.length>=2&&/^:?-{2,}:?$/.test(pipeCells[0]))return;
+    }
+    var label=pipeCells?pipeCells[0]:line;
+    var valText=pipeCells&&pipeCells[1]?pipeCells[1]:line;
+    var full=pipeCells?pipeCells.join(' '):line;
+    var key=vcKeyForLabel(label)||vcKeyForLabel(full);
+    var amount=vcAmount(valText);
+    if(amount===null)amount=vcAmount(full);
+    var pct=vcPct(full);
+    var ifNeeded=accessorialMode||/if applicable|may apply|if needed|when required|price varies|if required/.test(lower);
+    var included=/\bincl\b|\bincluded\b/.test(lower);
+    var baseFsc=line.match(/([\d,]+(?:\.\d+)?)\s*\+\s*([\d.]+)\s*%\s*(?:FSC|fuel)/i);
+    if(baseFsc){
+      q.drayage=parseFloat(baseFsc[1].replace(/,/g,''));
+      q.fscPct=parseFloat(baseFsc[2]);
+      q.fscAmount=Math.round(q.drayage*q.fscPct)/100;
+      return;
+    }
+    if(key==='drayage'){
+      if(amount!==null)q.drayage=amount;
+      if(/all[\s-]?in|including fsc|incl\.?\s*fsc|fsc included/.test(lower))q.quoteType='All-in';
+      return;
+    }
+    if(key==='fsc'){
+      if(pct!==null)q.fscPct=pct;
+      if(amount!==null)q.fscAmount=amount;
+      return;
+    }
+    if(!key&&amount!==null&&!q.drayage&&/(container|\/ctn|\/container|per container)/i.test(line)){
+      q.drayage=amount;
+      if(/all[\s-]?in|including fsc|incl\.?\s*fsc|fsc included/.test(lower))q.quoteType='All-in';
+      return;
+    }
+    if(key&&key!=='drayage'&&key!=='fsc'){
+      var unclear=key==='toll'&&amount>0&&!/apply|applies|included|incl|all[\s-]?in|\$0|0\.00/.test(lower);
+      if(unclear)q.warnings.push('Toll price found but applicability is unclear.');
+      if(key==='detention'){
+        var ft=full.match(/(\d+(?:\.\d+)?)\s*(?:hrs?|hours?)\s*(?:FT|free|free time)/i)||full.match(/after\s*(\d+(?:\.\d+)?)\s*(?:hrs?|hours?)/i);
+        if(ft)q.detentionFreeHours=Math.max(q.detentionFreeHours,parseFloat(ft[1]));
+      }
+      vcSetCharge(q,key,included?0:amount,full,ifNeeded,unclear,included);
+    }
+  });
+  if(q.fscAmount===null&&q.fscPct!==null&&q.drayage!==null)q.fscAmount=Math.round(q.drayage*q.fscPct)/100;
+  if(q.drayage===null){
+    var total=block.match(/Sub Total Drayage\s*\$?\s*([\d,]+(?:\.\d+)?)/i)||block.match(/Total\s*\(Drayage[^)]*\)\s*\$?\s*([\d,]+(?:\.\d+)?)/i);
+    if(total){q.drayage=parseFloat(total[1].replace(/,/g,''));q.quoteType='All-in';}
+  }
+  if(q.drayage!==null){
+    if(q.quoteType==='All-in')q.baseNet=q.drayage;
+    else if(q.fscAmount!==null){q.baseNet=Math.round((q.drayage+q.fscAmount)*100)/100;q.quoteType='Base + FSC';}
+    else {q.baseNet=q.drayage;q.quoteType='No FSC mentioned';q.notes.push('No FSC mentioned; treated as included.');}
+  } else q.warnings.push('Base drayage was not detected.');
+  return q;
+}
+
+function vcSpecialState(q,flags){
+  var txt=q.raw.toLowerCase();
+  var checks=[
+    ['ow','OW',flags.ow,/\b(no|not)\s+(ow|overweight)\b|\boverweight\s+no\b/i],
+    ['res','Residential',flags.res,/\b(no|not)\s+residential\b|\bresidential\s+no\b/i],
+    ['reefer','Reefer',flags.reefer,/\b(no|not)\s+reefer\b|\breefer\s+no\b/i],
+    ['hazmat','HAZMAT',flags.hazmat,/\b(no|not)\s+(hazmat|hazardous|dangerous)\b|\bhazardous\s+no\b/i]
+  ];
+  var missing=[],blocked=[];
+  checks.forEach(function(c){
+    if(!c[2])return;
+    if(c[3].test(txt)){blocked.push(c[1]);return;}
+    if(!q.charges[c[0]])missing.push(c[1]);
+  });
+  if(blocked.length){q.disqualified=true;q.canRecommend=false;q.warnings.push('Cannot support: '+blocked.join(', ')+'.');}
+  if(missing.length){q.canRecommend=false;q.warnings.push('Needs review for special request: '+missing.join(', ')+'.');}
+}
+
+function vcVendorPreference(q){
+  var name=(q.vendor||'').toLowerCase(),best=false,good=false,dont=false,note='';
+  if(typeof VD!=='undefined'&&VD){
+    Object.keys(VD).forEach(function(pod){
+      (VD[pod]||[]).forEach(function(v){
+        var vn=(v.name||'').toLowerCase();
+        if(!name||!vn)return;
+        if(name.includes(vn)||vn.includes(name)){
+          var n=(v.note||'').toLowerCase();
+          note=v.note||note;
+          if(/dont use|don't use|do not use/.test(n))dont=true;
+          if(/best rate/.test(n))best=true;
+          if(/good rate|good service|good all/.test(n))good=true;
+        }
+      });
+    });
+  }
+  q.preferenceNote=note;
+  if(dont){q.disqualified=true;q.canRecommend=false;q.warnings.push('Vendor note says do not use.');return 0;}
+  if(best)return 5;
+  if(good)return 3;
+  return 0;
+}
+
+function vcChargeCountForTotal(q,flags){
+  var total=q.baseNet||0;
+  ['toll','chassis','prepull','chassisSplit','storage'].forEach(function(key){
+    var c=q.charges[key];
+    if(!c||c.amount===null||c.unclear||c.ifNeeded)return;
+    total+=c.amount;
+  });
+  [['ow',flags.ow],['res',flags.res],['reefer',flags.reefer],['hazmat',flags.hazmat]].forEach(function(pair){
+    var c=q.charges[pair[0]];
+    if(pair[1]&&c&&c.amount!==null&&!c.unclear)total+=c.amount;
+  });
+  return Math.round(total*100)/100;
+}
+
+function vcScoreQuotes(quotes){
+  var flags=vcCurrentShipmentFlags();
+  quotes.forEach(function(q){vcSpecialState(q,flags);q.prefScore=vcVendorPreference(q);q.totalNet=vcChargeCountForTotal(q,flags);});
+  var eligible=quotes.filter(function(q){return q.baseNet!==null&&!q.disqualified&&q.canRecommend&&q.totalNet>0;});
+  var lowest=eligible.length?Math.min.apply(null,eligible.map(function(q){return q.totalNet;})):0;
+  var maxFree=Math.max.apply(null,[0].concat(quotes.map(function(q){return q.detentionFreeHours||0;})));
+  quotes.forEach(function(q){
+    if(q.disqualified){q.score=0;return;}
+    var priceScore=(lowest&&q.totalNet)?Math.min(60,(lowest/q.totalNet)*60):0;
+    var specialScore=q.canRecommend?30:0;
+    var freeScore=maxFree?((q.detentionFreeHours||0)/maxFree)*5:0;
+    q.score=Math.round((priceScore+specialScore+(q.prefScore||0)+freeScore)*10)/10;
+  });
+  quotes.sort(function(a,b){
+    if(a.canRecommend&&!b.canRecommend)return-1;
+    if(!a.canRecommend&&b.canRecommend)return 1;
+    return b.score-a.score;
+  });
+  return flags;
+}
+
+function vcClassForAmount(quotes,key,q){
+  var vals=quotes.map(function(x){
+    if(key==='baseNet')return x.baseNet;
+    if(key==='totalNet')return x.totalNet;
+    return x.charges[key]&&x.charges[key].amount!==null?x.charges[key].amount:null;
+  }).filter(function(v){return v!==null&&v!==undefined;});
+  var unique=vals.map(String).filter(function(v,i,a){return a.indexOf(v)===i;});
+  if(key==='totalNet'){
+    var ok=quotes.filter(function(x){return x.canRecommend&&x.totalNet>0;}).map(function(x){return x.totalNet;});
+    if(ok.length&&q.canRecommend&&q.totalNet===Math.min.apply(null,ok))return'vc-win';
+  }
+  return unique.length>1?'vc-diff':'';
+}
+
+function vcChargeCell(q,key,quotes){
+  var c=q.charges[key];
+  if(!c)return'<td class="vc-muted">-</td>';
+  var cls=vcClassForAmount(quotes,key,q);
+  if(c.unclear)cls+=' vc-warn';
+  else if(c.ifNeeded)cls+=' vc-muted';
+  var txt=c.included?'Included':vcMoney(c.amount);
+  if(c.ifNeeded)txt+='<br><span style="font-size:10px">if needed</span>';
+  if(c.unclear)txt+='<br><span style="font-size:10px">ask if applies</span>';
+  return'<td class="money '+cls.trim()+'" title="'+Attr(c.note||'')+'">'+txt+'</td>';
+}
+
+function vcRender(quotes,flags){
+  var out=document.getElementById('vcOut');
+  if(!quotes.length){out.style.display='none';out.innerHTML='';return;}
+  out.style.display='block';
+  var rec=quotes.find(function(q){return q.canRecommend&&!q.disqualified&&q.baseNet!==null;});
+  var activeSpecials=[flags.ow?'OW':'',flags.res?'Residential':'',flags.reefer?'Reefer':'',flags.hazmat?'HAZMAT':''].filter(Boolean);
+  var html='';
+  if(activeSpecials.length)html+='<div style="margin-bottom:8px">'+activeSpecials.map(function(x){return'<span class="vc-chip warn">Shipment requires '+H(x)+'</span>';}).join('')+'</div>';
+  if(rec){
+    html+='<div class="vc-rec"><strong>Recommended: '+H(rec.vendor)+'</strong> - score '+rec.score+' / estimated NET '+vcMoney(rec.totalNet)+'. <button class="bs" onclick="useRecommendedVendorQuote('+quotes.indexOf(rec)+')" style="margin-left:8px;color:#1a6b3a;border-color:#1a6b3a">Use recommended quote</button></div>';
+  } else {
+    html+='<div class="vc-rec" style="background:#fff7ed;border-color:#f0d0a0;color:#8a4b0d"><strong>No automatic recommendation.</strong> Please review missing special support or base rates.</div>';
+  }
+  html+='<div style="overflow-x:auto"><table class="vc-grid"><tr><th>Vendor</th><th>Quote type</th><th>Base incl. FSC</th><th>Total for score</th><th>Toll</th><th>Chassis</th><th>Prepull</th><th>Chassis split</th><th>Yard storage</th><th>OW</th><th>Residential</th><th>Reefer</th><th>HAZMAT</th><th>Detention</th><th>Score</th><th>Notes</th></tr>';
+  quotes.forEach(function(q){
+    var rowCls=q.disqualified?' class="vc-bad"':'';
+    var chips=[];
+    if(q.preferenceNote)chips.push('<span class="vc-chip good">'+H(q.preferenceNote)+'</span>');
+    q.warnings.forEach(function(w){chips.push('<span class="vc-chip '+(q.disqualified?'bad':'warn')+'">'+H(w)+'</span>');});
+    q.notes.forEach(function(n){chips.push('<span class="vc-chip">'+H(n)+'</span>');});
+    html+='<tr'+rowCls+'><td><strong>'+H(q.vendor)+'</strong>'+(q.subject?'<br><span style="font-size:10px;color:#888">'+H(q.subject)+'</span>':'')+'</td><td>'+H(q.quoteType||'-')+(q.fscPct!==null?'<br><span style="font-size:10px;color:#888">FSC '+q.fscPct+'%</span>':'')+'</td><td class="money '+vcClassForAmount(quotes,'baseNet',q)+'">'+vcMoney(q.baseNet)+'</td><td class="money '+vcClassForAmount(quotes,'totalNet',q)+'"><strong>'+vcMoney(q.totalNet)+'</strong></td>'+vcChargeCell(q,'toll',quotes)+vcChargeCell(q,'chassis',quotes)+vcChargeCell(q,'prepull',quotes)+vcChargeCell(q,'chassisSplit',quotes)+vcChargeCell(q,'storage',quotes)+vcChargeCell(q,'ow',quotes)+vcChargeCell(q,'res',quotes)+vcChargeCell(q,'reefer',quotes)+vcChargeCell(q,'hazmat',quotes)+vcChargeCell(q,'detention',quotes)+'<td class="money"><strong>'+q.score+'</strong></td><td style="min-width:180px">'+(chips.join('')||'<span style="color:#aaa">-</span>')+'</td></tr>';
+  });
+  html+='</table></div>';
+  out.innerHTML=html;
+}
+
+function compareVendorQuotes(){
+  var blocks=vcQuoteBlocksFromBoxes();
+  var out=document.getElementById('vcOut');
+  if(!blocks.length){out.style.display='block';out.innerHTML='<span style="color:#aaa;font-size:12px">Paste at least one vendor quote first.</span>';return;}
+  VC_QUOTES=blocks.map(vcParseQuote);
+  var flags=vcScoreQuotes(VC_QUOTES);
+  vcRender(VC_QUOTES,flags);
+}
+
+function clearVendorCompare(){
+  document.querySelectorAll('.vcQuoteBox').forEach(function(box){box.value='';});
+  document.getElementById('vcOut').style.display='none';
+  document.getElementById('vcOut').innerHTML='';
+  VC_QUOTES=[];
+}
+
+function useRecommendedVendorQuote(idx){
+  var q=VC_QUOTES[idx];
+  if(!q)return;
+  var amount=q.totalNet||q.baseNet;
+  if(!amount){alert('No usable NET amount found for this vendor.');return;}
+  var fsc=document.getElementById('calcFsc');
+  var inp=document.getElementById('calcInput');
+  if(fsc)fsc.value='0';
+  if(inp)inp.value=q.vendor+' - '+Math.round(amount);
+  if(typeof runCalc==='function')runCalc();
+  var notes=document.getElementById('calcNotes');
+  if(notes){
+    var parts=[q.vendor+' selected from vendor compare'];
+    if(q.warnings.length)parts.push(q.warnings.join('; '));
+    notes.value=parts.join('; ');
+  }
+  var card=document.getElementById('calccard');
+  if(card)card.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+var _calcSelection=null;
+var _calcSelecting=false;
+
+function calcCellText(el){
+  return (el&&el.dataset&&el.dataset.copy)||((el&&el.textContent)||'').replace(/\s+/g,' ').trim();
+}
+
+function calcSelectionText(){
+  var tbl=document.querySelector('#calcOut table');
+  if(!tbl||!_calcSelection)return'';
+  var r1=Math.min(_calcSelection.start.r,_calcSelection.end.r);
+  var r2=Math.max(_calcSelection.start.r,_calcSelection.end.r);
+  var c1=Math.min(_calcSelection.start.c,_calcSelection.end.c);
+  var c2=Math.max(_calcSelection.start.c,_calcSelection.end.c);
+  var lines=[];
+  for(var r=r1;r<=r2;r++){
+    var cells=[];
+    for(var c=c1;c<=c2;c++){
+      cells.push(calcCellText(tbl.querySelector('[data-r="'+r+'"][data-c="'+c+'"]')));
+    }
+    lines.push(cells.join('\t'));
+  }
+  return lines.join('\n');
+}
+
+function paintCalcSelection(){
+  var tbl=document.querySelector('#calcOut table');
+  if(!tbl)return;
+  tbl.querySelectorAll('.calc-selected').forEach(function(x){x.classList.remove('calc-selected');});
+  if(!_calcSelection)return;
+  var r1=Math.min(_calcSelection.start.r,_calcSelection.end.r);
+  var r2=Math.max(_calcSelection.start.r,_calcSelection.end.r);
+  var c1=Math.min(_calcSelection.start.c,_calcSelection.end.c);
+  var c2=Math.max(_calcSelection.start.c,_calcSelection.end.c);
+  tbl.querySelectorAll('.calc-pick').forEach(function(cell){
+    var r=parseInt(cell.dataset.r,10),c=parseInt(cell.dataset.c,10);
+    if(r>=r1&&r<=r2&&c>=c1&&c<=c2)cell.classList.add('calc-selected');
+  });
+}
+
+function calcBeginSelect(el,e){
+  if(e&&e.button!==0)return;
+  var point={r:parseInt(el.dataset.r,10),c:parseInt(el.dataset.c,10)};
+  _calcSelecting=true;
+  _calcSelection={start:point,end:point};
+  paintCalcSelection();
+  if(window.getSelection)window.getSelection().removeAllRanges();
+  if(el&&el.focus)el.focus();
+  if(e)e.preventDefault();
+}
+
+function calcDragSelect(el,e){
+  if(!_calcSelecting)return;
+  if(e&&!(e.buttons&1))return;
+  _calcSelection.end={r:parseInt(el.dataset.r,10),c:parseInt(el.dataset.c,10)};
+  paintCalcSelection();
+  if(window.getSelection)window.getSelection().removeAllRanges();
+  if(e)e.preventDefault();
+}
+
+document.addEventListener('mouseup',function(){_calcSelecting=false;});
+
+document.addEventListener('copy',function(e){
+  var text=calcSelectionText();
+  if(!text)return;
+  e.preventDefault();
+  if(e.clipboardData)e.clipboardData.setData('text/plain',text);
+});
+
+function runCalc(){
+  var fscPct=parseFloat(document.getElementById('calcFsc').value);
+  if(isNaN(fscPct)||fscPct<0)fscPct=0;
+  var fsc=fscPct/100;
+  var raw=document.getElementById('calcInput').value;
+  var lines=raw.split('\n').map(function(l){return l.trim();}).filter(Boolean);
+  var out=document.getElementById('calcOut');
+  if(!lines.length){out.innerHTML='';return;}
+
+  // Extract toll from any line matching "Toll+NNN" or "Toll: NNN" or "Toll NNN"
+  var toll=0;
+  var tollLine=-1;
+  lines.forEach(function(line,idx){
+    var tm=line.match(/^toll[\s:+]*\$?([\d,]+(?:\.\d+)?)/i);
+    if(tm){toll=parseFloat(tm[1].replace(/,/g,''));tollLine=idx;}
+  });
+
+  var rows=[];
+  lines.forEach(function(line,idx){
+    if(/^fsc/i.test(line))return;
+    if(idx===tollLine)return; // skip the toll line itself
+    var label='',drayage=NaN;
+    var m=line.match(/^(.+?)\s*[-\u2013:]+\s*\$?([\d,]+(?:\.\d+)?)\s*$/);
+    if(m){label=m[1].trim();drayage=parseFloat(m[2].replace(/,/g,''));}
+    else{
+      var m2=line.match(/^\$?([\d,]+(?:\.\d+)?)\s*$/);
+      if(m2){drayage=parseFloat(m2[1].replace(/,/g,''));}
+      else{
+        var m3=line.match(/^(.+?)\s+\$([\d,]+(?:\.\d+)?)\s*$/);
+        if(m3){label=m3[1].trim();drayage=parseFloat(m3[2].replace(/,/g,''));}
+      }
+    }
+    if(isNaN(drayage)||drayage<=0)return;
+    var cost=Math.round(drayage*(1+fsc))+toll;
+    var markup=cost<=1000?150:200;
+    var sell=Math.round((cost+markup)/10)*10;
+    rows.push({label:label,cost:cost,sell:sell,toll:toll});
+  });
+  if(!rows.length){out.innerHTML='<span style="color:#aaa;font-size:12px">— No valid rates found —</span>';return;}
+
+  // Auto-fill POD and Delivery to
+  var pod='',deliv='';
+  if(typeof BT!=='undefined'&&BT&&BT.length>0){
+    pod=BT[0].podDisplay||'';
+    deliv=BT[0].dispAddr||'';
+  }
+  document.getElementById('calcPod').value=pod;
+  document.getElementById('calcDeliv').value=deliv;
+
+  // Build table
+  var cs='border:1px solid #c8c8c8;padding:6px 10px;font-size:12px;font-family:\'Aptos\',\'Calibri\',Arial,sans-serif;white-space:nowrap;height:28px;line-height:1.25;';
+  var hs=cs+'background:#f0f0f0;font-weight:700;color:#444;text-align:center;';
+  var labelStyle=cs+'text-align:left;overflow:hidden;text-overflow:ellipsis;';
+  var rateCell=cs+'text-align:right;font-variant-numeric:tabular-nums;cursor:text;outline:none;';
+  var ns=rateCell+'background:#fff;color:#111;';
+  var gs=rateCell+'background:#e8f5e9;font-weight:600;color:#2a7a3a;';
+  var hasLabels=rows.some(function(r){return r.label&&!/^\d+$/.test(r.label);});
+  var hasToll=toll>0;
+  _calcSelection=null;
+  _calcSelecting=false;
+  var html='<table style="border-collapse:collapse;width:100%;table-layout:fixed">';
+  if(hasLabels)html+='<colgroup><col style="width:60%"><col style="width:20%"><col style="width:20%"></colgroup>';
+  else html+='<colgroup><col style="width:50%"><col style="width:50%"></colgroup>';
+  html+='<tr>';
+  if(hasLabels)html+='<th class="calc-pick" tabindex="0" onmousedown="calcBeginSelect(this,event)" onmouseenter="calcDragSelect(this,event)" data-r="0" data-c="0" data-copy="Trucker" style="'+hs+'text-align:left" title="Drag to select cells, then Ctrl+C">Trucker</th>';
+  html+='<th class="calc-pick" tabindex="0" onmousedown="calcBeginSelect(this,event)" onmouseenter="calcDragSelect(this,event)" data-r="0" data-c="'+(hasLabels?1:0)+'" data-copy="NET" style="'+hs+'" title="Drag to select cells, then Ctrl+C">NET</th>';
+  html+='<th class="calc-pick" tabindex="0" onmousedown="calcBeginSelect(this,event)" onmouseenter="calcDragSelect(this,event)" data-r="0" data-c="'+(hasLabels?2:1)+'" data-copy="SELLING" style="'+hs+'" title="Drag to select cells, then Ctrl+C">SELLING</th>';
+  html+='</tr>';
+  rows.forEach(function(r,ri){
+    html+='<tr>';
+    var rowNum=ri+1;
+    var rowLabel=r.label||('Rate '+(ri+1));
+    if(hasLabels)html+='<td class="calc-pick" tabindex="0" onmousedown="calcBeginSelect(this,event)" onmouseenter="calcDragSelect(this,event)" data-r="'+rowNum+'" data-c="0" data-copy="'+Attr(rowLabel)+'" style="'+labelStyle+'" title="Drag to select cells, then Ctrl+C">'+H(rowLabel)+'</td>';
+    html+='<td class="calc-pick" tabindex="0" onmousedown="calcBeginSelect(this,event)" onmouseenter="calcDragSelect(this,event)" data-r="'+rowNum+'" data-c="'+(hasLabels?1:0)+'" data-copy="$'+r.cost.toLocaleString('en-US')+'" style="'+ns+'" title="Drag to select cells, then Ctrl+C">$'+r.cost.toLocaleString('en-US')+(hasToll?'<span style="font-size:10px;color:#888;margin-left:4px">(+$'+toll+' toll)</span>':'')+'</td>';
+    html+='<td class="calc-pick" tabindex="0" onmousedown="calcBeginSelect(this,event)" onmouseenter="calcDragSelect(this,event)" data-r="'+rowNum+'" data-c="'+(hasLabels?2:1)+'" data-copy="$'+r.sell.toLocaleString('en-US')+'" style="'+gs+'" title="Drag to select cells, then Ctrl+C">$'+r.sell.toLocaleString('en-US')+'</td>';
+    html+='</tr>';
+  });
+  html+='</table>';
+  out.innerHTML=html;
+
+  // Store toll for buildQuoteTable to use
+  window._calcToll=toll;
+
+  document.getElementById('fscHint').textContent=
+    'Cost = drayage × '+(1+fsc).toFixed(2)+(hasToll?' + $'+toll+' toll':'')+' · ≤$1000 → +$150 · >$1000 → +$200 · round to $10';
+  updatePerMile();
+  autoFillCalcNotes();
+}
+
+function copyCalc(btn){
+  // Copy as horizontal TSV row for Google Sheets
+  // Columns: DATE | CUSTOMER | POD | Delivery to | ZIP | TRUCKER | NET | SELLING | SPECIAL REQUEST
+  buildSpreadsheetRow(btn);
+}
+
+function getSpreadsheetRow(){
+  // Column layout (from spreadsheet):
+  // A=DATE | B=(blank) | C=(blank) | D=POD | E=Delivery to | F=ZIP | G=(blank) | H=(blank) | I=NET | J=SELLING | K=(blank) | L=Notes
+  var tbl=document.querySelector('#calcOut table');
+  var pod=document.getElementById('calcPod').value.trim();
+  var deliv=document.getElementById('calcDeliv').value.trim();
+  var zip='';
+  var zm=deliv.match(/\b(\d{5})\b/);if(zm)zip=zm[1];
+  var notes=document.getElementById('calcNotes').value.trim();
+  var today=new Date();
+  var mm=String(today.getMonth()+1).padStart(2,'0');
+  var dd=String(today.getDate()).padStart(2,'0');
+  var dateStr=mm+'/'+dd;
+
+  function makeRow(trucker,net,sell){
+    return [dateStr,'','',pod,deliv,zip,'',net,sell,'',notes].join('\t');
+  }
+
+  if(!tbl||!tbl.querySelectorAll('tr').length) return makeRow('','','');
+  var rows=Array.from(tbl.querySelectorAll('tr')).slice(1);
+  var hasTrucker=tbl.querySelectorAll('th').length===3;
+  if(rows.length===0) return makeRow('','','');
+  var lines=rows.map(function(tr){
+    var cells=tr.querySelectorAll('td');
+    var offset=hasTrucker?1:0;
+    var trucker=hasTrucker?cells[0].textContent.trim():'';
+    var net=cells[offset]?cells[offset].textContent.trim().replace(/^[\$\s]+/,''):'';
+    var sell=cells[offset+1]?cells[offset+1].textContent.trim().replace(/^[\$\s]+/,''):'';
+    return makeRow(trucker,net,sell);
+  });
+  return lines.join('\n');
+}
+
+function buildSpreadsheetRow(btn){
+  var text=getSpreadsheetRow();
+  // Use execCommand fallback — works for file:// URLs where Clipboard API is blocked
+  var ta=document.createElement('textarea');
+  ta.value=text;
+  ta.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:0';
+  document.body.appendChild(ta);
+  ta.focus();ta.select();
+  var ok=false;
+  try{ok=document.execCommand('copy');}catch(e){}
+  document.body.removeChild(ta);
+  if(ok){
+    var orig=btn.textContent;btn.textContent='✓ Copied row';btn.style.background='#2a7a3a';
+    setTimeout(function(){btn.textContent=orig;btn.style.background='';},1500);
+  } else {
+    // Final fallback: try Clipboard API
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        var orig=btn.textContent;btn.textContent='✓ Copied row';btn.style.background='#2a7a3a';
+        setTimeout(function(){btn.textContent=orig;btn.style.background='';},1500);
+      }).catch(function(){alert('Copy failed. Please copy manually:\n\n'+text);});
+    } else {
+      alert('Copy failed. Please copy manually:\n\n'+text);
+    }
+  }
+}
+
+// ─── DISTANCE FETCHER (offline — uses built-in coords) ───────────────────────
+var _distMiles=0;
+
+function haversineMi(lat1,lon1,lat2,lon2){
+  var R=3958.8;
+  var dLat=(lat2-lat1)*Math.PI/180;
+  var dLon=(lon2-lon1)*Math.PI/180;
+  var a=Math.sin(dLat/2)*Math.sin(dLat/2)
+    +Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)
+    *Math.sin(dLon/2)*Math.sin(dLon/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function getDelivCoords(deliv){
+  // 1. Try ZIP code in delivery string
+  var zm=deliv.match(/\b(\d{5})\b/);
+  if(zm&&ZDB[zm[1]]){var z=ZDB[zm[1]];return[z[2],z[3]];}
+  // 2. Try matching city name in ZDB values
+  var dl=deliv.toLowerCase();
+  for(var z in ZDB){
+    var city=ZDB[z][0].toLowerCase();
+    if(dl.includes(city)&&ZDB[z][2]){return[ZDB[z][2],ZDB[z][3]];}
+  }
+  return null;
+}
+
+function getPodCoords(pod){
+  var pl=pod.toLowerCase();
+  // Exact / partial match in PCOORDS
+  for(var k in PCOORDS){
+    if(pl.includes(k.toLowerCase())||k.toLowerCase().includes(pl)){return PCOORDS[k];}
+  }
+  // Fallback: try ZDB city match
+  for(var z in ZDB){
+    var city=ZDB[z][0].toLowerCase();
+    if(pl.includes(city)){return[ZDB[z][2],ZDB[z][3]];}
+  }
+  return null;
+}
+
+function fetchDistance(){
+  var pod=document.getElementById('calcPod').value.trim();
+  var deliv=document.getElementById('calcDeliv').value.trim();
+  var btn=document.getElementById('distBtn');
+  var res=document.getElementById('distResult');
+  var perMile=document.getElementById('distPerMile');
+  if(!pod||!deliv){
+    res.innerHTML='<span style="color:#c0392b">Fill in POD and Deliver to first</span>';
+    return;
+  }
+
+  var oCoords=getPodCoords(pod);
+  var dCoords=getDelivCoords(deliv);
+
+  if(!oCoords){
+    res.innerHTML='<span style="color:#c0392b">POD not recognized: "'+pod+'"</span>';
+    return;
+  }
+  if(!dCoords){
+    res.innerHTML='<span style="color:#c0392b">Delivery ZIP/city not found in database</span>';
+    return;
+  }
+
+  var straightLine=haversineMi(oCoords[0],oCoords[1],dCoords[0],dCoords[1]);
+  // Road distance ≈ straight-line × 1.25 (US highway factor)
+  _distMiles=Math.round(straightLine*1.25);
+  // Drive time: avg 55 mph including stops
+  var totalMins=Math.round(_distMiles/55*60);
+  var hrs=Math.floor(totalMins/60);
+  var mins=totalMins%60;
+  var driveStr=hrs>0?(hrs+'h '+mins+'min'):(mins+' min');
+
+  res.innerHTML=
+    '<span style="font-weight:600;color:#1a1a1a">📏 ~'+_distMiles+' mi</span>'
+    +'<span style="color:#aaa">·</span>'
+    +'<span style="font-weight:600;color:#1a73e8">🚛 ~'+driveStr+' drive</span>'
+    +'<span style="font-size:11px;color:#bbb">(straight-line ×1.25 est.)</span>';
+
+  updatePerMile();
+}
+
+function updatePerMile(){
+  var perMile=document.getElementById('distPerMile');
+  if(!_distMiles){perMile.style.display='none';return;}
+  // Get selling prices from calc table
+  var tbl=document.querySelector('#calcOut table');
+  if(!tbl){perMile.style.display='none';return;}
+  var rows=Array.from(tbl.querySelectorAll('tr')).slice(1);
+  if(!rows.length){perMile.style.display='none';return;}
+  var hasTrucker=tbl.querySelectorAll('th').length===3;
+  var parts=[];
+  rows.forEach(function(tr){
+    var cells=tr.querySelectorAll('td');
+    var offset=hasTrucker?1:0;
+    var label=hasTrucker?cells[0].textContent.trim():'';
+    var sell=cells[offset+1]?cells[offset+1].textContent.trim().replace(/[^0-9.]/g,''):'';
+    var sellNum=parseFloat(sell);
+    if(!isNaN(sellNum)&&sellNum>0){
+      var ppm=(sellNum/_distMiles).toFixed(2);
+      parts.push((label?'<strong>'+label+'</strong>: ':'')+'$'+ppm+'/mi');
+    }
+  });
+  if(!parts.length){perMile.style.display='none';return;}
+  perMile.style.display='block';
+  perMile.innerHTML='<span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#aaa;margin-right:8px">$/mi</span>'
+    +parts.join('<span style="color:#ccc;margin:0 8px">·</span>');
+}
+
+function autoFillCalcFromEmail(){
+  // Read from email subject/body of first shipment tab (user may have edited it)
+  if(!BT||!BT.length) return;
+  var b=BT[0];
+  // POD: from email subject (format: "POD - City, State ZIP") or BT data
+  var podEl=document.getElementById('es0');
+  var pod='';
+  if(podEl&&podEl.innerText.trim()){
+    // Subject is "Charlotte, NC - Charlotte, NC 28269" — first segment is POD display
+    var subjText=podEl.innerText.trim();
+    var dashIdx=subjText.indexOf(' - ');
+    pod=dashIdx>0?subjText.substring(0,dashIdx).trim():b.podDisplay||'';
+  } else {
+    pod=b.podDisplay||'';
+  }
+  // Deliver to: from email body — find the delivery address line
+  var bdEl=document.getElementById('eb0');
+  var deliv='';
+  if(bdEl&&bdEl.innerText.trim()){
+    var bodyText=bdEl.innerText;
+    // Look for "Delivery to:" or "Deliver to:" line in body
+    var dm=bodyText.match(/Deliver(?:y)? to:\s*(.+)/i);
+    if(dm) deliv=dm[1].trim();
+    // Fallback: look for ZIP pattern lines
+    if(!deliv){
+      var zm=bodyText.match(/\b[A-Z]{2}\s+\d{5}\b/);
+      if(zm){
+        // Find the line containing this match
+        var lines=bodyText.split('\n');
+        for(var li=0;li<lines.length;li++){
+          if(lines[li].includes(zm[0])){deliv=lines[li].trim();break;}
+        }
+      }
+    }
+  }
+  if(!deliv) deliv=b.dispAddr||b.city||'';
+
+  var podInput=document.getElementById('calcPod');
+  var delivInput=document.getElementById('calcDeliv');
+  if(podInput&&pod&&!podInput._userEdited) podInput.value=pod;
+  if(delivInput&&deliv&&!delivInput._userEdited) delivInput.value=deliv;
+}
+
+// Wire email body edits to refresh calc fields
+document.addEventListener('input',function(e){
+  if(e.target&&(e.target.id==='eb0'||e.target.id==='es0')){
+    clearTimeout(window._calcFillTimer);
+    window._calcFillTimer=setTimeout(autoFillCalcFromEmail,400);
+  }
+});
+// Track manual edits to calc inputs so we don't overwrite them
+['calcPod','calcDeliv'].forEach(function(id){
+  document.addEventListener('input',function(e){
+    if(e.target&&e.target.id===id) e.target._userEdited=true;
+  });
+});
+
+function clearCalc(){
+  document.getElementById('calcInput').value='';
+  document.getElementById('calcOut').textContent='';
+}
+
+function autoFillCalcNotes(){
+  if(typeof BT==='undefined'||!BT||!BT.length) return;
+  var parts=[];
+  BT.forEach(function(b){
+    var tags=[];
+    if(b.ow) tags.push('****OW');
+    if(b.hazmat) tags.push('HAZMAT');
+    var rawText=(b.raw||'').toLowerCase();
+    if(b.reefer||/40rh|40rf|reefer/i.test(b.ctr||'')||/reefer/i.test(rawText)) tags.push('Reefer');
+    if(b.res) tags.push('Residential');
+    if(tags.length){
+      var wtStr=b.wt&&b.wt!=='Legal Weight'?b.wt:'Legal Weight';
+      parts.push(wtStr+' / '+b.ctr+' '+tags.join(' '));
+    }
+  });
+  // Append toll note at the end, after OW/HAZMAT/Reefer/Residential
+  var toll=window._calcToll||0;
+  if(toll>0) parts.push('Toll $'+toll+' included in NET cost');
+  if(parts.length){
+    document.getElementById('calcNotes').value=parts.join('; ');
+  }
+}
+
+// Auto-fill notes whenever BT is processed
+var _origProcessAll=typeof processAll==='function'?processAll:null;
+
+</script>
+
+<div style="margin-top:32px;margin-bottom:10px;display:flex;align-items:center;gap:10px">
+  <div style="height:1px;flex:1;background:#e8e5df"></div>
+  <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#ccc">Price Calculator</span>
+  <div style="height:1px;flex:1;background:#e8e5df"></div>
+</div>
+<div class="card" id="calccard">
+  <div class="ctitle"><span class="badge">$</span>Trucking Price Calculator</div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+    <span style="font-size:12px;font-weight:600;color:#888">FSC</span>
+    <input id="calcFsc" type="number" min="0" max="200" step="1" value="35"
+      style="width:64px;padding:5px 8px;border:1.5px solid #e0ddd7;border-radius:6px;font-size:13px;font-family:inherit;outline:none;text-align:center"
+      oninput="runCalc()" onfocus="this.style.borderColor='#a8c7fa'" onblur="this.style.borderColor='#e0ddd7'">
+    <span style="font-size:13px;color:#aaa">%</span>
+    <span id="fscHint" style="font-size:11px;color:#bbb;margin-left:2px">Cost = drayage × 1.35 · ≤$1000 → +$150 · >$1000 → +$200 · round to $10</span>
+  </div>
+  <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:6px;flex:1;min-width:160px">
+      <span style="font-size:12px;font-weight:600;color:#888;white-space:nowrap">POD</span>
+      <input id="calcPod" type="text" placeholder="Auto-filled from formatter"
+        style="flex:1;padding:5px 8px;border:1.5px solid #e0ddd7;border-radius:6px;font-size:12px;font-family:inherit;outline:none;color:#555;background:#fafafa"
+        onfocus="this.style.borderColor='#a8c7fa'" onblur="this.style.borderColor='#e0ddd7'">
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;flex:2;min-width:200px">
+      <span style="font-size:12px;font-weight:600;color:#888;white-space:nowrap">Deliver to</span>
+      <input id="calcDeliv" type="text" placeholder="Auto-filled from formatter"
+        style="flex:1;padding:5px 8px;border:1.5px solid #e0ddd7;border-radius:6px;font-size:12px;font-family:inherit;outline:none;color:#555;background:#fafafa"
+        onfocus="this.style.borderColor='#a8c7fa'" onblur="this.style.borderColor='#e0ddd7'">
+    </div>
+  </div>
+  <!-- Distance Panel -->
+  <div style="margin-bottom:10px">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <button class="bs" onclick="fetchDistance()" id="distBtn" style="font-size:11px;padding:4px 12px;white-space:nowrap">📍 Get distance & drive time</button>
+      <div id="distResult" style="font-size:12px;color:#555;display:flex;align-items:center;gap:12px;flex-wrap:wrap"></div>
+    </div>
+    <div id="distPerMile" style="display:none;margin-top:6px;padding:7px 12px;background:#f5f3ef;border-radius:6px;border:1px solid #e0ddd7;font-size:12px;color:#555"></div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:flex-start">
+    <textarea id="calcInput" rows="6"
+      placeholder="Paste rates here, one per line:&#10;Seattle - $275&#10;Tacoma - $175&#10;&#10;or just numbers:&#10;275&#10;175"
+      style="flex:1;padding:8px 10px;border:1.5px solid #e0ddd7;border-radius:6px;font-size:13px;font-family:'Aptos','Calibri',Arial,sans-serif;resize:vertical;outline:none;min-width:0"
+      oninput="runCalc()" onfocus="this.style.borderColor='#a8c7fa'" onblur="this.style.borderColor='#e0ddd7'"></textarea>
+    <div style="flex:1;min-width:0">
+      <div id="calcOut" style="border:1px solid #c8c8c8;border-radius:4px;min-height:120px;overflow:auto"></div>
+      <div style="display:flex;gap:6px;margin-top:6px">
+        <button class="bs" onclick="clearCalc()" style="font-size:11px;padding:3px 10px;color:#aaa;border-color:#e0ddd7">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spreadsheet Row Panel -->
+  <div style="margin-top:14px;border-top:1px solid #f0ede8;padding-top:12px">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#aaa;margin-bottom:8px">📋 Copy row → Google Sheets</div>
+    <div style="font-size:11px;color:#bbb;margin-bottom:8px">Columns: DATE · CUSTOMER · POD · Delivery to · ZIP · TRUCKER · NET · SELLING · SPECIAL REQUEST</div>
+    <div style="display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap">
+      <textarea id="calcNotes" rows="3" placeholder="Notes / Special Request&#10;(auto-filled if OW / HAZMAT / Reefer)"
+        style="flex:2;min-width:220px;padding:7px 10px;border:1.5px solid #e0ddd7;border-radius:6px;font-size:12px;font-family:'Aptos','Calibri',Arial,sans-serif;resize:vertical;outline:none;color:#333;background:#fafaf8"
+        onfocus="this.style.borderColor='#a8c7fa'" onblur="this.style.borderColor='#e0ddd7'"></textarea>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <button class="bp" onclick="copyCalc(this)" style="font-size:12px;padding:7px 16px">Copy row ↗</button>
+        <button class="bs" onclick="autoFillCalcNotes()" style="font-size:11px;padding:4px 10px">Auto-fill notes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:16px;margin-bottom:10px;display:flex;align-items:center;gap:10px">
+  <div style="height:1px;flex:1;background:#e8e5df"></div>
+  <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#ccc">Vendor Compare</span>
+  <div style="height:1px;flex:1;background:#e8e5df"></div>
+</div>
+<div class="card" id="vendorCompareCard">
+  <div class="ctitle"><span class="badge">V</span>Vendor Quote Compare</div>
+  <div style="font-size:12px;color:#888;line-height:1.55;margin-bottom:9px">
+    Paste one trucker reply or PDF-extracted quote into each box. Add more boxes if you have more vendors.
+  </div>
+  <div id="vcBoxes">
+    <div class="vc-box">
+      <div class="vc-box-head">
+        <div class="vc-box-title">Vendor quote 1</div>
+      </div>
+      <textarea class="vcQuoteBox" rows="5" placeholder="Vendor: ABC Trucking&#10;Subject line: Chicago - Eau Claire, WI 54703&#10;1760 + 55% FSC&#10;$45 daily chassis rental&#10;$250 OW fee"></textarea>
+    </div>
+    <div class="vc-box">
+      <div class="vc-box-head">
+        <div class="vc-box-title">Vendor quote 2</div>
+      </div>
+      <textarea class="vcQuoteBox" rows="5" placeholder="Vendor: XYZ Cartage&#10;Drayage $1900 all-in&#10;Chassis $40/day&#10;Detention $95 after 2 hours"></textarea>
+    </div>
+    <div class="vc-box">
+      <div class="vc-box-head">
+        <div class="vc-box-title">Vendor quote 3</div>
+      </div>
+      <textarea class="vcQuoteBox" rows="5" placeholder="Paste third vendor quote here"></textarea>
+    </div>
+  </div>
+  <div class="brow">
+    <button class="bp" onclick="compareVendorQuotes()">Compare quotes</button>
+    <button class="bs" onclick="addVendorQuoteBox()">+ Add vendor</button>
+    <button class="bs" onclick="clearVendorCompare()">Clear compare</button>
+  </div>
+  <div id="vcOut" style="display:none;margin-top:12px"></div>
+</div>
+
+<div style="margin-top:16px;margin-bottom:10px;display:flex;align-items:center;gap:10px">
+  <div style="height:1px;flex:1;background:#e8e5df"></div>
+  <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#ccc">Quote Template</span>
+  <div style="height:1px;flex:1;background:#e8e5df"></div>
+</div>
+<div class="card">
+  <div class="ctitle" style="justify-content:space-between">
+    <span><span class="badge">Q</span>Quote Template</span>
+    <button class="bp" onclick="buildQuoteTable()" style="font-size:12px;padding:5px 14px">Generate ↓</button>
+  </div>
+  <div style="font-size:12px;color:#aaa;margin-bottom:8px">Selling price auto-filled from calculator · All cells editable · Click "Generate" to rebuild from current calculator values</div>
+  <div id="quoteTableWrap" style="display:none;overflow-x:auto"></div>
+</div>
+</body>
+</html>
