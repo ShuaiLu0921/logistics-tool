@@ -689,6 +689,7 @@ function compactDeliveryForEmail(addr){
   return cityOnly(addr);
 }
 function emailFormatted(b){
+  if(b&&b.isMultiDelivery)return b.formatted||'';
   if(b&&b.isTableBatch)return b.formatted||'';
   if(!b)return'';
   const formatted=socReturnNotice(b.formatted||'',b);
@@ -698,7 +699,7 @@ function emailFormatted(b){
 }
 function emailSubject(b){
   if(!b)return'';
-  if(b.isTableBatch)return `Rate Inquiry // ${b.podDisplay||b.podKey||'POD'} Shipments`;
+  if(b.isTableBatch||b.isMultiDelivery)return `Rate Inquiry // ${b.podDisplay||b.podKey||'POD'} Shipments`;
   const compact=compactDeliveryForEmail(b.fullAddr||b.dispAddr||b.rawAddr||b.city||'');
   if(b.isExport)return `${compact||b.city||''} - ${b.podDisplay||b.podKey||''}`.trim();
   return `${b.podDisplay||b.podKey||''} - ${compact||b.city||''}`.trim();
@@ -968,6 +969,8 @@ function normPOL(raw,strict){
 
 function parseShip(block){
   block=normalizeParseWhitespace(block);
+  const multiDelivery=parseMultiDeliveryInput(block);
+  if(multiDelivery)return multiDelivery;
   const lines=block.split('\n').map(l=>l.replace(/^\d+[\.)\]]\s*/,'').replace(/^[\.。·•\-–—]\s*/,'').trim()).filter(Boolean);
   let podRaw='',polRaw='',rawAddr='',rawPickup='',rawCtr='',rawWt='',standaloneAddr=false;
 
@@ -1224,6 +1227,25 @@ rawCtr=rawCtr.replace(/\s+g\.?w\.?[：:\s].*/i,'').replace(/\s+[\d,]+\s*(?:kgs?|
 }
 
 // ─── VALIDATION ──────────────────────────────────────────────────────────────
+function parseMultiDeliveryInput(raw){
+  const lines=String(raw||'').split(/\r?\n/).map(function(line){return line.trim();}).filter(Boolean);
+  if(lines.length<3||lines.some(function(line){return line.includes('\t');}))return null;
+  const pod=normPOD(lines[0].replace(/^POD\s*:\s*/i,''),true);
+  if(!pod||!pod.k)return null;
+  const addresses=lines.slice(1);
+  // Only the explicit POD + address-list format: never consume cargo/detail lines.
+  if(!addresses.every(function(line){return /^.+,\s*[A-Z]{2}\s+\d{5}(?:-\d{4})?$/i.test(line);}))return null;
+  const shipment=parseShip('POD: '+pod.d+'\nDelivery address: '+addresses[0]);
+  const delivery=addresses.join('\n');
+  shipment.isMultiDelivery=true;
+  shipment.deliveryAddresses=addresses;
+  shipment.raw=raw;
+  shipment.fullAddr=shipment.dispAddr=shipment.rawAddr=delivery;
+  shipment.city=pod.d+' — '+addresses.length+' destinations';
+  shipment.formatted='POD: '+pod.d+'\nDeliver to:\n'+delivery+'\n\nLegal Weight / 1x40HC';
+  return shipment;
+}
+
 function validate(b,idx){
   const e=[];
   if(b&&b.isTableBatch)return e;
@@ -1650,6 +1672,8 @@ function memoryRecordToBT(r,idx){
     reeferTemp:r.reeferTemp||extractReeferTemperature(r.raw||r.formatted||''),
     soc:!!r.soc,
     socNoReturn:!!r.socNoReturn,
+    isMultiDelivery:!!r.isMultiDelivery,
+    deliveryAddresses:r.deliveryAddresses||[],
     wt:r.wt||'Legal Weight',
     ctr:r.ctr||'1x40HC',
     rawAddr:r.rawAddr||r.fullAddr||r.delivery||'',
@@ -2200,6 +2224,8 @@ function saveShipmentMemory(items){
       reeferTemp:b.reeferTemp||'',
       soc:!!b.soc,
       socNoReturn:!!b.socNoReturn,
+      isMultiDelivery:!!b.isMultiDelivery,
+      deliveryAddresses:b.deliveryAddresses||[],
       isExport:!!b.isExport,
       emailSentAt:(existing&&existing.emailSentAt)||b.emailSentAt||0
     };
@@ -2313,6 +2339,7 @@ function showShipmentMemory(id){
 
 function memoryEmailFormatted(r){
   if(!r)return'';
+  if(r.isMultiDelivery)return r.formatted||'';
   const formatted=socReturnNotice(r.formatted||'',r);
   if(r.res)return formatted;
   const compact=compactDeliveryForEmail(r.fullAddr||r.rawAddr||r.delivery||'');
