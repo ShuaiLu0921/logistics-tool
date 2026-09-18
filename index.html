@@ -157,7 +157,372 @@ VOL: 1*40HC  GW: 14500KGS"></textarea>
 </div>
 </div>
 
-<script src="quote-workflow.js"></script>
+<!-- Embedded workflow: keep identical to quote-workflow.js; deploy this HTML alone. -->
+<script id="quote-workflow-inline">
+// Shared requirements and quote-cost workflow. No network requests occur here.
+var WF_REQUIREMENTS = [
+  {key:'ow', label:'OW', fee:'OW fee', pattern:'\\bow\\b|overweight'},
+  {key:'res', label:'Residential', fee:'Residential fee', pattern:'residential'},
+  {key:'reefer', label:'Reefer', fee:'Reefer fee', pattern:'reefer|genset'},
+  {key:'hazmat', label:'HAZMAT', fee:'HAZMAT fee', pattern:'hazmat|hazardous|dangerous goods|\\bdg\\b'},
+  {key:'tanker', label:'Tanker', fee:'Tanker Surcharge', pattern:'tanker|iso[ -]*tank'},
+  {key:'bonded', label:'Bonded', fee:'Bonded Service Fee', pattern:'\\bbond(?:ed)?\\b'}
+];
+var WF_FEES = [
+  {key:'chassis',label:'Chassis',quantity:'chassisDays',unit:'day'},
+  {key:'toll',label:'Toll',quantity:'tollTrips',unit:'occurrence'},
+  {key:'prepull',label:'Prepull / Stop Off / Redelivery',quantity:'prepulls',unit:'occurrence'},
+  {key:'chassisSplit',label:'Chassis Split',quantity:'splits',unit:'occurrence'},
+  {key:'storage',label:'Yard Storage',quantity:'storageDays',unit:'day'},
+  {key:'detention',label:'Detention',quantity:'detentionHours',unit:'hour'},
+  {key:'ow',label:'OW fee',unit:'container'},
+  {key:'res',label:'Residential fee',unit:'container'},
+  {key:'reefer',label:'Reefer fee',unit:'container'},
+  {key:'hazmat',label:'HAZMAT fee',unit:'container'},
+  {key:'tanker',label:'Tanker Surcharge',unit:'container'},
+  {key:'bonded',label:'Bonded Service Fee',unit:'container'},
+  {key:'placard',label:'Placard Removal fee',quantity:'placards',unit:'placard'}
+];
+var WF_SCENARIO = {chassisDays:2,tollTrips:0,prepulls:0,splits:0,storageDays:0,detentionHours:0,placards:0};
+var WF_SELECTED = null;
+var WF_REVIEW = null;
+function wfText(value){return String(value==null?'':value);}
+function wfEscape(value){return wfText(value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function wfRound(value){return Math.round((value+Number.EPSILON)*100)/100;}
+function wfFlags(items){
+  var flags={ow:false,res:false,reefer:false,hazmat:false,tanker:false,bonded:false};
+  (items||[]).forEach(function(b){
+    ['ow','res','reefer','hazmat'].forEach(function(key){flags[key]=flags[key]||!!b[key];});
+    flags.tanker=flags.tanker||/\b(?:ISO Tank|Tanker)\b/i.test(b.ctr||'');
+    flags.bonded=flags.bonded||!!b.bonded||(/\bbond(?:ed)?\b/i.test(b.raw||'')&&!/\b(?:not|non|no)[ -]+bond(?:ed)?\b/i.test(b.raw||''));
+  });
+  return flags;
+}
+function wfCurrentFlags(){return wfFlags(typeof BT!=='undefined'?BT:[]);}
+function wfCapability(text,requirement){
+  text=wfText(text).toLowerCase();
+  var term='(?:'+requirement.pattern+')';
+  // "Not included" is a price statement, not a refusal of the service.
+  var denied=new RegExp('(?:\\bno\\s+(?!charge|fee)|\\bnot\\s+(?!included)|cannot\\s+(?:handle\\s+|support\\s+|do\\s+)?|can.t\\s+(?:handle\\s+|support\\s+|do\\s+)?|do not (?:handle|support|do)\\s+|non[- ])'+term+'|'+term+'\\s*(?:[:=-]\\s*)?(?:not supported|unavailable|not accepted|no\\b(?!\\s*(?:charge|fee)))','i');
+  if(denied.test(text))return 'no';
+  var yes=new RegExp('(?:can\\s+(?:handle|support|do)|support(?:s|ed)?|accept(?:s|ed)?|provide)\\s+'+term+'|'+term+'\\s*(?:service\\s*)?(?:[:=-]\\s*)?(?:yes|ok|available|supported|accepted|certified)|'+term+'\\s*(?:service)?\\s*(?:fee|surcharge)?\\s*[:=-]?\\s*(?:\\$\\s*\\d|included|free|no charge)','i');
+  return yes.test(text)?'yes':'unknown';
+}
+function wfVendorAssessment(v,flags){
+  var states={},unknown=[],blocked=[];
+  WF_REQUIREMENTS.forEach(function(r){if(!flags[r.key])return;var s=wfCapability(v.note,r);states[r.key]=s;if(s==='no')blocked.push(r.label);if(s==='unknown')unknown.push(r.label);});
+  if(/\b(?:don.t use|do not use|dont use)\b/i.test(v.note||''))blocked.push('Do not use');
+  return {states:states,unknown:unknown,blocked:blocked};
+}
+function wfSortVendors(vs,ow,res,shipment){
+  var flags=shipment?wfFlags([shipment]):Object.assign(wfCurrentFlags(),{ow:ow,res:res});
+  return vs.map(function(v,i){var a=wfVendorAssessment(v,flags);return Object.assign({},v,{i:i,f:vflags(v.note),filtered:!!a.blocked.length,capability:a});})
+    .sort(function(a,b){return Number(a.filtered)-Number(b.filtered)||Number(!!a.capability.unknown.length)-Number(!!b.capability.unknown.length)||(a.priority===1?1:a.priority===2?2:3)-(b.priority===1?1:b.priority===2?2:3)||Number(b.f.best)-Number(a.f.best)||Number(b.f.good)-Number(a.f.good)||a.i-b.i;});
+}
+function wfVendorTags(v){
+  var a=v.capability;if(!a)return '';
+  var parts=['Priority '+(v.priority===1||v.priority===2?v.priority:'not set')];
+  if(a.blocked.length)parts.push('Cannot support: '+a.blocked.join(', '));
+  if(a.unknown.length)parts.push('Confirm support: '+a.unknown.join(', '));
+  if(!a.blocked.length&&!a.unknown.length&&Object.keys(a.states).length)parts.push('Required services confirmed');
+  return '<div style="font-size:11px;color:#666;margin-top:4px">'+wfEscape(parts.join(' · '))+'</div>';
+}
+function wfMatchedVendor(name){
+  var norm=function(s){return wfText(s).toLowerCase().replace(/[^a-z0-9]/g,'');};
+  var pods=typeof BT!=='undefined'?Array.from(new Set(BT.map(function(b){return b.podKey;}))):[];
+  var matches=[];
+  pods.forEach(function(pod){((typeof VD!=='undefined'&&VD[pod])||[]).forEach(function(v){if(norm(v.name)===norm(name))matches.push(v);});});
+  if(!matches.length)return {note:'',priority:null};
+  return {note:matches.map(function(v){return v.note||'';}).join('\n'),priority:Math.max.apply(null,matches.map(function(v){return v.priority===1?1:v.priority===2?2:3;}))};
+}
+function wfAmount(text){
+  text=wfText(text);var m=text.match(/\$\s*([\d,]+(?:\.\d+)?)/);
+  if(m)return Number(m[1].replace(/,/g,''));
+  m=text.match(/(?:[:|]\s*|^\s*)([\d,]+(?:\.\d+)?)(?=\s*(?:$|\/|per\b|daily\b))/i);
+  if(m)return Number(m[1].replace(/,/g,''));
+  if(/\b(?:free|no charge)\b/i.test(text)&&!/\b(?:hour|min|hr)s?\b/i.test(text))return 0;
+  return null;
+}
+function wfKey(text){
+  var s=wfText(text).toLowerCase();
+  if(/placard/.test(s))return 'placard';
+  if(/chassis\s*split/.test(s))return 'chassisSplit';
+  if(/chassis|triaxle/.test(s))return 'chassis';
+  if(/pre[ -]?pull|yard pull|stop off|redelivery/.test(s))return 'prepull';
+  if(/storage/.test(s))return 'storage';
+  if(/detention|waiting time/.test(s))return 'detention';
+  if(/toll/.test(s))return 'toll';
+  var requirement=WF_REQUIREMENTS.find(function(r){return new RegExp(r.pattern,'i').test(s);});
+  if(requirement)return requirement.key;
+  if(/\b(?:fsc|fuel)\b/.test(s)&&!/drayage|line[ -]?haul|truck|base/.test(s))return 'fsc';
+  if(/drayage|line[ -]?haul|base|truck(?:ing)?|all[ -]?in/.test(s))return 'drayage';
+  return '';
+}
+function wfCharge(text,key){
+  var amount=wfAmount(text), included=/\bincl(?:uded)?\b/i.test(text)&&!/not\s+incl|excl/i.test(text);
+  var unit=/\/\s*(?:day|d)\b|per\s+day|daily/i.test(text)?'day':/\/\s*(?:hr|hour)\b|per\s+hour/i.test(text)?'hour':/per\s+(?:bl|bill)|\/\s*bl\b/i.test(text)?'BL':/per\s+placard|\/\s*placard/i.test(text)?'placard':/per\s+(?:container|ctn)|\/\s*(?:container|ctn)\b/i.test(text)?'container':/per\s+(?:occurrence|event|trip)/i.test(text)?'occurrence':null;
+  var def=WF_FEES.find(function(x){return x.key===key;});
+  var min=wfText(text).match(/(?:min(?:imum)?\s*[:=]?\s*)(\d+(?:\.\d+)?)\s*(?:days?|hrs?|hours?)?/i);
+  var free=wfText(text).match(/(\d+(?:\.\d+)?)\s*(hrs?|hours?|mins?|minutes?)\s*free/i);
+  var conditional=/if (?:needed|applicable|required)|may apply|when required/i.test(text);
+  return {amount:included?0:amount,note:text,status:included?'included':/not applicable|\bn\/a\b/i.test(text)?'na':conditional?'conditional':amount!==null?'extra':'missing',unit:unit||(def&&def.unit)||'container',minimum:min?Number(min[1]):0,free:free?Number(free[1])*(/^min/i.test(free[2])?1/60:1):0,unitConfirmed:!!unit||!def||!['day','hour'].includes(def.unit),included:included,ifNeeded:conditional,unclear:false};
+}
+function wfParseQuote(block,idx){
+  var q={vendor:vcVendorName(block,idx),raw:block,subject:'',drayage:null,fscPct:null,fscAmount:null,baseNet:null,scope:'itemized',fscConfirmed:false,charges:{},capabilities:{},warnings:[],parseWarnings:[],notes:[],totalNet:null,score:0,canRecommend:false,disqualified:false,detentionFreeHours:0,priority:3};
+  q.context=wfContextKey();
+  var subject=block.match(/^Subject(?: line)?\s*:\s*(.+)$/im);if(subject)q.subject=subject[1];
+  var allIn=/\ball[ -]?in\b/i.test(block),accessorialMode=false;
+  wfText(block).split('\n').map(vcNormLine).filter(Boolean).forEach(function(line){
+    if(/^(?:vendor|from|subject)\s*:/i.test(line))return;
+    if(/^(?:other )?accessorial(?: charges)?[: ]*$|^if needed[: ]*$/i.test(line)){accessorialMode=true;return;}
+    var cells=line.split('|').map(function(s){return s.trim();}).filter(Boolean);
+    var label=cells.length>1?cells[0]:line;
+    var key=/^(?:base|drayage|line[ -]?haul|trucking|truck\s*\+|all[ -]?in)\b/i.test(label)?'drayage':wfKey(label);var amount=wfAmount(cells.length>1?cells.slice(1).join(' '):line);
+    var combined=line.match(/\$?\s*([\d,]+(?:\.\d+)?)\s*\+\s*(\d+(?:\.\d+)?)\s*%\s*(?:fsc|fuel)/i);
+    if(combined){q.drayage=Number(combined[1].replace(/,/g,''));q.fscPct=Number(combined[2]);q.fscConfirmed=true;return;}
+    if(key==='drayage'){
+      if(amount!==null){if(q.drayage!==null&&q.drayage!==amount)q.parseWarnings.push('Multiple base prices: choose one base rate.');q.drayage=amount;}
+      if(!/not\s+incl|excl/i.test(line)&&/incl(?:uding|uded|\.)?\s*(?:fsc|fuel)|(?:fsc|fuel)\s+incl|all[ -]?in/i.test(line))q.fscConfirmed=true;
+      // Explicitly named inclusions are authoritative; "all-in" alone is not.
+      var inclusion=line.match(/incl(?:uding|uded|\.)?\s+(.+)/i);
+      if(inclusion)WF_FEES.forEach(function(f){var r=WF_REQUIREMENTS.find(function(x){return x.key===f.key;});if(new RegExp(r?r.pattern:f.key==='chassisSplit'?'chassis split':f.key,'i').test(inclusion[1]))q.charges[f.key]=Object.assign(wfCharge('Included',f.key),{unitConfirmed:true});});
+      return;
+    }
+    if(key==='fsc'){
+      var pct=line.match(/(\d+(?:\.\d+)?)\s*%/);if(pct)q.fscPct=Number(pct[1]);else if(amount!==null)q.fscAmount=amount;
+      if(pct||amount!==null||/included/i.test(line))q.fscConfirmed=true;
+      return;
+    }
+    if(key){
+      var charge=wfCharge(line,key);if(amount!==null&&charge.status!=='included')charge.amount=amount;
+      if(accessorialMode&&charge.status==='extra')charge.status='conditional';
+      if(q.charges[key]){q.parseWarnings.push('Multiple '+key+' entries: confirm the charge.');}
+      q.charges[key]=charge;
+      if(key==='detention')q.detentionFreeHours=charge.free;
+    }else if(amount!==null&&!/^\s*[-|:]+\s*$/.test(line))q.parseWarnings.push('Unmapped price: '+line);
+  });
+  if(q.drayage!==null)q.baseNet=wfRound(q.drayage+(q.fscAmount!==null?q.fscAmount:q.fscPct!==null?q.drayage*q.fscPct/100:0));
+  if(allIn){q.notes.push('All-in wording found: confirm each inclusion, or explicitly choose a confirmed all-in scope.');}
+  q.quoteType=q.fscConfirmed?'Base incl. FSC':'FSC unconfirmed';
+  return q;
+}
+function wfScenario(){return Object.assign({},WF_SCENARIO);}
+function wfQuantity(key,c,flags,scenario){
+  var def=WF_FEES.find(function(f){return f.key===key;});
+  var needed=key==='chassis'||!!flags[key]||(key==='placard'&&flags.hazmat)||(def&&def.quantity&&scenario[def.quantity]>0);
+  if(!needed)return 0;
+  if(c.unit==='BL')return null; // Need a per-container allocation, never silently assume.
+  var qty=c.unit==='day'?(key==='storage'?scenario.storageDays:scenario.chassisDays):c.unit==='hour'?Math.max(0,scenario.detentionHours-(c.free||0)):c.unit==='placard'?scenario.placards:def&&def.quantity&&!['chassis','storage','detention'].includes(key)?scenario[def.quantity]:1;
+  if(c.unit==='placard'&&qty===0&&flags.hazmat)return null;
+  return qty>0?Math.max(qty,c.minimum||0):0;
+}
+function wfEvaluate(q,flags){
+  q.warnings=(q.parseWarnings||[]).slice();q.disqualified=false;q.canRecommend=true;q.breakdown=[];
+  if(q.context!==wfContextKey())q.warnings.push('Shipment changed: compare replies again for the current shipment.');
+  if(typeof BT!=='undefined'&&(BT.length>1||BT.some(function(b){return b.loadDetails&&b.loadDetails.length>1||b.isTableBatch||b.isMultiDelivery;})))q.warnings.push('Compare one shipment / equipment group at a time. Batch replies need separate rates.');
+  var vendor=wfMatchedVendor(q.vendor);q.priority=vendor.priority||3;q.preferenceNote=vendor.note;
+  if(/\b(?:dont use|don't use|do not use)\b/i.test(vendor.note)){q.disqualified=true;q.warnings.push('Vendor list: do not use.');}
+  WF_REQUIREMENTS.forEach(function(r){
+    if(!flags[r.key])return;
+    var listState=wfCapability(vendor.note,r), replyState=wfCapability(q.raw,r), c=q.charges[r.key];
+    var explicit=q.capabilities[r.key];
+    var state=explicit||((replyState==='no'||listState==='no')?'no':replyState==='yes'||listState==='yes'||c&&['extra','included'].includes(c.status)?'yes':'unknown');
+    if(state==='no'){q.disqualified=true;q.warnings.push('Cannot support '+r.label+'.');}
+    if(state==='unknown')q.warnings.push('Confirm '+r.label+' capability.');
+  });
+  if(q.baseNet===null||!Number.isFinite(q.baseNet)||q.baseNet<0)q.warnings.push('Confirm base price.');
+  if(!q.fscConfirmed)q.warnings.push('Confirm FSC inclusion.');
+  if(q.scope==='all-in'&&q.confirmedScenario!==JSON.stringify(wfScenario()))q.warnings.push('Confirm all-in coverage for the current scenario.');
+  var total=q.baseNet===null?0:q.baseNet,scenario=wfScenario();
+  WF_FEES.forEach(function(def){
+    var key=def.key,c=q.charges[key];
+    var required=key==='chassis'||!!flags[key]||(key==='placard'&&flags.hazmat)||(def.quantity&&scenario[def.quantity]>0);
+    if(q.scope==='all-in'){
+      if(required)q.breakdown.push({key:key,label:def.label,status:'included',amount:0,quantity:1,total:0,unit:'container'});
+      return;
+    }
+    if(!c){if(required)q.warnings.push(def.label+' not quoted.');return;}
+    if(c.status==='na'){if(flags[key])q.warnings.push(def.label+' marked not applicable for a required service.');return;}
+    if(c.status==='included'){q.breakdown.push({key:key,label:def.label,status:'included',amount:0,quantity:1,total:0,unit:c.unit});return;}
+    if(!required&&c.status==='conditional')return;
+    var qty=wfQuantity(key,c,flags,scenario);
+    if(!required&&!def.quantity&&c.status==='extra')qty=1;
+    if(!required&&def.quantity&&c.status==='extra'&&qty===0){q.warnings.push('Confirm applicability of '+def.label+' (scenario quantity is 0).');return;}
+    if(!required&&c.status==='missing')return;
+    if(c.status==='missing'||c.amount===null||!Number.isFinite(c.amount)||c.amount<0){q.warnings.push('Confirm '+def.label+' rate.');return;}
+    if(!c.unitConfirmed){q.warnings.push('Confirm '+def.label+' billing unit.');return;}
+    if(qty===null){q.warnings.push('Confirm '+def.label+' quantity / allocation.');return;}
+    var subtotal=wfRound(c.amount*qty);total+=subtotal;
+    q.breakdown.push({key:key,label:def.label,status:c.status,amount:c.amount,quantity:qty,total:subtotal,unit:c.unit,minimum:c.minimum||0,free:c.free||0});
+  });
+  q.warnings=Array.from(new Set(q.warnings));q.canRecommend=!q.disqualified&&!q.warnings.length;
+  q.totalNet=q.canRecommend?wfRound(total):null;q.knownNet=wfRound(total);
+  q.quoteType=q.scope==='all-in'?'Confirmed all-in':'Itemized';
+  return q;
+}
+function wfScore(quotes){
+  var flags=wfCurrentFlags();quotes.forEach(function(q){wfEvaluate(q,flags);});
+  quotes.sort(function(a,b){return Number(b.canRecommend)-Number(a.canRecommend)||Number(a.disqualified)-Number(b.disqualified)||(a.canRecommend?a.totalNet-b.totalNet:0)||a.priority-b.priority||a.vendor.localeCompare(b.vendor);});
+  return flags;
+}
+function wfInput(value,attrs){return '<input '+attrs+' value="'+wfEscape(value==null?'':value)+'" style="width:85px;padding:4px;border:1px solid #ccc;border-radius:4px">';}
+function wfSelect(value,options,attrs){return '<select '+attrs+' style="max-width:170px;padding:4px">'+options.map(function(o){var k=Array.isArray(o)?o[0]:o,t=Array.isArray(o)?o[1]:o;return '<option value="'+wfEscape(k)+'"'+(k===value?' selected':'')+'>'+wfEscape(t)+'</option>';}).join('')+'</select>';}
+function wfScenarioControls(){
+  var labels={chassisDays:'Chassis days',tollTrips:'Toll trips',prepulls:'Prepulls',splits:'Chassis splits',storageDays:'Storage days',detentionHours:'Detention hours',placards:'Placards'};
+  return '<div style="display:flex;gap:9px;flex-wrap:wrap;margin:10px 0">'+Object.keys(labels).map(function(key){return '<label style="font-size:12px">'+labels[key]+' '+wfInput(WF_SCENARIO[key],'type="number" min="0" step="0.5" onchange="wfUpdateScenario(\''+key+'\',this.value)"')+'</label>';}).join('')+'</div><div style="font-size:12px;color:#777">Compare per container. Charges per BL require an explicit per-container allocation. Minimum days apply; conditional fees are counted only for the selected scenario.</div>';
+}
+function wfRender(quotes,flags){
+  var out=document.getElementById('vcOut');if(!out)return;out.style.display='block';
+  var rec=quotes.find(function(q){return q.canRecommend;});
+  var html=wfScenarioControls();
+  html+='<p style="font-size:13px">'+(rec?'Recommended: <strong>'+wfEscape(rec.vendor)+'</strong> · '+vcMoney(rec.totalNet)+' / container · Priority '+(rec.priority<3?rec.priority:'not set')+' · required services confirmed.':'No automatic recommendation: resolve the missing rates / service confirmations below.')+'</p>';
+  quotes.forEach(function(q,i){
+    html+='<div style="border:1px solid #ded9da;padding:12px;margin-top:10px;border-radius:6px"><strong>'+wfEscape(q.vendor)+'</strong> · '+(q.totalNet===null?'Incomplete (known subtotal '+vcMoney(q.knownNet)+')':vcMoney(q.totalNet)+' / container')+' · '+wfEscape(q.quoteType);
+    if(q.canRecommend)html+=' <button class="bs" onclick="useRecommendedVendorQuote('+i+')">Use base + itemized fees</button>';
+    if(q.preferenceNote)html+='<div style="font-size:12px;color:#666">Vendor list: '+wfEscape(q.preferenceNote)+'</div>';
+    if(q.warnings.length)html+='<div style="color:#985313;font-size:12px;margin-top:6px">'+q.warnings.map(wfEscape).join('<br>')+'</div>';
+    if(q.breakdown.length)html+='<div style="font-size:12px;margin-top:6px">Base incl. FSC '+vcMoney(q.baseNet)+'; '+q.breakdown.map(function(b){return wfEscape(b.label)+': '+(b.status==='included'?'Included':vcMoney(b.amount)+' × '+b.quantity+' '+wfEscape(b.unit)+' = '+vcMoney(b.total));}).join('; ')+'</div>';
+    html+='<details style="margin-top:8px"><summary>Review / correct quote</summary><div style="margin:8px 0">Base incl. FSC '+wfInput(q.baseNet,'data-wf-base="'+i+'" type="number" min="0" step="0.01"')+' <label><input data-wf-fsc="'+i+'" type="checkbox" '+(q.fscConfirmed?'checked':'')+'> FSC confirmed</label> '+wfSelect(q.scope,[['itemized','Itemized'],['all-in','All-in: listed scenario included']],'data-wf-scope="'+i+'"')+'</div>';
+    html+='<div style="font-size:12px;color:#666">All-in is a manual confirmation that every required charge in this scenario is included. No separate fees will be added.</div>';
+    WF_REQUIREMENTS.filter(function(r){return flags[r.key];}).forEach(function(r){var state=q.capabilities[r.key]||'';html+='<label style="display:inline-block;margin:6px">'+r.label+' '+wfSelect(state,[['','Use evidence'],['yes','Confirmed yes'],['no','Cannot support'],['unknown','Need confirmation']],'data-wf-cap="'+i+':'+r.key+'"')+'</label>';});
+    html+='<div style="overflow:auto"><table style="font-size:12px;width:100%"><tr><th>Fee</th><th>Status</th><th>Rate</th><th>Unit</th><th>Minimum qty</th><th>Free hours</th></tr>';
+    WF_FEES.forEach(function(f){var c=q.charges[f.key]||{status:'missing',amount:null,unit:f.unit,minimum:0,free:0};var id=i+':'+f.key;html+='<tr><td>'+wfEscape(f.label)+'</td><td>'+wfSelect(c.status,['missing','included','extra','conditional','na'],'data-wf-status="'+id+'"')+'</td><td>'+wfInput(c.amount,'data-wf-rate="'+id+'" type="number" min="0" step="0.01"')+'</td><td>'+wfSelect(c.unit,['container','day','hour','occurrence','placard','BL'],'data-wf-unit="'+id+'"')+'</td><td>'+wfInput(c.minimum,'data-wf-min="'+id+'" type="number" min="0" step="0.5"')+'</td><td>'+wfInput(c.free||0,'data-wf-free="'+id+'" type="number" min="0" step="0.5"')+'</td></tr>';});
+    html+='</table></div><label style="font-size:12px"><input type="checkbox" data-wf-reviewed="'+i+'"> I resolved any multiple / unmapped prices in the original reply.</label><div><button class="bs" onclick="wfApplyReview('+i+')">Apply corrections & compare</button></div><pre style="white-space:pre-wrap;font-size:12px">'+wfEscape(q.raw)+'</pre></details></div>';
+  });out.innerHTML=html;
+}
+function wfUpdateScenario(key,value){var n=Number(value);if(!Number.isFinite(n)||n<0)return;WF_SCENARIO[key]=n;WF_SELECTED=null;if(typeof VC_QUOTES!=='undefined'&&VC_QUOTES.length)wfRender(VC_QUOTES,wfScore(VC_QUOTES));}
+function wfApplyReview(i){
+  var q=VC_QUOTES[i],root=document.getElementById('vcOut');if(!q)return;
+  function val(attr,id){var el=root.querySelector('['+attr+'="'+id+'"]');return el?el.value:'';}
+  var base=val('data-wf-base',i);q.baseNet=base===''?null:Number(base);q.fscConfirmed=root.querySelector('[data-wf-fsc="'+i+'"]').checked;q.scope=val('data-wf-scope',i);q.confirmedScenario=JSON.stringify(wfScenario());
+  WF_REQUIREMENTS.forEach(function(r){var el=root.querySelector('[data-wf-cap="'+i+':'+r.key+'"]');if(el)q.capabilities[r.key]=el.value;});
+  WF_FEES.forEach(function(f){var id=i+':'+f.key,rate=val('data-wf-rate',id);q.charges[f.key]={status:val('data-wf-status',id),amount:rate===''?null:Number(rate),unit:val('data-wf-unit',id),minimum:Number(val('data-wf-min',id)),free:Number(val('data-wf-free',id)),unitConfirmed:true,note:'Operator reviewed'};});
+  if(root.querySelector('[data-wf-reviewed="'+i+'"]').checked)q.parseWarnings=[];
+  WF_SELECTED=null;wfRender(VC_QUOTES,wfScore(VC_QUOTES));
+}
+function wfContextKey(){return JSON.stringify((typeof BT!=='undefined'?BT:[]).map(function(b){return [b.podKey,b.fullAddr,b.ctr,b.wt,b.loadDetails,b.ow,b.res,b.reefer,b.hazmat,b.raw];}));}
+function wfSelectedCurrent(){return WF_SELECTED&&WF_SELECTED.context===wfContextKey()&&WF_SELECTED.calcInput===(document.getElementById('calcInput')||{}).value&&String(WF_SELECTED.fsc)===(document.getElementById('calcFsc')||{}).value?WF_SELECTED:null;}
+function wfUseQuote(idx){
+  var q=VC_QUOTES[idx];if(!q)return;wfEvaluate(q,wfCurrentFlags());if(!q.canRecommend){alert('Resolve the incomplete quote before using it.');return;}
+  var input=document.getElementById('calcInput'),fsc=document.getElementById('calcFsc');
+  fsc.value='0';input.value=q.vendor+' - '+q.baseNet;runCalc();
+  WF_SELECTED={context:wfContextKey(),quote:JSON.parse(JSON.stringify(q)),calcInput:input.value,fsc:'0',scenario:wfScenario()};
+  var notes=document.getElementById('calcNotes');if(notes)notes.value=q.vendor+' · '+q.quoteType+' · base incl. FSC '+vcMoney(q.baseNet)+' · scenario NET '+vcMoney(q.totalNet);
+  if(!['trucking','trucking-custom'].includes(_quoteTemplateType))selectQuoteTemplate('trucking');else buildQuoteTable();
+  var wrap=document.getElementById('quoteTableWrap');if(wrap)wrap.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// Stable row keys survive edits to labels and Undo/Redo.
+function wfBindTemplate(type){
+  var table=document.getElementById('quoteTable');if(!table)return;table.dataset.template=type;
+  if(!['trucking','trucking-custom'].includes(type))return;
+  var selected=wfSelectedCurrent(),q=selected&&selected.quote;
+  var rows=Array.from(table.rows);
+  var surchargeMode=false;
+  rows.forEach(function(row,index){
+    if(!row.cells.length)return;
+    if(row.textContent.trim()==='TRUCK SURCHARGES'){surchargeMode=true;return;}
+    if(surchargeMode&&row.cells.length===1&&!row.querySelector('#qtFinalNote')&&row.textContent.trim())row.dataset.quoteField='portSurcharge';
+    if(index===0){row.dataset.quoteField='route';return;}
+    if(index===1){row.dataset.quoteField='equipment';return;}
+    if(row.cells.length<3)return;
+    var label=row.cells[0].textContent.trim();var key=/^Truck \+ FSC/.test(label)?'base':/^Customs Clearance/.test(label)?'customs':/^HTS$/.test(label)?'hts':/^CP \/ UP Rail|^BNSF Hudson|^SOC return/.test(label)?'other':wfKey(label);
+    if(key)row.dataset.feeKey=key;
+    row.dataset.conditional=Number(index>rows.findIndex(function(r){return r.textContent.trim()==='If Needed';}))?'true':'false';
+  });
+  if(q){
+    var baseRow=table.querySelector('[data-fee-key="base"]');
+    if(q.scope==='all-in'){baseRow.cells[0].textContent='Trucking — All-in';baseRow.cells[2].textContent='Per container; confirmed scenario';}
+    if(q.scope==='all-in')table.querySelectorAll('[data-quote-field="portSurcharge"]').forEach(function(row){row.cells[0].textContent='Included in all-in: '+row.cells[0].textContent;});
+    WF_FEES.forEach(function(def){
+      var c=q.charges[def.key],part=q.breakdown.find(function(b){return b.key===def.key;});
+      var row=table.querySelector('[data-fee-key="'+def.key+'"]');
+      if(!row&&!part)return;
+      if(!row){row=document.createElement('tr');row.dataset.feeKey=def.key;var anchor=document.getElementById('qtAddAnchorTop');anchor.parentNode.insertBefore(row,anchor);[def.label,'',''].forEach(function(text,i){var td=document.createElement('td');td.contentEditable='true';td.spellcheck=false;td.style.cssText=i===0?window._qtLcs:i===1?window._qtVcs:window._qtGcs;td.textContent=text;row.appendChild(td);});}
+      if(part&&part.status==='included'){row.cells[1].textContent='Included';row.cells[2].textContent='Included in base';row.dataset.conditional='false';}
+      else if(c&&c.status==='na'){row.cells[1].textContent='N/A';row.dataset.conditional='false';}
+      else if(c&&['extra','conditional'].includes(c.status)&&c.amount!==null){row.cells[1].textContent=vcMoney(c.amount);row.cells[2].textContent='Per '+c.unit+(c.minimum?', min '+c.minimum:'')+(c.free?', '+c.free+' hours free':'');row.dataset.conditional=part?'false':'true';}
+      // Missing prices never inherit a seemingly confirmed company default.
+      else if(!part&&def.key==='chassis'){row.cells[1].textContent='$ ';}
+    });
+  }
+  var wrap=document.getElementById('quoteTableWrap'),hint=document.createElement('div');hint.id='wfQuoteHint';hint.style.cssText='font-size:12px;color:#777;margin-top:8px';
+  hint.textContent=q?'Base selling uses the calculator markup. Itemized vendor fees start at NET; edit these selling rates before saving. Save to Sheet previews the current table and scenario.':'Save to Sheet previews the edited table. NET and vendor must be confirmed if no comparison quote was selected.';
+  wrap.appendChild(hint);_qtSetLastSnapshot();
+}
+function wfReadMoney(text){var s=wfText(text).trim();if(/^(?:included|incl\.?|free|n\/a)$/i.test(s))return 0;var m=s.match(/^\$?\s*([\d,]+(?:\.\d+)?)\s*$/);return m?Number(m[1].replace(/,/g,'')):null;}
+function wfSnapshot(){
+  var table=document.getElementById('quoteTable');if(!table||!['trucking','trucking-custom'].includes(table.dataset.template))throw new Error('Save to Sheet currently supports Trucking templates.');
+  if(typeof BT!=='undefined'&&(BT.length>1||BT.some(function(b){return b.loadDetails&&b.loadDetails.length>1||b.isTableBatch||b.isMultiDelivery;})))throw new Error('Save one shipment / equipment group at a time so one price cannot be assigned to several different loads.');
+  var route=table.querySelector('[data-quote-field="route"]'),equipment=table.querySelector('[data-quote-field="equipment"]');
+  var routeText=route&&route.cells[1].textContent.trim(),parts=(routeText||'').split(/\s+-\s+|\s+–\s+/);var b=typeof BT!=='undefined'&&BT[0]||{};
+  var pod=parts.length===2?parts[b.isExport?1:0]:'',delivery=parts.length===2?parts[b.isExport?0:1]:'';
+  var scenario=wfScenario(),flags=wfCurrentFlags(),lines=[],errors=[],selling=0;
+  Array.from(table.rows).forEach(function(row){
+    if(row.cells.length<3)return;
+    var key=row.dataset.feeKey||wfKey(row.cells[0].textContent),label=row.cells[0].textContent.trim(),raw=row.cells[1].textContent.trim(),note=row.cells[2].textContent.trim();
+    var conditional=row.dataset.conditional==='true',amount=wfReadMoney(raw),charge=wfCharge(note,key);
+    charge.amount=amount;charge.unitConfirmed=true;
+    var required=key==='base'||key==='customs'||key==='chassis'||!!flags[key]||(key==='placard'&&flags.hazmat)||WF_FEES.some(function(f){return f.key===key&&f.quantity&&scenario[f.quantity]>0;});
+    var qty=key==='base'||key==='customs'||key==='hts'||!WF_FEES.some(function(f){return f.key===key;})?1:wfQuantity(key,charge,flags,scenario);
+    if(!conditional&&!required)required=!!raw&&raw!=='$';
+    if(/^included|^n\/a|^free/i.test(raw))qty=1;
+    if(conditional&&!required)qty=0;
+    if(required&&charge.unit==='BL')qty=null;
+    if(required&&qty===null)errors.push(label+': confirm quantity / per-container allocation.');
+    if(required&&amount===null)errors.push(label+': enter one selling amount (no multiple rates or formulas).');
+    var total=amount!==null&&qty!==null?wfRound(amount*qty):null;
+    if(required&&total!==null)selling+=total;
+    lines.push({key:key||'custom',label:label,price:raw,unit:note,quantity:required?qty:0,total:required?total:0,conditional:!required});
+  });
+  // Full-width port surcharge lines are visible selling fees too.
+  Array.from(table.rows).filter(function(row){return row.dataset.quoteField==='portSurcharge';}).forEach(function(row){
+    var text=row.cells[0].textContent.trim(),conditional=/if applicable|if needed|may apply/i.test(text),amount=null;
+    var prices=Array.from(text.matchAll(/\$\s*([\d,]+(?:\.\d+)?)/g));
+    if(prices.length===1)amount=Number(prices[0][1].replace(/,/g,''));
+    else if(prices.length>1){var size=(b.ctr||'').match(/(?:^|x)(20|40|45)/i);if(size){var price=text.match(new RegExp('\\$\\s*([\\d,]+(?:\\.\\d+)?)\\s*\\/\\s*'+size[1]));if(price)amount=Number(price[1].replace(/,/g,''));}}
+    if(/^included|included in/i.test(text))amount=0;
+    if(!conditional&&amount===null)errors.push('Port surcharge: specify one applicable dollar amount in the template.');
+    if(!conditional&&amount!==null)selling+=amount;
+    lines.push({key:'port',label:'Port surcharge',price:text,unit:'Per container',quantity:conditional?0:1,total:conditional?0:amount,conditional:conditional});
+  });
+  if(!lines.some(function(l){return l.key==='base';}))errors.push('Base price row is missing.');
+  if(errors.length)throw new Error(errors.join('\n'));
+  var chosen=wfSelectedCurrent(),net=chosen?chosen.quote.totalNet:null;
+  return {template:table.dataset.template,route:routeText||'',pod:pod,delivery:delivery,equipment:equipment?equipment.cells[1].textContent.trim():'',lines:lines,selling:wfRound(selling),net:net,trucker:chosen?chosen.quote.vendor:'',scenario:scenario,special:WF_REQUIREMENTS.filter(function(r){return flags[r.key];}).map(function(r){return r.label;}).join(' / '),tableText:table.innerText||table.textContent};
+}
+function wfReviewFinal(btn,mode){
+  var snapshot;try{snapshot=wfSnapshot();}catch(e){alert(e.message);return;}
+  var old=document.getElementById('wfSaveReview');if(old)old.remove();
+  WF_REVIEW={snapshot:snapshot,button:btn,mode:mode||'save'};
+  var modal=document.createElement('div');modal.id='wfSaveReview';modal.style.cssText='position:fixed;inset:0;z-index:10000;background:#0006;display:flex;align-items:center;justify-content:center;padding:20px';
+  modal.innerHTML='<div role="dialog" aria-modal="true" aria-label="Review final quote" style="background:white;padding:22px;border-radius:10px;width:680px;max-width:100%;max-height:90vh;overflow:auto;color:#231f20"><h3>Review final quote → Sheet</h3><div style="font-size:13px">Values below come from the edited template. Selling is the per-container total for the current scenario; conditional charges remain in Notes.</div><p>'+wfEscape(snapshot.equipment)+'</p><div style="display:flex;gap:10px;flex-wrap:wrap">'+[['pod','POD',snapshot.pod],['delivery','Delivery / pickup',snapshot.delivery],['customer','Customer',''],['trucker','Vendor',snapshot.trucker],['net','NET per container',snapshot.net]].map(function(f){return '<label>'+f[1]+'<br>'+wfInput(f[2],'id="wfFinal-'+f[0]+'" '+(f[0]==='net'?'type="number" min="0" step="0.01"':'type="text"') )+'</label>';}).join('')+'</div><p><strong>Selling / container: '+vcMoney(snapshot.selling)+'</strong></p><div style="font-size:12px">'+snapshot.lines.map(function(l){return wfEscape(l.label)+': '+wfEscape(l.price)+' · '+wfEscape(l.unit)+' · '+(l.conditional?'if needed':l.quantity+' × rate = '+vcMoney(l.total));}).join('<br>')+'</div><p style="font-size:12px">Confirm NET covers the same scenario as selling. Any route correction here will also update the displayed template.</p><button class="bp" id="wfSubmitQuote">Confirm & save</button> <button class="bs" onclick="document.getElementById(\'wfSaveReview\').remove()">Cancel</button><div id="wfFinalError" style="color:#b33;margin-top:8px"></div></div>';
+  document.body.appendChild(modal);document.getElementById('wfSubmitQuote').onclick=wfConfirmSave;
+  if(mode==='copy'){modal.querySelector('h3').textContent='Review final quote → Copy Sheet row';document.getElementById('wfSubmitQuote').textContent='Confirm & copy row';}
+}
+function wfSheetTSV(payload){return [payload.date,payload.customer,'',payload.pod,payload.delivery,payload.zip,payload.trucker,payload.net,payload.selling,payload.special,payload.notes].map(function(v){return wfText(v).replace(/[\t\r\n]+/g,' | ');}).join('\t');}
+function wfCopySheetPayload(btn,payload){
+  var text=wfSheetTSV(payload),ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;left:-9999px;top:-9999px;';document.body.appendChild(ta);ta.focus();ta.select();
+  var ok=false;try{ok=document.execCommand('copy');}catch(e){}ta.remove();
+  function done(){var old=btn.textContent;btn.textContent='✓ Copied final quote';setTimeout(function(){btn.textContent=old;},1500);}
+  if(ok)done();else if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(done).catch(function(){alert('Copy failed. Please try again.');});else alert('Copy failed. Please try again.');
+}
+function wfConfirmSave(){
+  if(!WF_REVIEW)return;
+  try{
+    var live=wfSnapshot();if(JSON.stringify(live)!==JSON.stringify(WF_REVIEW.snapshot))throw new Error('The quote changed. Close this review and click Save to Sheet again.');
+    var get=function(k){return document.getElementById('wfFinal-'+k).value.trim();};
+    var pod=get('pod'),delivery=get('delivery'),trucker=get('trucker'),net=get('net');
+    if(!pod||!delivery||!trucker||net===''||!Number.isFinite(Number(net))||Number(net)<0)throw new Error('Confirm POD, delivery, vendor and NET before saving.');
+    var table=document.getElementById('quoteTable'),route=table.querySelector('[data-quote-field="route"]');var b=typeof BT!=='undefined'&&BT[0]||{};
+    qtPush();route.cells[1].textContent=b.isExport?delivery+' - '+pod:pod+' - '+delivery;_qtSetLastSnapshot();live=wfSnapshot();
+    var date=new Date(),zip=delivery.match(/\b\d{5}\b/);
+    var notes=live.equipment+'\nScenario: '+JSON.stringify(live.scenario)+'\n'+live.lines.map(function(l){return l.label+': '+l.price+'; '+l.unit+(l.conditional?' [if needed]':' [qty '+l.quantity+', total '+vcMoney(l.total)+']');}).join('\n')+'\n'+live.tableText;
+    var payload={date:(date.getMonth()+1)+'/'+date.getDate(),customer:get('customer'),pod:pod,deliveryTo:delivery,delivery:delivery,zip:zip?zip[0]:'',trucker:trucker,net:vcMoney(Number(net)),selling:vcMoney(live.selling),special:live.special,notes:notes};
+    var button=WF_REVIEW.button,mode=WF_REVIEW.mode;document.getElementById('wfSaveReview').remove();WF_REVIEW=null;if(mode==='copy')wfCopySheetPayload(button,payload);else submitQuoteToSheet(button,payload);
+  }catch(e){document.getElementById('wfFinalError').textContent=e.message;}
+}
+</script>
 <script>
 // ─── ZIP DB (condensed) ───────────────────────────────────────────────────────
 const ZDB={"10001":["New York","NY",40.7484,-73.9967],"10002":["New York","NY",40.7157,-73.9863],"10546":["Millwood","NY",41.2012,-73.8296],"07030":["Hoboken","NJ",40.744,-74.0324],"07201":["Elizabeth","NJ",40.664,-74.2107],"07036":["Linden","NJ",40.6223,-74.2446],"08807":["Bridgewater","NJ",40.5968,-74.6046],"08701":["Lakewood","NJ",40.0979,-74.2179],"08036":["Hainesport","NJ",39.984,-74.8349],"07101":["Newark","NJ",40.7357,-74.1724],"10301":["Staten Island","NY",40.6298,-74.0938],"11201":["Brooklyn","NY",40.6928,-73.9903],"13088":["Liverpool","NY",43.1064,-76.2177],"06001":["Avon","CT",41.7923,-72.8635],"06492":["Wallingford","CT",41.457,-72.8232],"02101":["Boston","MA",42.3601,-71.0589],"01460":["Littleton","MA",42.5376,-71.4868],"19101":["Philadelphia","PA",39.9526,-75.1652],"18641":["Avoca","PA",41.3445,-75.7285],"19341":["Exton","PA",40.029,-75.6213],"17055":["Mechanicsburg","PA",40.2142,-77.0086],"21201":["Baltimore","MD",39.2904,-76.6122],"20001":["Washington","DC",38.9072,-77.0369],"22003":["Annandale","VA",38.8312,-77.196],"23502":["Norfolk","VA",36.8468,-76.2853],"28201":["Charlotte","NC",35.2271,-80.8431],"28027":["Concord","NC",35.4088,-80.5795],"27601":["Raleigh","NC",35.7796,-78.6382],"28401":["Wilmington","NC",34.2257,-77.9447],"29401":["Charleston","SC",32.7765,-79.9311],"29650":["Greer","SC",34.9387,-82.2271],"30301":["Atlanta","GA",33.749,-84.388],"30519":["Buford","GA",34.1201,-83.9913],"30721":["Dalton","GA",34.7698,-84.971],"31401":["Savannah","GA",32.0809,-81.0912],"32536":["Crestview","FL",30.746,-86.5711],"33101":["Miami","FL",25.7617,-80.1918],"34747":["Kissimmee","FL",28.3072,-81.5484],"33602":["Tampa","FL",27.9506,-82.4572],"32201":["Jacksonville","FL",30.3322,-81.6557],"35201":["Birmingham","AL",33.5186,-86.8104],"35672":["Town Creek","AL",34.6726,-87.3592],"36601":["Mobile","AL",30.6954,-88.0399],"39702":["Columbus","MS",33.4957,-88.4273],"37201":["Nashville","TN",36.1627,-86.7816],"38101":["Memphis","TN",35.1495,-90.049],"40201":["Louisville","KY",38.2527,-85.7585],"45201":["Cincinnati","OH",39.1031,-84.512],"44101":["Cleveland","OH",41.4993,-81.6944],"43201":["Columbus","OH",39.9612,-82.9988],"44241":["Streetsboro","OH",41.2395,-81.346],"48201":["Detroit","MI",42.3314,-83.0458],"46201":["Indianapolis","IN",39.7684,-86.1581],"46168":["Plainfield","IN",39.7042,-86.3994],"60601":["Chicago","IL",41.8781,-87.6298],"60525":["Hodgkins","IL",41.7706,-87.8598],"60030":["Grayslake","IL",42.3445,-88.0423],"55401":["Minneapolis","MN",44.9778,-93.265],"63101":["St Louis","MO",38.627,-90.1994],"64101":["Kansas City","MO",39.0997,-94.5786],"68101":["Omaha","NE",41.2565,-95.9345],"75134":["Lancaster","TX",32.5918,-96.7561],"75201":["Dallas","TX",32.7767,-96.797],"77001":["Houston","TX",29.7604,-95.3698],"78201":["San Antonio","TX",29.4241,-98.4936],"79901":["El Paso","TX",31.7619,-106.485],"70112":["New Orleans","LA",29.9511,-90.0715],"80201":["Denver","CO",39.7392,-104.9903],"85001":["Phoenix","AZ",33.4484,-112.074],"84101":["Salt Lake City","UT",40.7608,-111.891],"84651":["Payson","UT",40.0444,-111.7324],"84401":["Ogden","UT",41.223,-111.9738],"89521":["Reno","NV",39.4772,-119.7558],"90001":["Los Angeles","CA",33.9731,-118.2479],"90802":["Long Beach","CA",33.7701,-118.1937],"94601":["Oakland","CA",37.8044,-122.2712],"98101":["Seattle","WA",47.6062,-122.3321],"97201":["Portland","OR",45.5231,-122.6765],"15201":["Pittsburgh","PA",40.4406,-79.9959],"14201":["Buffalo","NY",42.8864,-78.8784],"30662":["Royston","GA",34.2887,-83.1113],"46268":["Indianapolis","IN",39.9012,-86.2196],"46240":["Indianapolis","IN",39.9076,-86.1197],"46241":["Indianapolis","IN",39.7298,-86.2785],"46250":["Indianapolis","IN",39.9048,-85.9938],"46260":["Indianapolis","IN",39.8762,-86.1586],"46280":["Carmel","IN",39.9784,-86.118],"46032":["Carmel","IN",39.9784,-86.118],"46077":["Zionsville","IN",39.9512,-86.2557],"46060":["Noblesville","IN",40.0456,-85.9974],"46143":["Greenwood","IN",39.6137,-86.1066],"46227":["Indianapolis","IN",39.6762,-86.1421],"46219":["Indianapolis","IN",39.7748,-85.9938],"46222":["Indianapolis","IN",39.7831,-86.2218],"46203":["Indianapolis","IN",39.7384,-86.1066],"60188":["Carol Stream","IL",41.9131,-88.1348],"60148":["Lombard","IL",41.8803,-88.0076],"60440":["Bolingbrook","IL",41.6886,-88.0687],"30096":["Duluth","GA",34.0012,-84.1449],"30005":["Alpharetta","GA",34.0754,-84.2941],"30518":["Buford","GA",34.1076,-83.991],"30043":["Lawrenceville","GA",33.9526,-83.9877],"75019":["Coppell","TX",32.9543,-97.0146],"75039":["Irving","TX",32.8573,-96.9925],"77494":["Katy","TX",29.7858,-95.8244],"29456":["Ladson","SC",32.9882,-80.1034],"28273":["Charlotte","NC",35.1085,-80.9799],"33166":["Miami Springs","FL",25.8219,-80.2956],"33178":["Doral","FL",25.8194,-80.3548],"32824":["Orlando","FL",28.3695,-81.3784],"36695":["Mobile","AL",30.6296,-88.1704],"37027":["Brentwood","TN",36.0331,-86.7825],"37064":["Franklin","TN",35.9251,-86.8689],"38118":["Memphis","TN",35.0555,-89.9534],"40509":["Lexington","KY",37.9716,-84.3501],"41048":["Hebron","KY",39.0676,-84.7088],"44130":["Middleburg Heights","OH",41.3645,-81.8138],"43228":["Columbus","OH",39.9748,-83.1135],"48334":["Farmington Hills","MI",42.4959,-83.3677],"48326":["Auburn Hills","MI",42.6876,-83.2327],"19720":["New Castle","DE",39.6618,-75.5771],"21703":["Frederick","MD",39.4143,-77.4105],"23434":["Suffolk","VA",36.7282,-76.5836],"85043":["Phoenix","AZ",33.3942,-112.1107],"85234":["Gilbert","AZ",33.3528,-111.789],"80011":["Aurora","CO",39.7294,-104.8319],"98032":["Kent","WA",47.3809,-122.2348],"98188":["SeaTac","WA",47.4437,-122.2987],"97006":["Beaverton","OR",45.4929,-122.8028],"94536":["Fremont","CA",37.5485,-121.9886],"90670":["Santa Fe Springs","CA",33.9425,-118.0887],"91761":["Ontario","CA",34.0134,-117.6509],"77338":["Humble","TX",29.9988,-95.2624]};
