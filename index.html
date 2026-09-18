@@ -138,6 +138,7 @@ VOL: 1*40HC  GW: 14500KGS"></textarea>
   <div class="ctitle"><span class="badge">M</span>Recent Shipments</div>
   <div class="brow" style="margin:0 0 8px">
     <button class="bs" onclick="confirmShipmentSelectionForEmail(this)">Confirm selection / Batch quote</button>
+    <button class="bs" onclick="clearRecentInquiries()" style="color:#c0392b;border-color:#f1c4bd">Clear all inquiries</button>
   </div>
   <div id="memList" style="font-size:13px;color:#777">No saved shipments yet.</div>
 </div>
@@ -156,6 +157,7 @@ VOL: 1*40HC  GW: 14500KGS"></textarea>
 </div>
 </div>
 
+<script src="quote-workflow.js"></script>
 <script>
 // ─── ZIP DB (condensed) ───────────────────────────────────────────────────────
 const ZDB={"10001":["New York","NY",40.7484,-73.9967],"10002":["New York","NY",40.7157,-73.9863],"10546":["Millwood","NY",41.2012,-73.8296],"07030":["Hoboken","NJ",40.744,-74.0324],"07201":["Elizabeth","NJ",40.664,-74.2107],"07036":["Linden","NJ",40.6223,-74.2446],"08807":["Bridgewater","NJ",40.5968,-74.6046],"08701":["Lakewood","NJ",40.0979,-74.2179],"08036":["Hainesport","NJ",39.984,-74.8349],"07101":["Newark","NJ",40.7357,-74.1724],"10301":["Staten Island","NY",40.6298,-74.0938],"11201":["Brooklyn","NY",40.6928,-73.9903],"13088":["Liverpool","NY",43.1064,-76.2177],"06001":["Avon","CT",41.7923,-72.8635],"06492":["Wallingford","CT",41.457,-72.8232],"02101":["Boston","MA",42.3601,-71.0589],"01460":["Littleton","MA",42.5376,-71.4868],"19101":["Philadelphia","PA",39.9526,-75.1652],"18641":["Avoca","PA",41.3445,-75.7285],"19341":["Exton","PA",40.029,-75.6213],"17055":["Mechanicsburg","PA",40.2142,-77.0086],"21201":["Baltimore","MD",39.2904,-76.6122],"20001":["Washington","DC",38.9072,-77.0369],"22003":["Annandale","VA",38.8312,-77.196],"23502":["Norfolk","VA",36.8468,-76.2853],"28201":["Charlotte","NC",35.2271,-80.8431],"28027":["Concord","NC",35.4088,-80.5795],"27601":["Raleigh","NC",35.7796,-78.6382],"28401":["Wilmington","NC",34.2257,-77.9447],"29401":["Charleston","SC",32.7765,-79.9311],"29650":["Greer","SC",34.9387,-82.2271],"30301":["Atlanta","GA",33.749,-84.388],"30519":["Buford","GA",34.1201,-83.9913],"30721":["Dalton","GA",34.7698,-84.971],"31401":["Savannah","GA",32.0809,-81.0912],"32536":["Crestview","FL",30.746,-86.5711],"33101":["Miami","FL",25.7617,-80.1918],"34747":["Kissimmee","FL",28.3072,-81.5484],"33602":["Tampa","FL",27.9506,-82.4572],"32201":["Jacksonville","FL",30.3322,-81.6557],"35201":["Birmingham","AL",33.5186,-86.8104],"35672":["Town Creek","AL",34.6726,-87.3592],"36601":["Mobile","AL",30.6954,-88.0399],"39702":["Columbus","MS",33.4957,-88.4273],"37201":["Nashville","TN",36.1627,-86.7816],"38101":["Memphis","TN",35.1495,-90.049],"40201":["Louisville","KY",38.2527,-85.7585],"45201":["Cincinnati","OH",39.1031,-84.512],"44101":["Cleveland","OH",41.4993,-81.6944],"43201":["Columbus","OH",39.9612,-82.9988],"44241":["Streetsboro","OH",41.2395,-81.346],"48201":["Detroit","MI",42.3314,-83.0458],"46201":["Indianapolis","IN",39.7684,-86.1581],"46168":["Plainfield","IN",39.7042,-86.3994],"60601":["Chicago","IL",41.8781,-87.6298],"60525":["Hodgkins","IL",41.7706,-87.8598],"60030":["Grayslake","IL",42.3445,-88.0423],"55401":["Minneapolis","MN",44.9778,-93.265],"63101":["St Louis","MO",38.627,-90.1994],"64101":["Kansas City","MO",39.0997,-94.5786],"68101":["Omaha","NE",41.2565,-95.9345],"75134":["Lancaster","TX",32.5918,-96.7561],"75201":["Dallas","TX",32.7767,-96.797],"77001":["Houston","TX",29.7604,-95.3698],"78201":["San Antonio","TX",29.4241,-98.4936],"79901":["El Paso","TX",31.7619,-106.485],"70112":["New Orleans","LA",29.9511,-90.0715],"80201":["Denver","CO",39.7392,-104.9903],"85001":["Phoenix","AZ",33.4484,-112.074],"84101":["Salt Lake City","UT",40.7608,-111.891],"84651":["Payson","UT",40.0444,-111.7324],"84401":["Ogden","UT",41.223,-111.9738],"89521":["Reno","NV",39.4772,-119.7558],"90001":["Los Angeles","CA",33.9731,-118.2479],"90802":["Long Beach","CA",33.7701,-118.1937],"94601":["Oakland","CA",37.8044,-122.2712],"98101":["Seattle","WA",47.6062,-122.3321],"97201":["Portland","OR",45.5231,-122.6765],"15201":["Pittsburgh","PA",40.4406,-79.9959],"14201":["Buffalo","NY",42.8864,-78.8784],"30662":["Royston","GA",34.2887,-83.1113],"46268":["Indianapolis","IN",39.9012,-86.2196],"46240":["Indianapolis","IN",39.9076,-86.1197],"46241":["Indianapolis","IN",39.7298,-86.2785],"46250":["Indianapolis","IN",39.9048,-85.9938],"46260":["Indianapolis","IN",39.8762,-86.1586],"46280":["Carmel","IN",39.9784,-86.118],"46032":["Carmel","IN",39.9784,-86.118],"46077":["Zionsville","IN",39.9512,-86.2557],"46060":["Noblesville","IN",40.0456,-85.9974],"46143":["Greenwood","IN",39.6137,-86.1066],"46227":["Indianapolis","IN",39.6762,-86.1421],"46219":["Indianapolis","IN",39.7748,-85.9938],"46222":["Indianapolis","IN",39.7831,-86.2218],"46203":["Indianapolis","IN",39.7384,-86.1066],"60188":["Carol Stream","IL",41.9131,-88.1348],"60148":["Lombard","IL",41.8803,-88.0076],"60440":["Bolingbrook","IL",41.6886,-88.0687],"30096":["Duluth","GA",34.0012,-84.1449],"30005":["Alpharetta","GA",34.0754,-84.2941],"30518":["Buford","GA",34.1076,-83.991],"30043":["Lawrenceville","GA",33.9526,-83.9877],"75019":["Coppell","TX",32.9543,-97.0146],"75039":["Irving","TX",32.8573,-96.9925],"77494":["Katy","TX",29.7858,-95.8244],"29456":["Ladson","SC",32.9882,-80.1034],"28273":["Charlotte","NC",35.1085,-80.9799],"33166":["Miami Springs","FL",25.8219,-80.2956],"33178":["Doral","FL",25.8194,-80.3548],"32824":["Orlando","FL",28.3695,-81.3784],"36695":["Mobile","AL",30.6296,-88.1704],"37027":["Brentwood","TN",36.0331,-86.7825],"37064":["Franklin","TN",35.9251,-86.8689],"38118":["Memphis","TN",35.0555,-89.9534],"40509":["Lexington","KY",37.9716,-84.3501],"41048":["Hebron","KY",39.0676,-84.7088],"44130":["Middleburg Heights","OH",41.3645,-81.8138],"43228":["Columbus","OH",39.9748,-83.1135],"48334":["Farmington Hills","MI",42.4959,-83.3677],"48326":["Auburn Hills","MI",42.6876,-83.2327],"19720":["New Castle","DE",39.6618,-75.5771],"21703":["Frederick","MD",39.4143,-77.4105],"23434":["Suffolk","VA",36.7282,-76.5836],"85043":["Phoenix","AZ",33.3942,-112.1107],"85234":["Gilbert","AZ",33.3528,-111.789],"80011":["Aurora","CO",39.7294,-104.8319],"98032":["Kent","WA",47.3809,-122.2348],"98188":["SeaTac","WA",47.4437,-122.2987],"97006":["Beaverton","OR",45.4929,-122.8028],"94536":["Fremont","CA",37.5485,-121.9886],"90670":["Santa Fe Springs","CA",33.9425,-118.0887],"91761":["Ontario","CA",34.0134,-117.6509],"77338":["Humble","TX",29.9988,-95.2624]};
@@ -182,19 +184,21 @@ const VENDOR_SHEET_CANDIDATES = [
 ];
 
 // Parse the markdown table returned by Google Drive MCP read_file_content
-// Columns: Company Name | Note | POD | Contact
+// Columns: Vendor Name | Note | POD | Priority | Contact
 function parseSheetToVD(markdownText) {
   const result = {};
   const lines = markdownText.split('\n');
   for (const line of lines) {
     if (!line.startsWith('|')) continue;
     const cells = line.split('|').map(c => c.trim());
-    // cells[0] is empty (leading |), cells[1]=Name, cells[2]=Note, cells[3]=POD, cells[4]=Contact
-    if (cells.length < 5) continue;
+    // cells[0] is empty (leading |), cells[1]=Name, cells[2]=Note, cells[3]=POD,
+    // cells[4]=Priority, cells[5]=Contact
+    if (cells.length < 6) continue;
     const name = cells[1];
     const note = cells[2];
     const pod  = cells[3];
-    const contact = cells[4];
+    const priorityRaw = cells[4];
+    const contact = cells[5];
     // Skip header rows and separator rows
     if (!pod || pod === 'POD' || /^[-:]+$/.test(pod)) continue;
     // Skip rows with no company name
@@ -208,8 +212,9 @@ function parseSheetToVD(markdownText) {
       .replace(/[A-Za-z][^<]*<([^>]+)>/g, '$1')       // "Name <email>" → "email"
       .replace(/\\u003c/gi, '').replace(/\\u003e/gi, '') // leftover unicode escapes
       .trim();
+    const priority = /^[12]$/.test(priorityRaw) ? Number(priorityRaw) : null;
     if (!result[podKey]) result[podKey] = [];
-    result[podKey].push({ name: cleanName(name), contact: cleanContact, note: cleanNote(note) });
+    result[podKey].push({ name: cleanName(name), contact: cleanContact, note: cleanNote(note), priority });
   }
   return result;
 }
@@ -234,7 +239,8 @@ function parseGoogleTableToVD(table) {
   let nameIdx = colIndex(cols, ['company name', 'company', 'vendor', 'trucker', 'name'], 0);
   let noteIdx = colIndex(cols, ['note', 'notes', 'remark'], 1);
   let podIdx = colIndex(cols, ['pod', 'port', 'destination'], 2);
-  let contactIdx = colIndex(cols, ['contact', 'email', 'e-mail'], 3);
+  let priorityIdx = colIndex(cols, ['priority'], 3);
+  let contactIdx = colIndex(cols, ['contact', 'email', 'e-mail'], 4);
   let startRow = 0;
 
   for (let i = 0; i < Math.min(rows.length, 12); i++) {
@@ -247,7 +253,9 @@ function parseGoogleTableToVD(table) {
       podIdx = hPod;
       contactIdx = hContact;
       const hNote = colIndex(labels, ['note', 'notes', 'remark'], -1);
+      const hPriority = colIndex(labels, ['priority'], -1);
       noteIdx = hNote >= 0 ? hNote : noteIdx;
+      priorityIdx = hPriority >= 0 ? hPriority : priorityIdx;
       startRow = i + 1;
       break;
     }
@@ -261,6 +269,7 @@ function parseGoogleTableToVD(table) {
     let name = cells[nameIdx] || '';
     let note = cells[noteIdx] || '';
     let pod = cells[podIdx] || '';
+    let priorityRaw = cells[priorityIdx] || '';
     let contact = cells[contactIdx] || '';
     let podKey = normalizePod(String(pod).trim());
 
@@ -299,7 +308,8 @@ function parseGoogleTableToVD(table) {
       .replace(/\\u003c/gi, '').replace(/\\u003e/gi, '')
       .trim();
     if (!result[podKey]) result[podKey] = [];
-    result[podKey].push({ name: cleanName(name), contact: cleanContact, note: cleanNote(note) });
+    const priority = /^[12]$/.test(priorityRaw) ? Number(priorityRaw) : null;
+    result[podKey].push({ name: cleanName(name), contact: cleanContact, note: cleanNote(note), priority });
     debug.parsedRows++;
   }
   result.__debug = debug;
@@ -313,8 +323,8 @@ function loadVendorSheetTable(source) {
     const params = new URLSearchParams();
     params.set('tqx', 'out:json;responseHandler:' + cbName);
     params.set('headers', '1');
-    params.set('range', 'A1:D1000');
-    params.set('tq', 'select A,B,C,D');
+    params.set('range', 'A1:E2000');
+    params.set('tq', 'select A,B,C,D,E');
     if (source) {
       if (source.sheet) params.set('sheet', source.sheet);
       else if (source.gid) params.set('gid', source.gid);
@@ -354,7 +364,6 @@ function loadVendorSheetTable(source) {
 
 async function loadVendorSheetParsed() {
   const errors = [];
-  const candidates = [];
   for (const source of VENDOR_SHEET_CANDIDATES) {
     try {
       const loaded = await loadVendorSheetTable(source);
@@ -364,17 +373,12 @@ async function loadVendorSheetParsed() {
       const podCount = Object.keys(parsed).length;
       const vendorCount = Object.values(parsed).flat().length;
       if (podCount > 0) {
-        candidates.push({ parsed, podCount, vendorCount, source: loaded.source, debug });
-        continue;
+        return { parsed, podCount, vendorCount, source: loaded.source, debug };
       }
       errors.push((source.label || 'sheet') + ': parsed 0 PODs' + (debug.rows ? ` (${debug.rows} rows read)` : ''));
     } catch (err) {
       errors.push((source.label || 'sheet') + ': ' + err.message);
     }
-  }
-  if (candidates.length) {
-    candidates.sort((a,b) => (b.vendorCount - a.vendorCount) || (b.podCount - a.podCount));
-    return candidates[0];
   }
   throw new Error(errors.join(' | '));
 }
@@ -686,9 +690,11 @@ function compactDeliveryForEmail(addr){
 }
 function emailFormatted(b){
   if(b&&b.isTableBatch)return b.formatted||'';
-  if(!b||b.res)return b&&b.formatted||'';
+  if(!b)return'';
+  const formatted=socReturnNotice(b.formatted||'',b);
+  if(b.res)return formatted;
   const compact=compactDeliveryForEmail(b.fullAddr||b.dispAddr||b.rawAddr||'');
-  return (b.formatted||'').replace(/^Deliver to: .+$/m,'Deliver to: '+compact);
+  return formatted.replace(/^Deliver to: .+$/m,'Deliver to: '+compact);
 }
 function emailSubject(b){
   if(!b)return'';
@@ -768,8 +774,18 @@ function normPOD(raw,strict){
 
 function parseCtr(raw){
   if(!raw)return'1x40HC';
+  raw=raw.replace(/\b(20|40|45)\s*['’′]\s*(?=HC|HQ|GP|RF|RH|OT|FLAT)/ig,'$1');
+  const tank=raw.match(/\b(?:(\d+)\s*[x*]\s*)?(20|40)\s*(?:['′’]\s*)?(ISO\s*[- ]?\s*TANK|TANKER)\b/i);
+  if(tank)return (tank[1]||'1')+'x'+tank[2]+' ISO Tank';
+  if(/\btanker\b/i.test(raw)){
+    const otherCtr=raw.replace(/\btanker\b/ig,'').replace(/\bCOC\b/ig,'').trim();
+    const size=otherCtr.match(/\b(?:(\d+)\s*[x*]\s*)?(20|40|45)(?:\s*(?:GP|HC|HQ|RF|RH|OT|FLAT))?\b/i);
+    return (size?(size[1]||'1')+'x'+size[2]:'1x20')+' ISO Tank';
+  }
   // Strip anything after GW / weight info that may be on the same line
   raw=raw.replace(/\s+g\.?w\.?[：:\s].*/i,'').replace(/\s+[\d,]+\s*(?:kgs?|tons?).*/i,'').trim();
+  // Keep temperature as a shipment requirement, not as part of the container name.
+  raw=raw.replace(/\s*[（(]\s*(?:temp(?:erature)?\.?\s*[：:]?\s*)?[-−]?\s*\d+(?:\.\d+)?\s*(?:°?\s*[CF]|[℃℉]|degrees?\s*[CF]|摄氏度)\s*[)）]/ig,'').trim();
   raw=raw.replace(/\*/g,'x');
   return raw.split(/[+&]/).map(p=>{
     p=p.trim().toUpperCase();
@@ -807,6 +823,17 @@ function normalizeParseWhitespace(value){
   return String(value||'').replace(/[\u00A0\u1680\u2000-\u200B\u202F\u205F\u3000\uFEFF]/g,' ');
 }
 
+function extractReeferTemperature(value){
+  const text=normalizeParseWhitespace(value);
+  // Match a complete temperature token, not an address such as "9462 FM1384".
+  const match=text.match(/(?:^|[^A-Za-z0-9.])([-−]?\s*\d+(?:\.\d+)?\s*(?:°?\s*[CF]|[℃℉]|degrees?\s*[CF]|摄氏度))(?![A-Za-z0-9_])/i);
+  if(!match)return'';
+  return match[1]
+    .replace(/−/g,'-')
+    .replace(/\s+/g,'')
+    .replace(/([cf])$/i,function(unit){return unit.toUpperCase();});
+}
+
 function chkOW(w,c){
   if(w==='Legal Weight')return false;
   const n=parseFloat(w.replace(/[^0-9.]/g,''));
@@ -815,14 +842,35 @@ function chkOW(w,c){
   return n>19900;
 }
 
+function extractLoadDetails(raw){
+  const details=[];
+  const pattern=/([\d][\d,]*(?:\.\d+)?\s*(?:kgs?|t(?:ons?)?))\s*\/\s*((?:\d+\s*[x*]\s*)?(?:20|40|45)\s*(?:['’′]\s*)?(?:HC|HQ|GP|RF|RH|OT|FLAT))\b/gi;
+  let match;
+  while((match=pattern.exec(normalizeParseWhitespace(raw)))){
+    const wt=parseWt(match[1]);
+    const ctr=parseCtr(match[2]);
+    details.push({wt:wt,ctr:ctr,ow:chkOW(wt,ctr)});
+  }
+  return details;
+}
+
 function detectSOC(raw){
   const text=String(raw||'');
   const noReturn=/\bSOC\b\s*no need to return to (?:the )?depot|no need to return to (?:the )?depot\s*\bSOC\b/i.test(text)||/SOC/i.test(text)&&(/无需还箱|不用还箱|不需还箱/.test(text));
   return{soc:noReturn||/\bSOC\b/i.test(text),socNoReturn:noReturn};
 }
 
+function socReturnNotice(formatted,socInfo){
+  if(socInfo.soc)formatted=formatted.replace(/(\d)X(?=\d)/g,'$1x');
+  if(!socInfo.soc||socInfo.socNoReturn||formatted.includes('Kindly advise if there are any charges for SOC return other than a chassis split.'))return formatted;
+  const notice='Kindly advise if there are any charges for SOC return other than a chassis split.\nSOC return location:\n【               】\n\n';
+  return formatted.replace(/^(POD:|Pick up:)/m,notice+'$1');
+}
+
 function extractDGDetail(raw){
   const text=String(raw||'');
+  const combined=text.match(/\bDG\s*[:\-]\s*(?:class\s*#?\s*)?([1-9](?:\.\d)?(?:\s*\/\s*[A-Za-z0-9.\-]+)+)/i);
+  if(combined)return{detail:'Class '+combined[1].replace(/\s*\/\s*/g,'/')};
   const classes=[...text.matchAll(/\bclass\s*#?\s*([1-9](?:\.\d)?)\b/gi)].map(m=>'Class '+m[1]);
   const explicit=text.match(/\bDG\s*[:\-]\s*([\w\/\-\.]+(?:\/[\w\/\-\.]+)*)/i);
   const uns=[...text.matchAll(/\bUN\s*[\-:]?\s*(\d{4})\b/gi)].map(m=>'UN'+m[1]);
@@ -836,12 +884,24 @@ function dgDetailText(dg){
   return ` (${dg.detail})`;
 }
 
-function feeNotice(ow,res,reefer,hazmat,blankLine){
+function isoTankLoadDetails(wt,ctr,ow,hazmat,dgDetail){
+  if(/\btanker\b/i.test(ctr||''))ctr=parseCtr(ctr);
+  return wt+' / '+ctr+(ow?'****OW':'')+(hazmat?' HAZMAT':'')+(hazmat&&dgDetail?' ('+dgDetail+')':'');
+}
+
+function detectBonded(raw){
+  return /\bbond(?:ed)?\b/i.test(raw||'');
+}
+
+function feeNotice(ow,res,reefer,hazmat,blankLine,ctr,bonded){
   const fees=[];
-  if(ow)fees.push('the OW fee');
-  if(hazmat)fees.push('the HAZMAT fee and placard removal fee');
+  const tanker=/\b(?:ISO Tank|Tanker)\b/i.test(ctr||'');
+  if(tanker)fees.push('the tanker surcharge');
+  if(ow)fees.push(tanker?'OW fee':'the OW fee');
+  if(hazmat){fees.push('HAZMAT fee');fees.push('placard removal fee');}
   if(res)fees.push('the residential charge');
   if(reefer)fees.push('the Reefer charge');
+  if(bonded)fees.push(fees.length?'bonded service fee':'the bonded service fee');
   if(!fees.length)return'';
   const joined=fees.length===1?fees[0]:fees.length===2?fees.join(' and '):fees.slice(0,-1).join(', ')+', and '+fees[fees.length-1];
   return 'Please kindly advise '+joined+'.\n'+(blankLine?'\n':'');
@@ -852,15 +912,7 @@ function vflags(note){
   const n=(note||'').toLowerCase();
   return{noOW:/no ow/.test(n),noRes:/no residential/.test(n),owOK:/ow ok|ow yes|ow\//.test(n),resOK:/residential ok|residential yes/.test(n),best:/best rate/.test(n),good:/good rate|good service|good all/.test(n)};
 }
-function sortVendors(vs,ow,res){
-  return vs.map((v,i)=>({...v,i,f:vflags(v.note),filtered:(ow&&vflags(v.note).noOW)||(res&&vflags(v.note).noRes)}))
-    .sort((a,b)=>{
-      if(a.filtered&&!b.filtered)return 1;if(!a.filtered&&b.filtered)return-1;
-      if(a.f.best&&!b.f.best)return-1;if(!a.f.best&&b.f.best)return 1;
-      if(a.f.good&&!b.f.good)return-1;if(!a.f.good&&b.f.good)return 1;
-      return a.i-b.i;
-    });
-}
+function sortVendors(vs,ow,res,shipment){return wfSortVendors(vs,ow,res,shipment); }
 
 
 function stripAddrNoise(addr){
@@ -1016,6 +1068,8 @@ rawCtr=rawCtr.replace(/\s+g\.?w\.?[：:\s].*/i,'').replace(/\s+[\d,]+\s*(?:kgs?|
   }
 
   // Determine mode: EXPORT if (pickup + POL), IMPORT if (POD + delivery)
+  const isoTank=block.match(/\b(?:\d+\s*[x*]\s*)?(?:20|40)\s*(?:['′’]\s*)?(?:ISO\s*[- ]?\s*TANK|TANKER)\b/i)||block.match(/\btanker\b/i);
+  if(isoTank)rawCtr=/^tanker$/i.test(isoTank[0])?(rawCtr||'')+' Tanker':isoTank[0];
   const isExport=!!(rawPickup&&polRaw)||(!podRaw&&!rawAddr&&rawPickup);
 
   // ── POD from city name anywhere in block ───────────────────────────────────
@@ -1041,9 +1095,13 @@ rawCtr=rawCtr.replace(/\s+g\.?w\.?[：:\s].*/i,'').replace(/\s+[\d,]+\s*(?:kgs?|
     }
   }
 
-  const ctr=parseCtr(rawCtr);
+  const loadDetails=extractLoadDetails(block);
+  if(loadDetails.length&&!isoTank){rawWt=loadDetails[0].wt;rawCtr=loadDetails[0].ctr;}
+  const bonded=detectBonded(block);
+  const parsedCtr=loadDetails.length&&!isoTank?loadDetails[0].ctr:parseCtr(rawCtr);
+  const ctr=bonded?parsedCtr.replace(/(\d)X(?=\d)/g,'$1x'):parsedCtr;
   const wt=parseWt(rawWt);
-  const ow=chkOW(wt,ctr);
+  const ow=loadDetails.length?loadDetails.some(function(d){return d.ow;}):chkOW(wt,ctr);
   const socInfo=detectSOC(block);
   const socSuffix=socInfo.soc?(socInfo.socNoReturn?' SOC no need to return to the depot':' SOC'):'';
 
@@ -1067,14 +1125,21 @@ rawCtr=rawCtr.replace(/\s+g\.?w\.?[：:\s].*/i,'').replace(/\s+[\d,]+\s*(?:kgs?|
     // Extract DG detail string like "9/3077/III"
     const dgInfo=extractDGDetail(block);
     const dgDetail=dgInfo.detail;
-    const reeferTempExp=block.match(/[-−]?\d+\s*(?:°\s*)?[CF]\b|[-−]\d+\s*(?:degrees?|摄氏度|°)/i);
-    const reefer=!!(reeferTempExp||/\breefer\b|冷冻|冷藏|温控|temperature[:\s]/i.test(block));
-    notice=feeNotice(ow,pickupRes,reefer,hazmat,false);
+    const reeferTemp=extractReeferTemperature(block);
+    const reefer=!!(reeferTemp||loadDetails.some(function(d){return /(?:RF|RH)\b/i.test(d.ctr);})||/(?:^|[^A-Za-z0-9])(?:\d+\s*[x*]\s*)?(?:20|40|45)\s*(?:RF|RH)\b/i.test(ctr)||/\breefer\b|冷冻|冷藏|温控|temperature[:\s]/i.test(block));
+    notice=feeNotice(ow,pickupRes,reefer,hazmat,false,ctr,bonded);
     let body='';
     if(notice)body+=`${notice}`;
-    body+=`Pick up: ${pickupFmt}\nPOL: ${polObj.d||'________'}\n${wt} / ${ctr}${socSuffix}${ow?' ****OW':''}${hazmat?' HAZMAT':''}${reefer?' Reefer':''}`;
+    body+=`Pick up: ${pickupFmt}\nPOL: ${polObj.d||'________'}\n${wt} / ${ctr}${socSuffix}${ow?' ****OW':''}${hazmat?' HAZMAT':''}${reefer?' Reefer':''}${reeferTemp?', '+reeferTemp:''}`;
     if(hazmat&&dgDetail) body+=dgDetailText(dgInfo);
-    return{formatted:body.trim(),podKey:polObj.k,podDisplay:polObj.d,fullAddr:pickupFmt,dispAddr:pickupFmt,city:pickupCity,res:pickupRes,ow,hazmat,dgDetail,reefer,soc:socInfo.soc,socNoReturn:socInfo.socNoReturn,wt,ctr,rawAddr:rawPickup||'',standaloneAddr,isExport:true,raw:block};
+    if(isoTank)body=body.slice(0,body.lastIndexOf('\n')+1)+isoTankLoadDetails(wt,ctr,ow,hazmat,dgDetail)+socSuffix;
+    if(loadDetails.length>1){
+      const cargo=loadDetails.map(function(d){return d.wt+' / '+d.ctr+socSuffix+(d.ow?' ****OW':'')+(hazmat?' HAZMAT':'')+(reefer?' Reefer':'')+(reeferTemp?', '+reeferTemp:'')+(hazmat&&dgDetail?dgDetailText(dgInfo):'');}).join('\n');
+      body=body.slice(0,body.lastIndexOf('\n')+1)+cargo;
+    }
+    if(bonded)body+=', bonded service required';
+    body=socReturnNotice(body,socInfo);
+    return{formatted:body.trim(),podKey:polObj.k,podDisplay:polObj.d,fullAddr:pickupFmt,dispAddr:pickupFmt,city:pickupCity,res:pickupRes,ow,hazmat,dgDetail,reefer,reeferTemp,soc:socInfo.soc,socNoReturn:socInfo.socNoReturn,wt,ctr,loadDetails,rawAddr:rawPickup||'',standaloneAddr,isExport:true,raw:block};
   } else {
     // ── IMPORT ──────────────────────────────────────────────────────────────
     let podObj=podRaw?normPOD(podRaw):{d:'[POD]',k:''};
@@ -1139,15 +1204,22 @@ rawCtr=rawCtr.replace(/\s+g\.?w\.?[：:\s].*/i,'').replace(/\s+[\d,]+\s*(?:kgs?|
     const dgDetail=dgInfo.detail;
 
     // Detect Reefer temperature requirement
-    const reeferTemp=block.match(/[-−]?\d+\s*(?:°\s*)?[CF]\b|[-−]\d+\s*(?:degrees?|摄氏度|°)/i);
-    const reefer=!!(reeferTemp||/\breefer\b|冷冻|冷藏|温控|temperature[:\s]/i.test(block));
+    const reeferTemp=extractReeferTemperature(block);
+    const reefer=!!(reeferTemp||loadDetails.some(function(d){return /(?:RF|RH)\b/i.test(d.ctr);})||/(?:^|[^A-Za-z0-9])(?:\d+\s*[x*]\s*)?(?:20|40|45)\s*(?:RF|RH)\b/i.test(ctr)||/\breefer\b|冷冻|冷藏|温控|temperature[:\s]/i.test(block));
 
     // Output format (original 3-line): notice / POD / Deliver to / weight+container
-    let out=feeNotice(ow,res,reefer,hazmat,true);
-    out+=`POD: ${podObj.d||'________'}\nDeliver to: ${dispAddr}\n${wt} / ${ctr}${socSuffix}${ow?' ****OW':''}${hazmat?' HAZMAT':''}${reefer?' Reefer':''}`;
+    let out=feeNotice(ow,res,reefer,hazmat,true,ctr,bonded);
+    out+=`POD: ${podObj.d||'________'}\nDeliver to: ${dispAddr}\n${wt} / ${ctr}${socSuffix}${ow?' ****OW':''}${hazmat?' HAZMAT':''}${reefer?' Reefer':''}${reeferTemp?', '+reeferTemp:''}`;
     if(hazmat&&dgDetail) out+=dgDetailText(dgInfo);
+    if(isoTank)out=out.slice(0,out.lastIndexOf('\n')+1)+isoTankLoadDetails(wt,ctr,ow,hazmat,dgDetail)+socSuffix;
+    if(loadDetails.length>1){
+      const cargo=loadDetails.map(function(d){return d.wt+' / '+d.ctr+socSuffix+(d.ow?' ****OW':'')+(hazmat?' HAZMAT':'')+(reefer?' Reefer':'')+(reeferTemp?', '+reeferTemp:'')+(hazmat&&dgDetail?dgDetailText(dgInfo):'');}).join('\n');
+      out=out.slice(0,out.lastIndexOf('\n')+1)+cargo;
+    }
+    if(bonded)out+=', bonded service required';
+    out=socReturnNotice(out,socInfo);
 
-    return{formatted:out.trim(),podKey:podObj.k,podDisplay:podObj.d,fullAddr:fullFmt,dispAddr,city:cityDisp(dispAddr!=='[Address]'?dispAddr:(rawAddr||'')),res,resWarning,ow,hazmat,dgDetail,reefer,soc:socInfo.soc,socNoReturn:socInfo.socNoReturn,wt,ctr,rawAddr:rawAddr||'',standaloneAddr,isExport:false,raw:block};
+    return{formatted:out.trim(),podKey:podObj.k,podDisplay:podObj.d,fullAddr:fullFmt,dispAddr,city:cityDisp(dispAddr!=='[Address]'?dispAddr:(rawAddr||'')),res,resWarning,ow,hazmat,dgDetail,reefer,reeferTemp,soc:socInfo.soc,socNoReturn:socInfo.socNoReturn,wt,ctr,loadDetails,rawAddr:rawAddr||'',standaloneAddr,isExport:false,raw:block};
   }
 }
 
@@ -1187,7 +1259,7 @@ function parseBatchTableInput(raw){
   raw=String(raw||'').replace(/\r/g,'').trim();
   if(!raw||raw.indexOf('\t')<0)return null;
   const rows=raw.split('\n').map(line=>line.split('\t').map(cleanBatchCell)).filter(cells=>cells.some(Boolean));
-  if(rows.length<2)return null;
+  if(!rows.length)return null;
 
   let start=0,podIdx=0,addrIdx=1;
   const header=rows[0].map(c=>c.toLowerCase());
@@ -1243,11 +1315,25 @@ function parseBatchTableInput(raw){
   });
 }
 
+function batchTableMemoryItems(groups){
+  const items=[];
+  (groups||[]).forEach(function(group){
+    (group.tableRows||[]).forEach(function(row){
+      const raw='POD: '+row.pod+'\nDelivery address: '+row.addr;
+      items.push({raw:raw,idx:items.length,...parseShip(raw)});
+    });
+  });
+  return items;
+}
+
 function processAll(){
   const raw=$('ri').value.trim();if(!raw)return;
+  // A newly processed case must not inherit calculator prices from the prior case.
+  if(typeof clearCalc==='function')clearCalc();
   const tableBatch=parseBatchTableInput(raw);
   if(tableBatch){
     BT=tableBatch;
+    saveShipmentMemory(batchTableMemoryItems(tableBatch));
   } else {
     const parts=raw.trim().split(/\n(?=\d+[\.)\]]\s)/);
     BT=parts.map(p=>p.trim()).filter(Boolean).map((p,i)=>({raw:p,idx:i,...parseShip(p)}));
@@ -1315,12 +1401,12 @@ function renderMapCheck(b,i){
 
 function renderPanel(b,i){
   const vs=(b.podKey&&VD[b.podKey]||[]).filter(v=>v.contact&&v.contact.trim());
-  const sv=sortVendors(vs,b.ow,b.res);
+  const sv=sortVendors(vs,b.ow,b.res,b);
   const fc=sv.filter(v=>v.filtered).length;
   const fmsgs=[];
   if(b.ow)fmsgs.push('OW → "No OW" vendors moved down');
   if(b.res)fmsgs.push('Residential → "No residential" vendors moved down');
-  if(sv.some(v=>v.f.best||v.f.good))fmsgs.push('Best/Good rate sorted to top ↑');
+  fmsgs.push('Required services first · Priority 1 before 2 · Unknown capability needs confirmation');
 
   let vHTML='';
   if(!sv.length){vHTML=`<div class="nv">No vendors for POD: ${b.podKey||'unknown'}</div>`;}
@@ -1335,7 +1421,7 @@ function renderPanel(b,i){
       <input type="checkbox" class="vchk" id="vc${i}_${vi}" data-e="${se}" data-b="${i}" data-v="${vi}" onchange="onVC(this)" ${v.filtered?'disabled':''}>
       <span class="vrk ${rk}">#${vi+1}</span>
       <div class="vd"><label for="vc${i}_${vi}" style="cursor:${v.filtered?'not-allowed':'pointer'}">
-        <div class="vn">${H(v.name||'?')}${tags}</div>
+        <div class="vn">${H(v.name||'?')}${tags}</div>${wfVendorTags(v)}
         <div class="ve">${H(em.join(', '))}</div>
         ${v.note?`<div class="vnt ${nc}">${H(v.note)}</div>`:''}
       </label></div>
@@ -1366,9 +1452,7 @@ function renderPanel(b,i){
     <div class="eb"><div class="ebh"><div class="ebl">Subject</div><button class="bs" onclick="copyTextBtn(document.getElementById('es${i}').innerText,this,${i})">Copy</button></div><div class="ebv" id="es${i}" contenteditable="true" spellcheck="false" style="outline:none;cursor:text;border-radius:4px;padding:3px 5px;margin:-3px -5px;border:1.5px solid transparent;transition:border-color .15s" onfocus="this.style.borderColor='#a8c7fa'" onblur="this.style.borderColor='transparent'"></div></div>
     <div class="eb"><div class="ebh"><div class="ebl">Body</div><div style="display:flex;gap:6px"><button class="bs" onclick="resetEmail(${i})" style="color:#aaa;border-color:#e0ddd7;font-size:11px">↺ Reset</button><button class="bs" onclick="copyTextBtn(document.getElementById('eb${i}').innerText,this,${i})">Copy</button></div></div><div class="ebv" id="eb${i}" contenteditable="true" spellcheck="false" style="outline:none;cursor:text;min-height:80px;border-radius:4px;padding:3px 5px;margin:-3px -5px;border:1.5px solid transparent;transition:border-color .15s" onfocus="this.style.borderColor='#a8c7fa'" onblur="this.style.borderColor='transparent'"></div></div>
     <div class="brow" style="margin-top:10px">
-      <button class="bmail" onclick="openMail(${i})">✉ Open in Mail ↗</button>
-      <button class="bs" onclick="openMailToTruckers(${i})" style="margin-left:8px">📨 Email selected truckers ↗</button>
-      <button class="bs" onclick="prepareOutlookDrafts(${i})" style="margin-left:8px;color:#1a73e8;border-color:#1a73e8">Outlook drafts</button>
+      <button class="bs" onclick="prepareOutlookDrafts(${i})" style="color:#1a73e8;border-color:#1a73e8">Outlook drafts</button>
     </div>
     <div style="margin-top:9px;padding:8px 10px;border:1px solid #f0ede8;background:#faf9f6;border-radius:6px;font-size:11px;color:#777">
       <label style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -1378,7 +1462,6 @@ function renderPanel(b,i){
       </label>
       <div style="margin-top:4px;color:#999">Use "Outlook drafts" below, then choose "Download .eml with MSDS" to open a draft with this attachment.</div>
     </div>
-    <div style="font-size:11px;color:#888;margin-top:6px">Tip: Check truckers → "Email selected truckers" → send ① first. For Outlook threading: open the sent email → <strong>Forward</strong> → delete "Fw:" from subject → send to next trucker. Repeat. (Browser mailto: can't inject Outlook's Thread-Index header.)</div>
   </div>`;
 }
 
@@ -1394,30 +1477,18 @@ function confirmResidential(i, checked){
       // Also update the Deliver to: line inside formatted text
       BT[i].formatted=BT[i].formatted.replace(/^Deliver to: .+$/m,'Deliver to: '+BT[i].fullAddr);
     }
-    // Add residential charge notice to formatted text
-    var fmt=BT[i].formatted;
-    var resLine='Please kindly advise the residential charge.';
-    var owResLine='Please kindly advise the OW fee and the residential charge.';
-    if(!fmt.includes(resLine)&&!fmt.includes(owResLine)){
-      if(BT[i].ow){
-        fmt=fmt.replace(/^Please kindly advise the OW fee\.\n\n/,'');
-        fmt=owResLine+'\n\n'+fmt;
-      } else {
-        fmt=resLine+'\n\n'+fmt;
-      }
-      BT[i].formatted=fmt;
-    }
   } else {
     // Unchecked — revert to commercial (city+zip only)
     var newDispAddr=cityOnly(BT[i].fullAddr||'');
     BT[i].dispAddr=newDispAddr;
     // Also update the Deliver to: line inside formatted text
     BT[i].formatted=BT[i].formatted.replace(/^Deliver to: .+$/m,'Deliver to: '+newDispAddr);
-    // Remove residential notice from formatted
-    BT[i].formatted=BT[i].formatted
-      .replace(/^Please kindly advise the OW fee and the residential charge\.\n\n/,BT[i].ow?'Please kindly advise the OW fee.\n\n':'')
-      .replace(/^Please kindly advise the residential charge\.\n\n/,'');
   }
+
+  // Rebuild the leading fee notice from current flags instead of patching one
+  // exact sentence/newline shape. Export uses one newline; import uses two.
+  var baseFmt=BT[i].formatted.replace(/^(?:(?:Please kindly advise [^\n]*\.|Kindly advise your bonded service fee\.)\n+)+/, '');
+  BT[i].formatted=feeNotice(BT[i].ow,BT[i].res,BT[i].reefer,BT[i].hazmat,!BT[i].isExport,BT[i].ctr,detectBonded(BT[i].raw||BT[i].formatted))+baseFmt;
 
   // Update formatted display
   var fmtEl=document.getElementById('fmt'+i);
@@ -1434,7 +1505,7 @@ function confirmResidential(i, checked){
   if(vsEl){
     const b=BT[i];
     const vs=(VD[b.podKey]||[]);
-    const sv=sortVendors(vs,b.ow,b.res);
+    const sv=sortVendors(vs,b.ow,b.res,b);
     let vHTML='';
     if(!sv.length){vHTML=`<div class="nv">No vendors for POD: ${b.podKey||'unknown'}</div>`;}
     else sv.forEach((v,vi)=>{
@@ -1469,18 +1540,28 @@ function confirmResidential(i, checked){
         var first=tr.querySelector('td');return first&&first.textContent.trim()==='Chassis';
       });
       if(chassisRow){
-        var f2='font-family:Calibri,Arial,sans-serif;font-size:'+_qtFontSize+'px;';
-        var cs2='border:1px solid #a8c8a0;padding:5px 10px;'+f2;
+        var f2='font-family:Calibri,Arial,sans-serif;font-size:'+_qtFontSize+'px;border:1px solid #ded9da;padding:5px 10px;background:#fff;';
+        var labelStyle=window._qtLcs||(f2+'font-weight:600;color:#1a1a1a;vertical-align:bottom;');
+        var valueStyle=window._qtVcs||(f2+'color:#1a1a1a;vertical-align:bottom;');
+        var noteStyle=window._qtGcs||(f2+'color:#555;vertical-align:bottom;font-style:italic;');
         var newRow=document.createElement('tr');
         newRow.innerHTML=
-          '<td style="'+cs2+'background:#d6e8d0;font-weight:600;color:#1a3a1a;white-space:nowrap;vertical-align:bottom;" contenteditable="false">Residential fee</td>'
-          +'<td style="'+cs2+'background:#f0f7ee;white-space:nowrap;vertical-align:bottom;" contenteditable="true" spellcheck="false">$ </td>'
-          +'<td style="'+cs2+'background:#f0f7ee;color:#4a6645;white-space:nowrap;vertical-align:bottom;font-style:italic;" contenteditable="true" spellcheck="false">Per container</td>';
+          '<td style="'+labelStyle+'" contenteditable="true" spellcheck="false">Residential fee</td>'
+          +'<td style="'+valueStyle+'" contenteditable="true" spellcheck="false">$ </td>'
+          +'<td style="'+noteStyle+'" contenteditable="true" spellcheck="false">Per container</td>';
         chassisRow.parentNode.insertBefore(newRow,chassisRow.nextSibling);
       }
     } else if(!checked&&existingResRow){
       existingResRow.remove();
     }
+  }
+
+  // Keep the already-rendered Quote Template disclaimer in sync without
+  // rebuilding the table (which would discard the user's manual cell edits).
+  var finalNoteEl=document.getElementById('qtFinalNote');
+  if(finalNoteEl){
+    var hasResidential=!!(BT&&BT.some(function(b){return !!b.res;}));
+    finalNoteEl.innerText=quoteTemplateFinalNote(hasResidential);
   }
 }
 
@@ -1494,7 +1575,8 @@ function onVC(cb){
       alert('Copy failed. Please copy manually:\n\n'+e);
     });
   }
-  updEmail(i);
+  // Vendor selection only changes recipients. Never rebuild Subject/Body here,
+  // because the user may already have confirmed or edited a single/batch draft.
 }
 
 const emailInited=new Set();
@@ -1565,6 +1647,7 @@ function memoryRecordToBT(r,idx){
     ow:!!r.ow,
     hazmat:!!r.hazmat,
     reefer:!!r.reefer,
+    reeferTemp:r.reeferTemp||extractReeferTemperature(r.raw||r.formatted||''),
     soc:!!r.soc,
     socNoReturn:!!r.socNoReturn,
     wt:r.wt||'Legal Weight',
@@ -1969,53 +2052,9 @@ function openSat(addr){
 // ── SAVE TO GOOGLE SHEET ────────────────────────────────────────────────────
 var SHEET_URL='https://script.google.com/macros/s/AKfycbxEtO4y17ItJYbHyYy1jmQB2DBkBczmrGCR3_rcUDy4qrKCnHa0yag705ZSzyOuLGZg6g/exec';
 
-function saveToSheet(btn){
-  var q=window._lastQuote;
-  if(!q){alert('Please generate the Quote Template first.');return;}
+function saveToSheet(btn){wfReviewFinal(btn);}
 
-  // Read NET and SELLING from Calc table (first data row)
-  var net='', selling='';
-  var calcTbl=document.querySelector('#calcOut table');
-  if(calcTbl){
-    var dataRow=calcTbl.querySelector('tr:nth-child(2)');
-    if(dataRow){
-      var cells=dataRow.querySelectorAll('td');
-      // If has label column: cells[0]=trucker, cells[1]=NET, cells[2]=SELLING
-      // If no label column: cells[0]=NET, cells[1]=SELLING
-      var offset=cells.length>=3?1:0;
-      net=cells[offset]?cells[offset].textContent.replace(/\(.*\)/,'').trim():'';
-      selling=cells[offset+1]?cells[offset+1].textContent.trim():'';
-    }
-  }
-
-  var trucker='';
-  var rmEl=document.querySelector('.rm-selected-trucker');
-  if(rmEl) trucker=rmEl.textContent.trim();
-  var now=new Date();
-  var dateStr=(now.getMonth()+1)+'/'+(now.getDate());
-
-  var deliveryTo=q.deliveryTo||'';
-
-  // Notes: only write if special tags exist
-  var notesParts=[];
-  if(q.wt) notesParts.push(q.wt);
-  if(q.ctr) notesParts.push(q.ctr);
-  var notes='';
-  if(q.special) notes=notesParts.join(' / ')+(notesParts.length?' / ':'')+q.special;
-
-  var payload={
-    date: dateStr,
-    customer: '',
-    pod: q.pod,
-    deliveryTo: deliveryTo,
-    delivery: deliveryTo,
-    zip: q.zip||'',
-    trucker: trucker,
-    net: net,
-    selling: selling,
-    special: q.special,
-    notes: notes
-  };
+function submitQuoteToSheet(btn,payload){
 
   btn.textContent='Saving…';
   btn.disabled=true;
@@ -2158,6 +2197,7 @@ function saveShipmentMemory(items){
       res:!!b.res,
       hazmat:!!b.hazmat,
       reefer:!!b.reefer,
+      reeferTemp:b.reeferTemp||'',
       soc:!!b.soc,
       socNoReturn:!!b.socNoReturn,
       isExport:!!b.isExport,
@@ -2273,9 +2313,10 @@ function showShipmentMemory(id){
 
 function memoryEmailFormatted(r){
   if(!r)return'';
-  if(r.res)return r.formatted||'';
+  const formatted=socReturnNotice(r.formatted||'',r);
+  if(r.res)return formatted;
   const compact=compactDeliveryForEmail(r.fullAddr||r.rawAddr||r.delivery||'');
-  return (r.formatted||'').replace(/^Deliver to: .+$/m,'Deliver to: '+compact);
+  return formatted.replace(/^Deliver to: .+$/m,'Deliver to: '+compact);
 }
 
 function memoryToMergeItem(r){
@@ -2370,6 +2411,20 @@ function restoreShipmentInput(id,btn){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+function clearRecentInquiries(){
+  const count=readShipmentMemory().length;
+  if(!count&&!BT.length)return;
+  if(!confirm('Clear all '+count+' Recent Shipments and the current inquiry drafts? This cannot be undone. Calculator, quote template, vendor list and Google Sheet data will not be deleted.'))return;
+  try{localStorage.setItem(SHIPMENT_MEMORY_KEY,'[]');}
+  catch(e){alert('Unable to clear saved shipments. Nothing was cleared. Please check browser storage and try again.');return;}
+  shipmentMemoryCache=[];
+  clearAll();
+  WF_SELECTED=null;
+  WF_REVIEW=null;
+  ['shipmentMemoryModal','wfSaveReview'].forEach(function(id){const modal=document.getElementById(id);if(modal)modal.remove();});
+  renderShipmentMemory();
+}
+
 function deleteShipmentMemory(id){
   id=decodeShipmentMemoryId(id);
   const saved=readShipmentMemory().filter(function(r){return r.id!==id;});
@@ -2386,6 +2441,21 @@ fetchVendorData();
 
 
 // ─── QUOTE TEMPLATE ──────────────────────────────────────────────────────────
+function quoteBrandHeader(type){
+  var names={'trucking':'TRUCKING','trucking-custom':'TRUCKING + CUSTOM','air':'AIR IMPORT','ocean':'OCEAN FREIGHT','lcl':'LCL','accessorial':'ACCESSORIAL'};
+  return '<table id="quoteBrandHeader" role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;border-collapse:collapse;background:#fff;color:#231F20;font-family:Calibri,Arial,sans-serif;border-top:4px solid #CD3034;">'
+    +'<tr><td width="76" style="width:76px;padding:14px 12px 14px 0;vertical-align:middle;border:0;"><img src="data:image/png;base64,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" alt="Company logo" width="54" height="61" style="display:block;width:54px;height:61px;border:0;"></td>'
+    +'<td style="padding:14px 0;vertical-align:middle;text-align:left;border:0;"><span style="font-size:20px;font-weight:600;letter-spacing:1px;line-height:1.3;">QUOTATION</span><br><span style="font-size:12px;line-height:1.5;letter-spacing:1px;color:#746c6e;">'+(names[type]||names.trucking)+'</span></td></tr></table>';
+}
+
+function quoteTemplateFinalNote(hasResidential){
+  var note='Please note that due to the increased fuel price, our rate is updated on the daily basis. Rate applies for business delivery/live unload/COC.';
+  if(hasResidential){
+    note+='\n\nFor residential deliveries, please note that it is the customer\'s responsibility to ensure there is a legal truck route to the delivery location.\n\nAdditionally, the customer must have the capability to unload the container contents without the use of a loading dock.';
+  }
+  return note;
+}
+
 function buildQuoteTable(){
   var selling='';
   var calcTbl=document.querySelector('#calcOut table');
@@ -2419,8 +2489,8 @@ function buildQuoteTable(){
     podKey=(fallbackPodObj&&fallbackPodObj.k)||fallbackPod;
   }
   var surchargeLines=[];
-  if(/la\s*lb|los angeles|long beach/i.test(podKey)) surchargeLines.push("PierPass at LA LB: TMF+CTF $50/20', or $100/40' ($52.5/20' or $105/40' starting from 8/1)");
-  if(/oakland/i.test(podKey))           surchargeLines.push('Gate Fee at Oakland: $55 each ctn / $ 60 each ctn (effective 7/1/2026)');
+  if(/la\s*lb|los angeles|long beach/i.test(podKey)) surchargeLines.push("PierPass at LA LB: TMF+CTF $52.5/20' or $105/40'");
+  if(/oakland/i.test(podKey))           surchargeLines.push('Gate Fee at Oakland: $60 each ctn');
   if(/boston/i.test(podKey))            surchargeLines.push("Usage Fee at Boston: $65/20' or $85/40'");
   if(/miami/i.test(podKey))             surchargeLines.push('Landing Fee at Miami: $110/POMTOC, $98.5/APM & Port Everglades each ctn');
   if(/ny|nj|new york|new jersey/i.test(podKey)){
@@ -2455,33 +2525,33 @@ function buildQuoteTable(){
   var wrap=document.getElementById('quoteTableWrap');
   var fs=_qtFontSize+'px';
   var ff='font-family:Calibri,Arial,sans-serif;';
-  var bdr='border:1px solid #b8c8b4;';
+  var bdr='border:1px solid #ded9da;';
   var base=ff+'font-size:'+fs+';'+bdr+'padding:5px 10px;';
   // Label col: sage green ONLY for the POD row (rowWide), plain white for data rows
   var lcs=base+'background:#fff;font-weight:600;color:#1a1a1a;vertical-align:bottom;';
   var vcs=base+'background:#fff;color:#1a1a1a;vertical-align:bottom;';
   var gcs=base+'background:#fff;color:#555;vertical-align:bottom;font-style:italic;';
-  var sageBg='#c8dfc4';
+  var sageBg='#fcf0f0';
   window._qtBase=base;window._qtLcs=lcs;window._qtVcs=vcs;window._qtGcs=gcs;
 
   function rowWide(label,val,boldVal){
     // POD & Delivery row and Equipment row: sage green label, white value
-    var labelStyle=base+'background:'+sageBg+';font-weight:600;color:#1a1a1a;white-space:nowrap;vertical-align:bottom;';
+    var labelStyle=base+'background:'+(label==='POD & Delivery'?sageBg:'#fff')+';'+(label==='POD & Delivery'?'border-left:3px solid #CD3034;':'')+'font-weight:600;color:#231F20;white-space:nowrap;vertical-align:bottom;';
     var valStyle=base+'background:#fff;'+(boldVal?'font-weight:600;':'')+'color:#1a1a1a;vertical-align:bottom;';
     return '<tr>'
-      +'<td style="'+labelStyle+'" contenteditable="false">'+label+'</td>'
+      +'<td style="'+labelStyle+'" contenteditable="true" spellcheck="false">'+label+'</td>'
       +'<td colspan="2" style="'+valStyle+'" contenteditable="true" spellcheck="false">'+val+'</td>'
       +'</tr>';
   }
   function row3(label,val,note){
     return '<tr>'
-      +'<td style="'+lcs+'" contenteditable="false">'+label+'</td>'
+      +'<td style="'+lcs+'" contenteditable="true" spellcheck="false">'+label+'</td>'
       +'<td style="'+vcs+'" contenteditable="true" spellcheck="false">'+val+'</td>'
       +'<td style="'+gcs+'" contenteditable="true" spellcheck="false">'+note+'</td>'
       +'</tr>';
   }
-  function rowFull(txt,extraStyle){
-    return '<tr><td colspan="3" style="'+base+'background:#fff;'+(extraStyle||'')+'color:#222;" contenteditable="true" spellcheck="false">'+txt+'</td></tr>';
+  function rowFull(txt,extraStyle,id){
+    return '<tr><td'+(id?' id="'+id+'"':'')+' colspan="3" style="'+base+'background:#fff;'+(extraStyle||'')+'color:#222;" contenteditable="true" spellcheck="false">'+txt+'</td></tr>';
   }
   function rowSection(txt){
     // Sage green section header rows, black bold text
@@ -2492,6 +2562,21 @@ function buildQuoteTable(){
   var eqLines=['Legal Weight (less 17.2MT/20 or 19.9MT/40HC)'];
   if(typeof BT!=='undefined'&&BT&&BT.length){
     BT.forEach(function(b){
+      if(Array.isArray(b.loadDetails)&&b.loadDetails.length>1){
+        b.loadDetails.forEach(function(d){
+          var tags=[];
+          if(d.ow)tags.push('****OW');
+          if(b.hazmat)tags.push('HAZMAT'+(b.dgDetail?' ('+b.dgDetail+')':''));
+          if(b.reefer)tags.push('Reefer'+(b.reeferTemp?', '+b.reeferTemp:''));
+          eqLines.push(d.wt+' / '+d.ctr+(tags.length?' '+tags.join(' '):''));
+        });
+        return;
+      }
+      if(/\b(?:ISO Tank|Tanker)\b/i.test(b.ctr||'')){
+        if(eqLines.length===1&&eqLines[0]==='Legal Weight (less 17.2MT/20 or 19.9MT/40HC)')eqLines=[];
+        eqLines.push(isoTankLoadDetails(b.wt||'Legal Weight',b.ctr,b.ow,b.hazmat,b.dgDetail));
+        return;
+      }
       var specialTags=[];
       var rawText=(b.raw||'').toLowerCase();
       // Detect OW
@@ -2499,7 +2584,7 @@ function buildQuoteTable(){
       // Detect HAZMAT/DG
       if(b.hazmat) specialTags.push('HAZMAT');
       // Detect Reefer
-      if(/40rh|40rf|reefer/i.test(b.ctr||'')||/reefer/i.test(rawText)) specialTags.push('Reefer');
+      if(b.reefer||/40rh|40rf|reefer/i.test(b.ctr||'')||/reefer/i.test(rawText)) specialTags.push('Reefer'+(b.reeferTemp?', '+b.reeferTemp:''));
       if(specialTags.length){
         // Format: [weight] [tags] / [container]  — matching formatter line 3 style
         var wtStr=b.wt&&b.wt!=='Legal Weight'?b.wt:'Legal Weight';
@@ -2513,14 +2598,18 @@ function buildQuoteTable(){
     return '<strong>'+line+'</strong>'; // OW/HAZMAT/Reefer lines = bold
   }).join('<br>');
 
-  var html='<table id="quoteTable" style="border-collapse:collapse;table-layout:fixed;width:600px;border:2px solid #b8c8b4;"><colgroup><col style="width:33.33%"><col style="width:33.33%"><col style="width:33.34%"></colgroup>';
+  var html='<table id="quoteTable" style="border-collapse:collapse;table-layout:fixed;width:600px;border:2px solid #ded9da;"><colgroup><col style="width:33.33%"><col style="width:33.33%"><col style="width:33.34%"></colgroup>';
   html+=rowWide('POD & Delivery', emailSubj, true);
   html+=rowWide('Equipment/Load Details',eqHtml);
   var hasToll=window._calcToll&&window._calcToll>0;
   var truckLabel=hasToll?'Truck + FSC + Toll':'Truck + FSC';
   html+=row3(truckLabel,'$ '+selling,'Per container');
-  var needsTriaxle=(typeof BT!=='undefined'&&BT&&BT.some(function(b){return b.ow&&/(?:^|x)20GP\b/i.test(b.ctr||'');}));
+  var needsTriaxle=(typeof BT!=='undefined'&&BT&&BT.some(function(b){return Array.isArray(b.loadDetails)&&b.loadDetails.length?b.loadDetails.some(function(d){return d.ow&&/(?:^|x)20GP\b/i.test(d.ctr||'');}):b.ow&&/(?:^|x)20GP\b/i.test(b.ctr||'');}));
   html+=row3(needsTriaxle?'Triaxle':'Chassis',needsTriaxle?'$ 75':'$ 45','Per Day, min 2');
+  var anyBonded=(typeof BT!=='undefined'&&BT&&BT.some(function(b){return detectBonded(b.raw||b.formatted);}));
+  if(anyBonded)html+=row3('Bonded Service Fee','$ ','Per container');
+  var anyTanker=(typeof BT!=='undefined'&&BT&&BT.some(function(b){return /\b(?:ISO Tank|Tanker)\b/i.test(b.ctr||'');}));
+  if(anyTanker) html+=row3('Tanker Surcharge','$ ','Per container');
   var anyReefer=(typeof BT!=='undefined'&&BT&&BT.some(function(b){return b.reefer;}));
   if(anyReefer) html+=row3('Reefer fee','$ ','Per container');
   var anyRes=(typeof BT!=='undefined'&&BT&&BT.some(function(b){return b.res;}));
@@ -2535,23 +2624,27 @@ function buildQuoteTable(){
   html+=row3('Yard Storage','$ 50','Per day');
   html+=row3('Detention','$ 95','Per Hour, 1 hr free');
   html+=row3('Chassis Split','$ 125','Per occurrence');
+  if(/^Kansas City$/i.test(podKey)) html+=row3('Edgerton Return Fee','$ 175','Per occurrence');
   if(anyHazmat) html+=row3('Placard Removal fee','$','Per Placard');
   if(/minne|st\.?\s*paul/i.test(podKey)) html+=row3('CP / UP Rail Surcharge','$ 150','Per occurrence');
   if(/denver/i.test(podKey)) html+=row3('BNSF Hudson Surcharge','$ 150','Per occurrence');
   if(/chicago/i.test(podKey)) html+=row3('SOC return fee','$ 225','Per container');
   html+='<tr id="qtAddAnchor"></tr>';
   html+='<tr><td colspan="3" style="'+base+'background:#fff;color:#222;white-space:pre-line;font-size:'+(parseInt(fs)-1)+'px;" contenteditable="true" spellcheck="false">1-2 Chassis split will incur for the grounded rail yards &amp; when returning SOC empty.\nCincinnati/Atlanta/Memphis : ALL terminals grounded. 2 splits will be incurred.\nGrounded facility = No chassis available.</td></tr>';
+  if(_quoteTemplateType==='trucking-custom'){
+    html+=rowFull('','');
+    html+=row3('Customs Clearance','$ 85 + $45 if EPA needed','Per Bill of Lading');
+    html+=row3('HTS','','');
+    html+=rowFull('CBP SURCHARGES: MPF (0.3464%) HMF (0.125%)','');
+  }
   html+=rowSection('TRUCK SURCHARGES');
   if(surchargeLines.length){
     surchargeLines.forEach(function(line){ html+=rowFull(line,''); });
   } else {
     html+=rowFull('','');
   }
-  var finalNote='Please note that due to the increased fuel price, our rate is updated on the daily basis. Rate applies for business delivery/live unload/COC.';
-  if(anyRes){
-      finalNote+='\n\nFor residential deliveries, please note that it is the customer\'s responsibility to ensure there is a legal truck route to the delivery location.\n\nAdditionally, the customer must have the capability to unload the container contents without the use of a loading dock.';
-  }
-  html+=rowFull(finalNote,'font-size:'+(parseInt(fs)-1)+'px;white-space:pre-line;');
+  var finalNote=quoteTemplateFinalNote(anyRes);
+  html+=rowFull(finalNote,'font-size:'+(parseInt(fs)-1)+'px;white-space:pre-line;','qtFinalNote');
   html+='</table>';
 
   html+='<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center">';
@@ -2573,15 +2666,141 @@ function buildQuoteTable(){
   html+='<span style="font-size:11px;color:#bbb">pt — applies to all table cells</span>';
   html+='</div>';
 
-  wrap.innerHTML=html;
+  wrap.innerHTML=quoteBrandHeader(_quoteTemplateType==='trucking-custom'?'trucking-custom':'trucking')+html;
   wrap.style.display='block';
   _qtUndo=[];_qtRedo=[];_qtSetLastSnapshot();_qtUpdateBtns();
+  wfBindTemplate(_quoteTemplateType==='trucking-custom'?'trucking-custom':'trucking');
 }
+
+// Additional quote templates are rendered separately so the existing
+// Trucking template and all of its calculator logic remain unchanged.
+var _quoteTemplateType='trucking';
+function selectQuoteTemplate(type){
+  _quoteTemplateType=type;
+  ['trucking','trucking-custom','air','ocean','lcl','accessorial'].forEach(function(name){
+    var btn=document.getElementById('qtType-'+name);
+    if(!btn)return;
+    btn.className=name===type?'bp':'bs';
+  });
+  generateSelectedQuoteTemplate();
+}
+function generateSelectedQuoteTemplate(){
+  if(_quoteTemplateType==='air') return buildAirImportQuoteTable();
+  if(_quoteTemplateType==='ocean') return buildOceanFreightQuoteTable();
+  if(_quoteTemplateType==='lcl') return buildAdditionalQuoteTable('lcl');
+  if(_quoteTemplateType==='accessorial') return buildAdditionalQuoteTable('accessorial');
+  buildQuoteTable();
+}
+function buildAdditionalQuoteTable(type){
+  var wrap=document.getElementById('quoteTableWrap');
+  var fs=_qtFontSize+'px';
+  var ff='font-family:Calibri,Arial,sans-serif;';
+  var bdr='border:1px solid #ded9da;';
+  var base=ff+'font-size:'+fs+';'+bdr+'padding:5px 10px;';
+  var label=base+'background:#fff;font-weight:600;color:#1a1a1a;vertical-align:bottom;';
+  var value=base+'background:#fff;color:#1a1a1a;vertical-align:bottom;';
+  if(type==='ocean')value+='text-align:center;';
+  var note=base+'background:#fff;color:#555;vertical-align:bottom;font-style:italic;';
+  var sage='#fcf0f0';
+  function section(text,colspan){
+    return '<tr><td colspan="'+colspan+'" style="'+base+'background:'+sage+';font-weight:700;color:#1a1a1a;text-align:center;letter-spacing:.03em" contenteditable="false">'+text+'</td></tr>';
+  }
+  function row2(left,right){
+    return '<tr><td style="'+label+'" contenteditable="true" spellcheck="false">'+left+'</td><td style="'+value+'" contenteditable="true" spellcheck="false">'+right+'</td></tr>';
+  }
+  function row3(left,middle,right){
+    return '<tr><td style="'+label+'" contenteditable="true" spellcheck="false">'+left+'</td><td style="'+value+'" contenteditable="true" spellcheck="false">'+middle+'</td><td style="'+note+'" contenteditable="true" spellcheck="false">'+right+'</td></tr>';
+  }
+  function rowWide3(left,right){
+    return '<tr><td style="'+label+'" contenteditable="true" spellcheck="false">'+left+'</td><td colspan="2" style="'+value+'" contenteditable="true" spellcheck="false">'+right+'</td></tr>';
+  }
+  function fullRow3(text){
+    return '<tr><td colspan="3" style="'+value+'white-space:pre-line;" contenteditable="true" spellcheck="false">'+text.replace(/\r\n|\r|\n/g,'<br>')+'</td></tr>';
+  }
+  var html='';
+  if(type==='air'){
+    html='<table id="quoteTable" style="border-collapse:collapse;table-layout:fixed;width:600px;border:2px solid #ded9da"><colgroup><col style="width:46%"><col style="width:54%"></colgroup>';
+    html+=section('AIR IMPORT',2);
+    html+=row2('Cartage / Trucking','$ ');
+    html+=row2('Detention Rate (if need)','15 min free, then $80/hr');
+    html+=row2('Airport Transfer','$ 0.25/kg chargeable, min $75');
+    html+=row2('Terminal Fee / ISC','At cost + Bank Fee $25.00');
+    html+=row2('Air Freight Handling','$85 / BL');
+    html+=section('CUSTOMS IMPORT (IF NEEDED)',2);
+    html+=row2('Customs Clearance','$85 / BL');
+    html+=row2('OGA (if needed)','$45 / BL');
+    html+=row2('Duty','');
+    html+=row2('CBP Surcharge MPF','0.3646 %, min $33.58 as of Oct 1 2025');
+  }else if(type==='lcl'){
+    html='<table id="quoteTable" style="border-collapse:collapse;table-layout:fixed;width:600px;border:2px solid #ded9da"><colgroup><col style="width:50%"><col style="width:50%"></colgroup>';
+    html+=section('LCL',2);
+    html+=row2('Trucking (business-business, dock-dock)','$ ');
+    html+=row2('If liftgate needed','$ 75.00');
+    html+=row2('&nbsp;','');
+    html+=row2('CFS / Terminal Fee','At cost + Bank Fee $20.00');
+    html+=section('CUSTOMS IMPORT',2);
+    html+=row2('Customs Clearance','$85 / BL');
+    html+=row2('OGA (if needed)','$45 / BL');
+    html+=row2('Duty','');
+    html+=row2('CBP Surcharge','MPF (0.3646%) HMF (0.125%)');
+  }else if(type==='accessorial'){
+    html='<table id="quoteTable" style="border-collapse:collapse;table-layout:fixed;width:600px;border:2px solid #ded9da"><colgroup><col style="width:33.33%"><col style="width:33.33%"><col style="width:33.34%"></colgroup>';
+    html+=fullRow3('Legal Weight (less 17.2MT/20 or 19.9MT/40HC)');
+    html+=section('Accessorial',3);
+    html+=row3('Chassis','$ 45','Per Day, min 2');
+    html+=row3('&nbsp;','','');
+    html+=section('If Needed',3);
+    html+=row3('Prepull/Stop Off/Redelivery:','$ 150','Per occurrence');
+    html+=row3('Yard Storage','$ 50','Per day');
+    html+=row3('Detention','','');
+    html+=row3('Chassis Split','$ 125','Per occurrence');
+    var accessorialPod=(typeof BT!=='undefined'&&BT&&BT[0]&&(BT[0].podKey||BT[0].podDisplay))||((document.getElementById('calcPod')||{}).value)||'';
+    var accessorialPodObj=normPOD(accessorialPod,true);
+    if(accessorialPodObj&&accessorialPodObj.k==='Kansas City')html+=row3('Edgerton Return Fee','$ 175','Per occurrence');
+    html+=fullRow3('1-2 Chassis split will incur for the grounded rail yards &amp; when returning SOC empty.\nCincinnati &amp; Atlanta: ALL terminals grounded. 2 splits will be incurred.\nGrounded facility = No chassis available');
+    html+=section('TRUCK SURCHARGES',3);
+    html+=fullRow3("TMF+CTF PierPass at LA/LB: $52.5/20' or $105/40'\nGate Fee at Oakland: $60 each ctn\nUsage Fee at Boston: $65/20' or $85/40'\nLanding Fee at Miami: $110/POMTOC, $98.5/APM &amp; Port Everglades each ctn\nPort Liberty NY Toll-$150 if applicable each way\nPort Liberty Bayonne Toll-$40 if applicable each way.");
+    html+=fullRow3('Please note that due to the increased fuel price, our rate is updated on the daily basis.\nRate applies for business delivery/live unload/COC.');
+  }else{
+    html='<table id="quoteTable" style="border-collapse:collapse;table-layout:fixed;width:600px;border:2px solid #ded9da"><colgroup><col style="width:33.33%"><col style="width:33.33%"><col style="width:33.34%"></colgroup>';
+    html+=section('OCEAN FREIGHT',3);
+    html+=rowWide3('Carrier','');
+    html+=rowWide3('POL','');
+    html+=rowWide3('POD','');
+    html+=row3('Container Type / 40HC','$ ','');
+    html+=row3('Transit Days','','Days');
+    html+=section('Doc Fee',3);
+    html+=row3('Export Handling Fee','$ 65','Per BL');
+    html+=row3('VGM','$ 35','Per container');
+    html+=row3('Export Declaration (if needed)','$ 85','Per BL');
+    html+=row3('Bill of Lading / Telex','$ 35','Per BL');
+  }
+  html+='</table>';
+  html+='<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center">';
+  html+='<button id="qtUndoBtn" class="bs" onclick="qtUndo()" style="font-size:11px;padding:3px 10px;opacity:0.38" disabled>↩ Undo</button>';
+  html+='<button id="qtRedoBtn" class="bs" onclick="qtRedo()" style="font-size:11px;padding:3px 10px;opacity:0.38" disabled>↪ Redo</button>';
+  html+='<button class="bs" onclick="copyQuoteTable(this)" style="font-size:11px;padding:3px 10px">Copy table</button>';
+  html+='<button class="bs" onclick="generateSelectedQuoteTemplate()" style="font-size:11px;padding:3px 10px;color:#aaa;border-color:#e0ddd7">↺ Reset</button>';
+  html+='</div>';
+  html+='<div style="display:flex;align-items:center;gap:6px;margin-top:7px;flex-wrap:wrap">';
+  html+='<span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#bbb">Font size</span>';
+  html+='<button class="bs" onclick="qtFontAdj(-1)" style="font-size:12px;padding:2px 9px;line-height:1.4">−</button>';
+  html+='<span id="qtFontLabel" style="font-size:12px;color:#555;min-width:30px;text-align:center">'+_qtFontSize+'</span>';
+  html+='<button class="bs" onclick="qtFontAdj(+1)" style="font-size:12px;padding:2px 9px;line-height:1.4">+</button>';
+  html+='<span style="font-size:11px;color:#bbb">pt — applies to all table cells</span>';
+  html+='</div>';
+  wrap.innerHTML=quoteBrandHeader(type)+html;
+  wrap.style.display='block';
+  _qtUndo=[];_qtRedo=[];_qtSetLastSnapshot();_qtUpdateBtns();
+  wfBindTemplate(type);
+}
+function buildAirImportQuoteTable(){buildAdditionalQuoteTable('air');}
+function buildOceanFreightQuoteTable(){buildAdditionalQuoteTable('ocean');}
 function _makeAddedRow(){
   // Use exact same styles set by buildQuoteTable
-  var lcs=window._qtLcs||('font-family:Calibri,Arial,sans-serif;font-size:'+_qtFontSize+'px;border:1px solid #b8c8b4;padding:5px 10px;background:#fff;font-weight:600;color:#1a1a1a;white-space:nowrap;vertical-align:bottom;');
-  var vcs=window._qtVcs||('font-family:Calibri,Arial,sans-serif;font-size:'+_qtFontSize+'px;border:1px solid #b8c8b4;padding:5px 10px;background:#fff;color:#1a1a1a;white-space:nowrap;vertical-align:bottom;');
-  var gcs=window._qtGcs||('font-family:Calibri,Arial,sans-serif;font-size:'+_qtFontSize+'px;border:1px solid #b8c8b4;padding:5px 10px;background:#fff;color:#555;white-space:nowrap;vertical-align:bottom;font-style:italic;');
+  var lcs=window._qtLcs||('font-family:Calibri,Arial,sans-serif;font-size:'+_qtFontSize+'px;border:1px solid #ded9da;padding:5px 10px;background:#fff;font-weight:600;color:#1a1a1a;white-space:nowrap;vertical-align:bottom;');
+  var vcs=window._qtVcs||('font-family:Calibri,Arial,sans-serif;font-size:'+_qtFontSize+'px;border:1px solid #ded9da;padding:5px 10px;background:#fff;color:#1a1a1a;white-space:nowrap;vertical-align:bottom;');
+  var gcs=window._qtGcs||('font-family:Calibri,Arial,sans-serif;font-size:'+_qtFontSize+'px;border:1px solid #ded9da;padding:5px 10px;background:#fff;color:#555;white-space:nowrap;vertical-align:bottom;font-style:italic;');
   var tr=document.createElement('tr');
   var td1=document.createElement('td');
   td1.setAttribute('contenteditable','true');td1.setAttribute('spellcheck','false');td1.style.cssText=lcs;
@@ -2716,29 +2935,67 @@ document.addEventListener('click',function(e){
   }
 });
 
-function copyQuoteTable(btn){
+function qtPreserveEmailLineBreaks(table){
+  // Email editors may discard white-space CSS. Convert only text-node newlines
+  // in preformatted cells; preserve existing BRs, edited markup and cell spans.
+  table.querySelectorAll('td,th').forEach(function(cell){
+    if(!/^(pre-line|pre-wrap|pre)$/.test(cell.style.whiteSpace))return;
+    function visit(parent){
+      Array.from(parent.childNodes).forEach(function(node){
+        if(node.nodeType===3&&/[\r\n]/.test(node.nodeValue)){
+          var lines=node.nodeValue.split(/\r\n|\r|\n/);
+          lines.forEach(function(line,i){
+            if(i)parent.insertBefore(document.createElement('br'),node);
+            if(line)parent.insertBefore(document.createTextNode(line),node);
+          });
+          parent.removeChild(node);
+        }else if(node.nodeType===1)visit(node);
+      });
+    }
+    visit(cell);
+    cell.style.whiteSpace='normal';
+  });
+}
+
+async function copyQuoteTable(btn){
   var tbl=document.getElementById('quoteTable');
   if(!tbl)return;
   // Clone table and strip qt-del buttons so they don't appear in Outlook
   var clone=tbl.cloneNode(true);
+  qtPreserveEmailLineBreaks(clone);
   clone.querySelectorAll('.qt-del').forEach(function(el){
     // Remove the entire 4th td that contains the delete button
     var td=el.closest('td');if(td)td.remove();else el.remove();
   });
+  // Use flowing email tables, without flex layout or measured text heights.
+  var email=document.createElement('table');
+  email.setAttribute('width','600');email.setAttribute('cellpadding','0');email.setAttribute('cellspacing','0');
+  email.style.cssText='width:600px;border-collapse:collapse;background:#fff;color:#231F20;font-family:Calibri,Arial,sans-serif;';
+  var header=document.getElementById('quoteBrandHeader');
+  if(header){var headCell=email.insertRow().insertCell();headCell.style.cssText='padding:0;border:0;';headCell.appendChild(header.cloneNode(true));}
+  var content=email.insertRow().insertCell();content.style.cssText='padding:0;border:0;';content.appendChild(clone);
+  clone.setAttribute('width','600');clone.setAttribute('cellpadding','0');clone.setAttribute('cellspacing','0');
+  email.querySelectorAll('[id],[contenteditable]').forEach(function(el){el.removeAttribute('id');el.removeAttribute('contenteditable');});
   var tmp=document.createElement('div');
   tmp.style.cssText='position:fixed;top:-9999px;left:-9999px';
-  tmp.appendChild(clone);
+  tmp.appendChild(email);
   document.body.appendChild(tmp);
   var range=document.createRange();
-  range.selectNode(clone);
+  range.selectNode(email);
   var sel=window.getSelection();
   sel.removeAllRanges();
   sel.addRange(range);
   var ok=false;
-  try{ok=document.execCommand('copy');}catch(e){}
+  var plain=email.innerText;
+  var copyHandler=function(e){if(e.clipboardData){e.clipboardData.setData('text/html',email.outerHTML);e.clipboardData.setData('text/plain',plain);e.preventDefault();}};
+  document.addEventListener('copy',copyHandler);
+  try{ok=document.execCommand('copy');}catch(e){}finally{document.removeEventListener('copy',copyHandler);}
   sel.removeAllRanges();
   document.body.removeChild(tmp);
   sel.removeAllRanges();
+  if(!ok&&navigator.clipboard&&window.ClipboardItem){
+    try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([email.outerHTML],{type:'text/html'}),'text/plain':new Blob([plain],{type:'text/plain'})})]);ok=true;}catch(e){}
+  }
   if(ok){
     var o=btn.textContent;btn.textContent='✓ Copied';
     setTimeout(function(){btn.textContent=o;},1400);
@@ -2750,10 +3007,11 @@ function copyQuoteTable(btn){
       tr.querySelectorAll('td,th').forEach(function(td){cells.push(td.innerText.trim());});
       lines.push(cells.join('\t'));
     });
-    navigator.clipboard.writeText(lines.join('\n')).then(function(){
-      var o=btn.textContent;btn.textContent='✓ Copied (text)';
+    try{
+      await navigator.clipboard.writeText(lines.join('\n'));
+      var o=btn.textContent;btn.textContent='✓ Copied (text only)';
       setTimeout(function(){btn.textContent=o;},1400);
-    });
+    }catch(e){alert('Copy failed. Please select the quote and press Ctrl+C.');}
   }
 }
 
@@ -2761,24 +3019,7 @@ function copyQuoteTable(btn){
 // --- VENDOR QUOTE COMPARE ----------------------------------------------------
 var VC_QUOTES=[];
 
-function vcCurrentShipmentFlags(){
-  var flags={ow:false,res:false,reefer:false,hazmat:false};
-  if(typeof BT!=='undefined'&&BT&&BT.length){
-    BT.forEach(function(b){
-      flags.ow=flags.ow||!!b.ow;
-      flags.res=flags.res||!!b.res;
-      flags.reefer=flags.reefer||!!b.reefer;
-      flags.hazmat=flags.hazmat||!!b.hazmat;
-    });
-  }
-  var notesEl=document.getElementById('calcNotes');
-  var notes=(notesEl&&notesEl.value||'').toLowerCase();
-  flags.ow=flags.ow||/ow|overweight/.test(notes);
-  flags.res=flags.res||/residential/.test(notes);
-  flags.reefer=flags.reefer||/reefer|genset|temperature/.test(notes);
-  flags.hazmat=flags.hazmat||/hazmat|dangerous|class\s*[1-9]|\bdg\b/.test(notes);
-  return flags;
-}
+function vcCurrentShipmentFlags(){return wfCurrentFlags();}
 
 function vcMoney(n){
   if(n===null||n===undefined||n===''||isNaN(n))return '';
@@ -2919,151 +3160,9 @@ function vcVendorName(block,idx){
   return 'Vendor '+(idx+1);
 }
 
-function vcParseQuote(block,idx){
-  var q={vendor:vcVendorName(block,idx),subject:'',raw:block,drayage:null,fscPct:null,fscAmount:null,baseNet:null,quoteType:'',charges:{},warnings:[],notes:[],totalNet:0,score:0,canRecommend:true,disqualified:false,preferenceNote:'',detentionFreeHours:0};
-  var subj=block.match(/Subject(?: line)?\s*:\s*(.+)$/im);
-  if(subj)q.subject=vcNormLine(subj[1]);
-  var lines=block.split('\n').map(vcNormLine).filter(Boolean);
-  var accessorialMode=false;
-  lines.forEach(function(line){
-    var lower=line.toLowerCase();
-    if(/other accessorial|accessorial charges|may apply/.test(lower))accessorialMode=true;
-    if(/^vendor\s*:|^from\s*:|^subject(?: line)?\s*:/i.test(line))return;
-    var pipeCells=null;
-    if(line.indexOf('|')>=0){
-      pipeCells=line.split('|').map(vcNormLine).filter(function(c){return c;});
-      if(pipeCells.length>=2&&/^:?-{2,}:?$/.test(pipeCells[0]))return;
-    }
-    var label=pipeCells?pipeCells[0]:line;
-    var valText=pipeCells&&pipeCells[1]?pipeCells[1]:line;
-    var full=pipeCells?pipeCells.join(' '):line;
-    var key=vcKeyForLabel(label)||vcKeyForLabel(full);
-    var amount=vcAmount(valText);
-    if(amount===null)amount=vcAmount(full);
-    var pct=vcPct(full);
-    var ifNeeded=accessorialMode||/if applicable|may apply|if needed|when required|price varies|if required/.test(lower);
-    var included=/\bincl\b|\bincluded\b/.test(lower);
-    var baseFsc=line.match(/([\d,]+(?:\.\d+)?)\s*\+\s*([\d.]+)\s*%\s*(?:FSC|fuel)/i);
-    if(baseFsc){
-      q.drayage=parseFloat(baseFsc[1].replace(/,/g,''));
-      q.fscPct=parseFloat(baseFsc[2]);
-      q.fscAmount=Math.round(q.drayage*q.fscPct)/100;
-      return;
-    }
-    if(key==='drayage'){
-      if(amount!==null)q.drayage=amount;
-      if(/all[\s-]?in|including fsc|incl\.?\s*fsc|fsc included/.test(lower))q.quoteType='All-in';
-      return;
-    }
-    if(key==='fsc'){
-      if(pct!==null)q.fscPct=pct;
-      if(amount!==null)q.fscAmount=amount;
-      return;
-    }
-    if(!key&&amount!==null&&!q.drayage&&/(container|\/ctn|\/container|per container)/i.test(line)){
-      q.drayage=amount;
-      if(/all[\s-]?in|including fsc|incl\.?\s*fsc|fsc included/.test(lower))q.quoteType='All-in';
-      return;
-    }
-    if(key&&key!=='drayage'&&key!=='fsc'){
-      var unclear=key==='toll'&&amount>0&&!/apply|applies|included|incl|all[\s-]?in|\$0|0\.00/.test(lower);
-      if(unclear)q.warnings.push('Toll price found but applicability is unclear.');
-      if(key==='detention'){
-        var ft=full.match(/(\d+(?:\.\d+)?)\s*(?:hrs?|hours?)\s*(?:FT|free|free time)/i)||full.match(/after\s*(\d+(?:\.\d+)?)\s*(?:hrs?|hours?)/i);
-        if(ft)q.detentionFreeHours=Math.max(q.detentionFreeHours,parseFloat(ft[1]));
-      }
-      vcSetCharge(q,key,included?0:amount,full,ifNeeded,unclear,included);
-    }
-  });
-  if(q.fscAmount===null&&q.fscPct!==null&&q.drayage!==null)q.fscAmount=Math.round(q.drayage*q.fscPct)/100;
-  if(q.drayage===null){
-    var total=block.match(/Sub Total Drayage\s*\$?\s*([\d,]+(?:\.\d+)?)/i)||block.match(/Total\s*\(Drayage[^)]*\)\s*\$?\s*([\d,]+(?:\.\d+)?)/i);
-    if(total){q.drayage=parseFloat(total[1].replace(/,/g,''));q.quoteType='All-in';}
-  }
-  if(q.drayage!==null){
-    if(q.quoteType==='All-in')q.baseNet=q.drayage;
-    else if(q.fscAmount!==null){q.baseNet=Math.round((q.drayage+q.fscAmount)*100)/100;q.quoteType='Base + FSC';}
-    else {q.baseNet=q.drayage;q.quoteType='No FSC mentioned';q.notes.push('No FSC mentioned; treated as included.');}
-  } else q.warnings.push('Base drayage was not detected.');
-  return q;
-}
+function vcParseQuote(block,idx){return wfParseQuote(block,idx);}
 
-function vcSpecialState(q,flags){
-  var txt=q.raw.toLowerCase();
-  var checks=[
-    ['ow','OW',flags.ow,/\b(no|not)\s+(ow|overweight)\b|\boverweight\s+no\b/i],
-    ['res','Residential',flags.res,/\b(no|not)\s+residential\b|\bresidential\s+no\b/i],
-    ['reefer','Reefer',flags.reefer,/\b(no|not)\s+reefer\b|\breefer\s+no\b/i],
-    ['hazmat','HAZMAT',flags.hazmat,/\b(no|not)\s+(hazmat|hazardous|dangerous)\b|\bhazardous\s+no\b/i]
-  ];
-  var missing=[],blocked=[];
-  checks.forEach(function(c){
-    if(!c[2])return;
-    if(c[3].test(txt)){blocked.push(c[1]);return;}
-    if(!q.charges[c[0]])missing.push(c[1]);
-  });
-  if(blocked.length){q.disqualified=true;q.canRecommend=false;q.warnings.push('Cannot support: '+blocked.join(', ')+'.');}
-  if(missing.length){q.canRecommend=false;q.warnings.push('Needs review for special request: '+missing.join(', ')+'.');}
-}
-
-function vcVendorPreference(q){
-  var name=(q.vendor||'').toLowerCase(),best=false,good=false,dont=false,note='';
-  if(typeof VD!=='undefined'&&VD){
-    Object.keys(VD).forEach(function(pod){
-      (VD[pod]||[]).forEach(function(v){
-        var vn=(v.name||'').toLowerCase();
-        if(!name||!vn)return;
-        if(name.includes(vn)||vn.includes(name)){
-          var n=(v.note||'').toLowerCase();
-          note=v.note||note;
-          if(/dont use|don't use|do not use/.test(n))dont=true;
-          if(/best rate/.test(n))best=true;
-          if(/good rate|good service|good all/.test(n))good=true;
-        }
-      });
-    });
-  }
-  q.preferenceNote=note;
-  if(dont){q.disqualified=true;q.canRecommend=false;q.warnings.push('Vendor note says do not use.');return 0;}
-  if(best)return 5;
-  if(good)return 3;
-  return 0;
-}
-
-function vcChargeCountForTotal(q,flags){
-  var total=q.baseNet||0;
-  ['toll','chassis','prepull','chassisSplit','storage'].forEach(function(key){
-    var c=q.charges[key];
-    if(!c||c.amount===null||c.unclear||c.ifNeeded)return;
-    total+=c.amount;
-  });
-  [['ow',flags.ow],['res',flags.res],['reefer',flags.reefer],['hazmat',flags.hazmat]].forEach(function(pair){
-    var c=q.charges[pair[0]];
-    if(pair[1]&&c&&c.amount!==null&&!c.unclear)total+=c.amount;
-  });
-  return Math.round(total*100)/100;
-}
-
-function vcScoreQuotes(quotes){
-  var flags=vcCurrentShipmentFlags();
-  quotes.forEach(function(q){vcSpecialState(q,flags);q.prefScore=vcVendorPreference(q);q.totalNet=vcChargeCountForTotal(q,flags);});
-  var eligible=quotes.filter(function(q){return q.baseNet!==null&&!q.disqualified&&q.canRecommend&&q.totalNet>0;});
-  var lowest=eligible.length?Math.min.apply(null,eligible.map(function(q){return q.totalNet;})):0;
-  var maxFree=Math.max.apply(null,[0].concat(quotes.map(function(q){return q.detentionFreeHours||0;})));
-  quotes.forEach(function(q){
-    if(q.disqualified){q.score=0;return;}
-    var priceScore=(lowest&&q.totalNet)?Math.min(60,(lowest/q.totalNet)*60):0;
-    var specialScore=q.canRecommend?30:0;
-    var freeScore=maxFree?((q.detentionFreeHours||0)/maxFree)*5:0;
-    q.score=Math.round((priceScore+specialScore+(q.prefScore||0)+freeScore)*10)/10;
-  });
-  quotes.sort(function(a,b){
-    if(a.canRecommend&&!b.canRecommend)return-1;
-    if(!a.canRecommend&&b.canRecommend)return 1;
-    return b.score-a.score;
-  });
-  return flags;
-}
+function vcScoreQuotes(quotes){return wfScore(quotes);}
 
 function vcClassForAmount(quotes,key,q){
   var vals=quotes.map(function(x){
@@ -3091,31 +3190,7 @@ function vcChargeCell(q,key,quotes){
   return'<td class="money '+cls.trim()+'" title="'+Attr(c.note||'')+'">'+txt+'</td>';
 }
 
-function vcRender(quotes,flags){
-  var out=document.getElementById('vcOut');
-  if(!quotes.length){out.style.display='none';out.innerHTML='';return;}
-  out.style.display='block';
-  var rec=quotes.find(function(q){return q.canRecommend&&!q.disqualified&&q.baseNet!==null;});
-  var activeSpecials=[flags.ow?'OW':'',flags.res?'Residential':'',flags.reefer?'Reefer':'',flags.hazmat?'HAZMAT':''].filter(Boolean);
-  var html='';
-  if(activeSpecials.length)html+='<div style="margin-bottom:8px">'+activeSpecials.map(function(x){return'<span class="vc-chip warn">Shipment requires '+H(x)+'</span>';}).join('')+'</div>';
-  if(rec){
-    html+='<div class="vc-rec"><strong>Recommended: '+H(rec.vendor)+'</strong> - score '+rec.score+' / estimated NET '+vcMoney(rec.totalNet)+'. <button class="bs" onclick="useRecommendedVendorQuote('+quotes.indexOf(rec)+')" style="margin-left:8px;color:#1a6b3a;border-color:#1a6b3a">Use recommended quote</button></div>';
-  } else {
-    html+='<div class="vc-rec" style="background:#fff7ed;border-color:#f0d0a0;color:#8a4b0d"><strong>No automatic recommendation.</strong> Please review missing special support or base rates.</div>';
-  }
-  html+='<div style="overflow-x:auto"><table class="vc-grid"><tr><th>Vendor</th><th>Quote type</th><th>Base incl. FSC</th><th>Total for score</th><th>Toll</th><th>Chassis</th><th>Prepull</th><th>Chassis split</th><th>Yard storage</th><th>OW</th><th>Residential</th><th>Reefer</th><th>HAZMAT</th><th>Detention</th><th>Score</th><th>Notes</th></tr>';
-  quotes.forEach(function(q){
-    var rowCls=q.disqualified?' class="vc-bad"':'';
-    var chips=[];
-    if(q.preferenceNote)chips.push('<span class="vc-chip good">'+H(q.preferenceNote)+'</span>');
-    q.warnings.forEach(function(w){chips.push('<span class="vc-chip '+(q.disqualified?'bad':'warn')+'">'+H(w)+'</span>');});
-    q.notes.forEach(function(n){chips.push('<span class="vc-chip">'+H(n)+'</span>');});
-    html+='<tr'+rowCls+'><td><strong>'+H(q.vendor)+'</strong>'+(q.subject?'<br><span style="font-size:10px;color:#888">'+H(q.subject)+'</span>':'')+'</td><td>'+H(q.quoteType||'-')+(q.fscPct!==null?'<br><span style="font-size:10px;color:#888">FSC '+q.fscPct+'%</span>':'')+'</td><td class="money '+vcClassForAmount(quotes,'baseNet',q)+'">'+vcMoney(q.baseNet)+'</td><td class="money '+vcClassForAmount(quotes,'totalNet',q)+'"><strong>'+vcMoney(q.totalNet)+'</strong></td>'+vcChargeCell(q,'toll',quotes)+vcChargeCell(q,'chassis',quotes)+vcChargeCell(q,'prepull',quotes)+vcChargeCell(q,'chassisSplit',quotes)+vcChargeCell(q,'storage',quotes)+vcChargeCell(q,'ow',quotes)+vcChargeCell(q,'res',quotes)+vcChargeCell(q,'reefer',quotes)+vcChargeCell(q,'hazmat',quotes)+vcChargeCell(q,'detention',quotes)+'<td class="money"><strong>'+q.score+'</strong></td><td style="min-width:180px">'+(chips.join('')||'<span style="color:#aaa">-</span>')+'</td></tr>';
-  });
-  html+='</table></div>';
-  out.innerHTML=html;
-}
+function vcRender(quotes,flags){wfRender(quotes,flags);}
 
 function compareVendorQuotes(){
   var blocks=vcQuoteBlocksFromBoxes();
@@ -3133,25 +3208,7 @@ function clearVendorCompare(){
   VC_QUOTES=[];
 }
 
-function useRecommendedVendorQuote(idx){
-  var q=VC_QUOTES[idx];
-  if(!q)return;
-  var amount=q.totalNet||q.baseNet;
-  if(!amount){alert('No usable NET amount found for this vendor.');return;}
-  var fsc=document.getElementById('calcFsc');
-  var inp=document.getElementById('calcInput');
-  if(fsc)fsc.value='0';
-  if(inp)inp.value=q.vendor+' - '+Math.round(amount);
-  if(typeof runCalc==='function')runCalc();
-  var notes=document.getElementById('calcNotes');
-  if(notes){
-    var parts=[q.vendor+' selected from vendor compare'];
-    if(q.warnings.length)parts.push(q.warnings.join('; '));
-    notes.value=parts.join('; ');
-  }
-  var card=document.getElementById('calccard');
-  if(card)card.scrollIntoView({behavior:'smooth',block:'start'});
-}
+function useRecommendedVendorQuote(idx){wfUseQuote(idx);}
 
 var _calcSelection=null;
 var _calcSelecting=false;
@@ -3317,65 +3374,7 @@ function copyCalc(btn){
   buildSpreadsheetRow(btn);
 }
 
-function getSpreadsheetRow(){
-  // Column layout (from spreadsheet):
-  // A=DATE | B=(blank) | C=(blank) | D=POD | E=Delivery to | F=ZIP | G=(blank) | H=(blank) | I=NET | J=SELLING | K=(blank) | L=Notes
-  var tbl=document.querySelector('#calcOut table');
-  var pod=document.getElementById('calcPod').value.trim();
-  var deliv=document.getElementById('calcDeliv').value.trim();
-  var zip='';
-  var zm=deliv.match(/\b(\d{5})\b/);if(zm)zip=zm[1];
-  var notes=document.getElementById('calcNotes').value.trim();
-  var today=new Date();
-  var mm=String(today.getMonth()+1).padStart(2,'0');
-  var dd=String(today.getDate()).padStart(2,'0');
-  var dateStr=mm+'/'+dd;
-
-  function makeRow(trucker,net,sell){
-    return [dateStr,'','',pod,deliv,zip,'',net,sell,'',notes].join('\t');
-  }
-
-  if(!tbl||!tbl.querySelectorAll('tr').length) return makeRow('','','');
-  var rows=Array.from(tbl.querySelectorAll('tr')).slice(1);
-  var hasTrucker=tbl.querySelectorAll('th').length===3;
-  if(rows.length===0) return makeRow('','','');
-  var lines=rows.map(function(tr){
-    var cells=tr.querySelectorAll('td');
-    var offset=hasTrucker?1:0;
-    var trucker=hasTrucker?cells[0].textContent.trim():'';
-    var net=cells[offset]?cells[offset].textContent.trim().replace(/^[\$\s]+/,''):'';
-    var sell=cells[offset+1]?cells[offset+1].textContent.trim().replace(/^[\$\s]+/,''):'';
-    return makeRow(trucker,net,sell);
-  });
-  return lines.join('\n');
-}
-
-function buildSpreadsheetRow(btn){
-  var text=getSpreadsheetRow();
-  // Use execCommand fallback — works for file:// URLs where Clipboard API is blocked
-  var ta=document.createElement('textarea');
-  ta.value=text;
-  ta.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:0';
-  document.body.appendChild(ta);
-  ta.focus();ta.select();
-  var ok=false;
-  try{ok=document.execCommand('copy');}catch(e){}
-  document.body.removeChild(ta);
-  if(ok){
-    var orig=btn.textContent;btn.textContent='✓ Copied row';btn.style.background='#2a7a3a';
-    setTimeout(function(){btn.textContent=orig;btn.style.background='';},1500);
-  } else {
-    // Final fallback: try Clipboard API
-    if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(function(){
-        var orig=btn.textContent;btn.textContent='✓ Copied row';btn.style.background='#2a7a3a';
-        setTimeout(function(){btn.textContent=orig;btn.style.background='';},1500);
-      }).catch(function(){alert('Copy failed. Please copy manually:\n\n'+text);});
-    } else {
-      alert('Copy failed. Please copy manually:\n\n'+text);
-    }
-  }
-}
+function buildSpreadsheetRow(btn){wfReviewFinal(btn,'copy');}
 
 // ─── DISTANCE FETCHER (offline — uses built-in coords) ───────────────────────
 var _distMiles=0;
@@ -3543,8 +3542,12 @@ document.addEventListener('input',function(e){
 });
 
 function clearCalc(){
+  WF_SELECTED=null;
   document.getElementById('calcInput').value='';
   document.getElementById('calcOut').textContent='';
+  window._calcToll=0;
+  var notes=document.getElementById('calcNotes');
+  if(notes)notes.value='';
 }
 
 function autoFillCalcNotes(){
@@ -3555,7 +3558,7 @@ function autoFillCalcNotes(){
     if(b.ow) tags.push('****OW');
     if(b.hazmat) tags.push('HAZMAT');
     var rawText=(b.raw||'').toLowerCase();
-    if(b.reefer||/40rh|40rf|reefer/i.test(b.ctr||'')||/reefer/i.test(rawText)) tags.push('Reefer');
+    if(b.reefer||/40rh|40rf|reefer/i.test(b.ctr||'')||/reefer/i.test(rawText)) tags.push('Reefer'+(b.reeferTemp?', '+b.reeferTemp:''));
     if(b.res) tags.push('Residential');
     if(tags.length){
       var wtStr=b.wt&&b.wt!=='Legal Weight'?b.wt:'Legal Weight';
@@ -3687,7 +3690,15 @@ var _origProcessAll=typeof processAll==='function'?processAll:null;
 <div class="card">
   <div class="ctitle" style="justify-content:space-between">
     <span><span class="badge">Q</span>Quote Template</span>
-    <button class="bp" onclick="buildQuoteTable()" style="font-size:12px;padding:5px 14px">Generate ↓</button>
+    <button class="bp" onclick="generateSelectedQuoteTemplate()" style="font-size:12px;padding:5px 14px">Generate ↓</button>
+  </div>
+  <div style="display:flex;gap:7px;margin-bottom:9px;flex-wrap:wrap">
+    <button id="qtType-trucking" class="bp" onclick="selectQuoteTemplate('trucking')" style="font-size:12px;padding:5px 14px">Trucking</button>
+    <button id="qtType-trucking-custom" class="bs" onclick="selectQuoteTemplate('trucking-custom')" style="font-size:12px;padding:5px 14px">Trucking + Custom</button>
+    <button id="qtType-air" class="bs" onclick="selectQuoteTemplate('air')" style="font-size:12px;padding:5px 14px">Air Import</button>
+    <button id="qtType-ocean" class="bs" onclick="selectQuoteTemplate('ocean')" style="font-size:12px;padding:5px 14px">Ocean Freight</button>
+    <button id="qtType-lcl" class="bs" onclick="selectQuoteTemplate('lcl')" style="font-size:12px;padding:5px 14px">LCL</button>
+    <button id="qtType-accessorial" class="bs" onclick="selectQuoteTemplate('accessorial')" style="font-size:12px;padding:5px 14px">Accessorial</button>
   </div>
   <div style="font-size:12px;color:#aaa;margin-bottom:8px">Selling price auto-filled from calculator · All cells editable · Click "Generate" to rebuild from current calculator values</div>
   <div id="quoteTableWrap" style="display:none;overflow-x:auto"></div>
